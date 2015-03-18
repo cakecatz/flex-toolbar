@@ -1,0 +1,17 @@
+{
+  "name": "flex-toolbar",
+  "main": "./lib/flex-toolbar",
+  "version": "0.0.1",
+  "description": "Easily Customizable Toolbar for Atom",
+  "repository": "https://github.com/cakecatz/flex-toolbar",
+  "license": "MIT",
+  "keywords": [
+    "toolbar"
+  ],
+  "engines": {
+    "atom": ">=0.174.0 <2.0.0"
+  },
+  "dependencies": {
+    "toolbar": "^0.0.9"
+  }
+}
