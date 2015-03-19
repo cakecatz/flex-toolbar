@@ -10,5 +10,11 @@
   ],
   "engines": {
     "atom": ">=0.174.0 <2.0.0"
+  },
+  "dependencies": {
+    "atom-package-dependencies": "latest"
+  },
+  "package-dependencies": {
+    "toolbar": "This is COOL package :D"
   }
 }
