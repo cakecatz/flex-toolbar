@@ -14,6 +14,9 @@ module.exports =
     showConfigButton:
       type: 'boolean'
       default: true
+    reloadToolbarWhenEditJson:
+      type: 'boolean'
+      default: true
 
   activate: (state) ->
 
@@ -28,6 +31,11 @@ module.exports =
       'flex-toolbar:edit-config-file': ->
         atom.workspace.open atom.config.get('flex-toolbar.toolbarConfigurationJsonPath')
 
+    if atom.config.get('flex-toolbar.reloadToolbarWhenEditJson')
+      watch = require 'node-watch'
+      watch atom.config.get('flex-toolbar.toolbarConfigurationJsonPath'), =>
+        @reloadToolbar()
+
   initToolbar: () ->
     atom.packages.activatePackage('toolbar')
       .then (pkg) =>
@@ -35,13 +43,10 @@ module.exports =
 
         try
           toolbarButtons = require atom.config.get('flex-toolbar.toolbarConfigurationJsonPath')
+          delete require.cache[atom.config.get('flex-toolbar.toolbarConfigurationJsonPath')]
+          @appendButtons(toolbarButtons)
         catch error
           console.log 'toolbar.json is not found.'
-
-        @appendButtons(toolbarButtons)
-
-        if atom.config.get('flex-toolbar.showConfigButton')
-          @toolbar.appendButton 'gear', 'flex-toolbar:edit-config-file', 'Edit toolbar', ''
 
   appendButtons: (toolbarButtons) ->
 
@@ -57,6 +62,23 @@ module.exports =
             @toolbar.appendButton btn.icon, =>
               shell.openExternal(@urlholder)
             , btn.tooltip, btn.iconset
+
+    if atom.config.get('flex-toolbar.showConfigButton')
+      @toolbar.appendButton 'gear', 'flex-toolbar:edit-config-file', 'Edit toolbar', ''
+
+  removeButtons: ->
+    {$} = require 'space-pen'
+    buttons = $("#toolbar").children()
+    buttons.remove()
+
+  reloadToolbar: ->
+    try
+      toolbarButtons = require atom.config.get('flex-toolbar.toolbarConfigurationJsonPath')
+      delete require.cache[atom.config.get('flex-toolbar.toolbarConfigurationJsonPath')]
+      @removeButtons()
+      @appendButtons toolbarButtons
+    catch error
+      console.log 'json is not valid'
 
   deactivate: ->
 

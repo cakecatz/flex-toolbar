@@ -12,7 +12,9 @@
     "atom": ">=0.174.0 <2.0.0"
   },
   "dependencies": {
-    "atom-package-dependencies": "latest"
+    "atom-package-dependencies": "latest",
+    "node-watch": "^0.3.4",
+    "space-pen": "^5.1.1"
   },
   "package-dependencies": {
     "toolbar": "This is COOL package :D"
