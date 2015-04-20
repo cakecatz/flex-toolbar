@@ -81,5 +81,6 @@ module.exports =
       console.log 'json is not valid'
 
   deactivate: ->
+    @removeButtons()
 
   serialize: ->
