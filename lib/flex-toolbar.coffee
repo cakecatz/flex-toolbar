@@ -48,6 +48,9 @@ module.exports =
         catch error
           console.log 'toolbar.json is not found.'
 
+        if atom.config.get('flex-toolbar.showConfigButton')
+          @toolbar.appendButton 'gear', 'flex-toolbar:edit-config-file', 'Edit toolbar', ''
+
   appendButtons: (toolbarButtons) ->
 
     if toolbarButtons?
@@ -63,9 +66,6 @@ module.exports =
               shell.openExternal(@urlholder)
             , btn.tooltip, btn.iconset
 
-    if atom.config.get('flex-toolbar.showConfigButton')
-      @toolbar.appendButton 'gear', 'flex-toolbar:edit-config-file', 'Edit toolbar', ''
-
   removeButtons: ->
     {$} = require 'space-pen'
     buttons = $("#toolbar").children()
@@ -77,6 +77,8 @@ module.exports =
       delete require.cache[atom.config.get('flex-toolbar.toolbarConfigurationJsonPath')]
       @removeButtons()
       @appendButtons toolbarButtons
+      if atom.config.get('flex-toolbar.showConfigButton')
+        @toolbar.appendButton 'gear', 'flex-toolbar:edit-config-file', 'Edit toolbar', ''
     catch error
       console.log 'json is not valid'
 
