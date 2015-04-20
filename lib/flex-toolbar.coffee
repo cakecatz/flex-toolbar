@@ -1,5 +1,6 @@
 rootDir = require('../index').getPackageRootDir()
 shell = require 'shell'
+path = require 'path'
 
 module.exports =
   urlholder: ''
@@ -9,7 +10,7 @@ module.exports =
   config:
     toolbarConfigurationJsonPath:
       type: 'string'
-      default: rootDir + '/toolbar.json'
+      default: path.join rootDir, 'toolbar.json'
     showConfigButton:
       type: 'boolean'
       default: true
@@ -27,9 +28,9 @@ module.exports =
       'flex-toolbar:edit-config-file': ->
         atom.workspace.open atom.config.get('flex-toolbar.toolbarConfigurationJsonPath')
 
-  initToolbar:() ->
+  initToolbar: () ->
     atom.packages.activatePackage('toolbar')
-      .then (pkg)=>
+      .then (pkg) =>
         @toolbar = pkg.mainModule
 
         try
@@ -60,4 +61,3 @@ module.exports =
   deactivate: ->
 
   serialize: ->
-
