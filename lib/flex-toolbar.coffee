@@ -19,7 +19,6 @@ module.exports =
       default: true
 
   activate: (state) ->
-
     if atom.packages.isPackageLoaded('toolbar')
       @initToolbar()
     else
@@ -27,7 +26,7 @@ module.exports =
       apd.install =>
         @initToolbar()
 
-    atom.commands.add 'atom-workspace',
+    @subscriptions = atom.commands.add 'atom-workspace',
       'flex-toolbar:edit-config-file': ->
         atom.workspace.open atom.config.get('flex-toolbar.toolbarConfigurationJsonPath')
 
@@ -81,7 +80,7 @@ module.exports =
       console.log 'json is not valid'
 
   deactivate: ->
-    @toolbar.deactivate()
-    @toolbar.activate(@toolbar.serialize())
+    @subscriptions.dispose()
+    @removeButtons()
 
   serialize: ->
