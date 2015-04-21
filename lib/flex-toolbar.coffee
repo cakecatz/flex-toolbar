@@ -52,17 +52,20 @@ module.exports =
 
   appendButtons: (toolbarButtons) ->
     if toolbarButtons?
+      devMode = atom.inDevMode()
       for btn in toolbarButtons
+        continue if btn.mode and btn.mode is 'dev' and not devMode
         switch btn.type
           when 'button'
-            @toolbar.appendButton btn.icon, btn.callback, btn.tooltip, btn.iconset
+            button = @toolbar.appendButton btn.icon, btn.callback, btn.tooltip, btn.iconset
           when 'spacer'
-            @toolbar.appendSpacer()
+            button = @toolbar.appendSpacer()
           when 'url'
             @urlholder = btn.url
-            @toolbar.appendButton btn.icon, =>
+            button = @toolbar.appendButton btn.icon, =>
               shell.openExternal(@urlholder)
             , btn.tooltip, btn.iconset
+        button.addClass 'tool-bar-mode-' + btn.mode if btn.mode
 
   removeButtons: ->
     {$} = require 'space-pen'

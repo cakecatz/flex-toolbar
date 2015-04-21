@@ -40,6 +40,7 @@ If you want see this feature, check this [screencast](http://quick.as/b5vafe4g).
         "icon": "document",
         "callback": "application:new-file",
         "tooltip": "New File",
-        "iconset": "ion"
+        "iconset": "ion",
+        "mode": "dev"
       }
     ]
