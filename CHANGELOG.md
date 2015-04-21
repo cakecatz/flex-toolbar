@@ -1,5 +1,7 @@
-## 0.2.0
+## 0.1.10
+- Fixed many open edit toolbar tab
 - Fixed be removed toolbar.json
+- Add dev mode (by Jeroen van Warmerdam)
 
 ## 0.1.9
 - Fixed diactivating behaviour
