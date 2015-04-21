@@ -1,3 +1,6 @@
+## 0.2.0
+- Fixed be removed toolbar.json
+
 ## 0.1.9
 - Fixed diactivating behaviour
 - Fixed removing buttons from toolbar with new toolbar theme (by Jeroen van Warmerdam)

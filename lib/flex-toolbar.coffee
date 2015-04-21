@@ -10,7 +10,7 @@ module.exports =
   config:
     toolbarConfigurationJsonPath:
       type: 'string'
-      default: path.join rootDir, 'toolbar.json'
+      default: path.join process.env.ATOM_HOME, 'toolbar.json'
     showConfigButton:
       type: 'boolean'
       default: true
