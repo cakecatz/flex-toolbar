@@ -67,8 +67,7 @@ module.exports =
 
   removeButtons: ->
     {$} = require 'space-pen'
-    buttons = $(".tool-bar").children()
-    buttons.remove()
+    $(".tool-bar").empty()
 
   reloadToolbar: ->
     try
