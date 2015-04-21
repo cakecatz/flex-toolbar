@@ -1,3 +1,20 @@
+## 0.1.9
+- Fixed diactivating behaviour
+- Fixed removing buttons from toolbar with new toolbar theme (by Jeroen van Warmerdam)
+
+## 0.1.8
+- Fix some bugs
+
+## 0.1.7
+- Fix some bugs (by Jeroen van Warmerdam)
+
+## 0.1.6
+- Reload toolbar when edit toolbar.json
+
+## 0.1.5
+- Fix default path for Windows users (by Jeroen van Warmerdam)
+- Refactoring (by Jeroen van Warmerdam)
+
 ## 0.1.4
 - Loading icon to be faster
 
