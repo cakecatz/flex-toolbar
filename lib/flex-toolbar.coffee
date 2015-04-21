@@ -52,7 +52,6 @@ module.exports =
           @toolbar.appendButton 'gear', 'flex-toolbar:edit-config-file', 'Edit toolbar', ''
 
   appendButtons: (toolbarButtons) ->
-
     if toolbarButtons?
       for btn in toolbarButtons
         switch btn.type
@@ -68,7 +67,7 @@ module.exports =
 
   removeButtons: ->
     {$} = require 'space-pen'
-    buttons = $("#toolbar").children()
+    buttons = $(".tool-bar").children()
     buttons.remove()
 
   reloadToolbar: ->
