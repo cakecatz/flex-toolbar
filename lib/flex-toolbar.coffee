@@ -57,7 +57,13 @@ module.exports =
         continue if btn.mode and btn.mode is 'dev' and not devMode
         switch btn.type
           when 'button'
-            button = @toolbar.appendButton btn.icon, btn.callback, btn.tooltip, btn.iconset
+            if Array.isArray btn.callback
+              button = @toolbar.appendButton btn.icon, (callbacks)->
+                for callback in callbacks
+                  atom.commands.dispatch document.activeElement, callback
+              , btn.tooltip, btn.iconset, btn.callback
+            else
+              button = @toolbar.appendButton btn.icon, btn.callback, btn.tooltip, btn.iconset
           when 'spacer'
             button = @toolbar.appendSpacer()
           when 'url'
