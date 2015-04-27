@@ -3,7 +3,6 @@ shell = require 'shell'
 path = require 'path'
 
 module.exports =
-  urlholder: ''
 
   toolbar: null
 
@@ -58,7 +57,7 @@ module.exports =
         switch btn.type
           when 'button'
             if Array.isArray btn.callback
-              button = @toolbar.appendButton btn.icon, (callbacks)->
+              button = @toolbar.appendButton btn.icon, (callbacks) ->
                 for callback in callbacks
                   atom.commands.dispatch document.activeElement, callback
               , btn.tooltip, btn.iconset, btn.callback
@@ -67,10 +66,9 @@ module.exports =
           when 'spacer'
             button = @toolbar.appendSpacer()
           when 'url'
-            @urlholder = btn.url
-            button = @toolbar.appendButton btn.icon, =>
-              shell.openExternal(@urlholder)
-            , btn.tooltip, btn.iconset
+            button = @toolbar.appendButton btn.icon, (url) ->
+              shell.openExternal(url)
+            , btn.tooltip, btn.iconset, btn.url
         button.addClass 'tool-bar-mode-' + btn.mode if btn.mode
 
   removeButtons: ->
