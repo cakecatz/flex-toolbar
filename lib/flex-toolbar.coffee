@@ -1,9 +1,7 @@
-rootDir = require('../index').getPackageRootDir()
 shell = require 'shell'
 path = require 'path'
 
 module.exports =
-
   toolbar: null
 
   config:
