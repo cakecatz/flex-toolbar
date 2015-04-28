@@ -1,5 +1,9 @@
 @import "ui-variables";
 
-.tool-bar .tool-bar-btn.tool-bar-mode-dev {
+.tool-bar button.tool-bar-btn.tool-bar-mode-dev {
   color: @text-color-error;
+  &:focus,
+  &:hover {
+    color: darken(@text-color-error, 5%);
+  }
 }
