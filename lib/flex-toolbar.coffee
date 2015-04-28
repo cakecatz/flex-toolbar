@@ -60,7 +60,7 @@ module.exports =
             button = @toolbar.addButton btn.icon, (url) ->
               shell.openExternal(url)
             , btn.tooltip, btn.iconset, btn.url
-        button.addClass 'tool-bar-mode-' + btn.mode if btn.mode
+        button.addClass "tool-bar-mode-#{btn.mode}" if btn.mode
 
   removeButtons: ->
     {$} = require 'space-pen'
