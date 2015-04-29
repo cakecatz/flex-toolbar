@@ -40,6 +40,7 @@ module.exports =
           icon: 'gear'
           callback: 'flex-toolbar:edit-config-file'
           tooltip: 'Edit toolbar'
+        @toolbar.addSpacer()
     catch error
       console.debug 'JSON is not valid'
 
