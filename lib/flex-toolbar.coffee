@@ -25,7 +25,7 @@ module.exports =
         @reloadToolbar()
 
   consumeToolBar: (toolbar) ->
-    @toolbar = toolbar
+    @toolbar = toolbar 'flex-toolbar'
     @reloadToolbar()
 
   reloadToolbar: () ->
@@ -36,7 +36,10 @@ module.exports =
       @removeButtons()
       @addButtons toolbarButtons
       if atom.config.get('flex-toolbar.showConfigButton')
-        @toolbar.addButton 'gear', 'flex-toolbar:edit-config-file', 'Edit toolbar'
+        @toolbar.addButton
+          icon: 'gear'
+          callback: 'flex-toolbar:edit-config-file'
+          tooltip: 'Edit toolbar'
     catch error
       console.debug 'JSON is not valid'
 
@@ -47,20 +50,35 @@ module.exports =
         continue if btn.mode and btn.mode is 'dev' and not devMode
         switch btn.type
           when 'button'
-            if Array.isArray btn.callback
-              button = @toolbar.addButton btn.icon, (callbacks) ->
-                for callback in callbacks
-                  atom.commands.dispatch document.activeElement, callback
-              , btn.tooltip, btn.iconset, btn.callback
-            else
-              button = @toolbar.addButton btn.icon, btn.callback, btn.tooltip, btn.iconset
+            button = @toolbar_addButton btn
           when 'spacer'
             button = @toolbar.addSpacer()
           when 'url'
-            button = @toolbar.addButton btn.icon, (url) ->
-              shell.openExternal(url)
-            , btn.tooltip, btn.iconset, btn.url
+            button = @toolbar.addButton
+              icon: btn.icon
+              callback: (url) ->
+                shell.openExternal(url)
+              tooltip: btn.tooltip
+              iconset: btn.iconset
+              data: btn.url
         button.addClass "tool-bar-mode-#{btn.mode}" if btn.mode
+
+  toolbar_addButton: (btn) ->
+    if Array.isArray btn.callback
+      button = @toolbar.addButton
+        icon: btn.icon
+        callback: (callbacks) ->
+          for callback in callbacks
+            atom.commands.dispatch document.activeElement, callback
+        tooltip: btn.tooltip
+        iconset: btn.iconset
+    else
+      button = @toolbar.addButton
+        icon: btn.icon
+        callback: btn.callback
+        tooltip: btn.tooltip
+        iconset: btn.iconset
+    button
 
   removeButtons: ->
     {$} = require 'space-pen'
