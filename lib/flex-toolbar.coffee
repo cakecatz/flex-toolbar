@@ -57,7 +57,7 @@ module.exports =
             button = @toolbar.addButton
               icon: btn.icon
               callback: (url) ->
-                shell.openExternal(url)
+                shell.openExternal url
               tooltip: btn.tooltip
               iconset: btn.iconset
               data: btn.url
@@ -65,7 +65,7 @@ module.exports =
 
   toolbar_addButton: (btn) ->
     if Array.isArray btn.callback
-      button = @toolbar.addButton
+      @toolbar.addButton
         icon: btn.icon
         callback: (callbacks) ->
           for callback in callbacks
@@ -73,16 +73,14 @@ module.exports =
         tooltip: btn.tooltip
         iconset: btn.iconset
     else
-      button = @toolbar.addButton
+      @toolbar.addButton
         icon: btn.icon
         callback: btn.callback
         tooltip: btn.tooltip
         iconset: btn.iconset
-    button
 
   removeButtons: ->
-    {$} = require 'space-pen'
-    $(".tool-bar").empty()
+    @toolbar.removeItems()
 
   deactivate: ->
     @subscriptions.dispose()
