@@ -53,7 +53,7 @@ module.exports =
           when 'button'
             button = @toolbar_addButton btn
           when 'spacer'
-            button = @toolbar.addSpacer()
+            button = @toolbar.addSpacer priority: btn.priority
           when 'url'
             button = @toolbar.addButton
               icon: btn.icon
@@ -62,6 +62,7 @@ module.exports =
               tooltip: btn.tooltip
               iconset: btn.iconset
               data: btn.url
+              priority: btn.priority
         button.addClass "tool-bar-mode-#{btn.mode}" if btn.mode
 
   toolbar_addButton: (btn) ->
@@ -73,12 +74,14 @@ module.exports =
             atom.commands.dispatch document.activeElement, callback
         tooltip: btn.tooltip
         iconset: btn.iconset
+        priority: btn.priority
     else
       @toolbar.addButton
         icon: btn.icon
         callback: btn.callback
         tooltip: btn.tooltip
         iconset: btn.iconset
+        priority: btn.priority
 
   removeButtons: ->
     @toolbar.removeItems()
