@@ -6,10 +6,11 @@
   "repository": "https://github.com/cakecatz/flex-toolbar",
   "license": "MIT",
   "keywords": [
-    "toolbar"
+    "toolbar",
+    "tool-bar"
   ],
   "engines": {
-    "atom": ">=0.174.0 <2.0.0"
+    "atom": ">=0.188.0 <2.0.0"
   },
   "dependencies": {
     "atom-package-dependencies": "latest",
@@ -17,6 +18,13 @@
     "space-pen": "^5.1.1"
   },
   "package-dependencies": {
-    "toolbar": "This is COOL package :D"
+    "toolbar": "^0.1.0"
+  },
+  "consumedServices": {
+    "tool-bar": {
+      "versions": {
+        "^0.1.0": "consumeToolBar"
+      }
+    }
   }
 }

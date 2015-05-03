@@ -1,9 +1,7 @@
-rootDir = require('../index').getPackageRootDir()
 shell = require 'shell'
 path = require 'path'
 
 module.exports =
-
   toolbar: null
 
   config:
@@ -17,74 +15,76 @@ module.exports =
       type: 'boolean'
       default: true
 
-  activate: (state) ->
-    if atom.packages.isPackageLoaded('toolbar')
-      @initToolbar()
-    else
-      apd = require('atom-package-dependencies')
-      apd.install =>
-        @initToolbar()
-
+  activate: ->
     @subscriptions = atom.commands.add 'atom-workspace',
       'flex-toolbar:edit-config-file': ->
         atom.workspace.open atom.config.get('flex-toolbar.toolbarConfigurationJsonPath')
-
     if atom.config.get('flex-toolbar.reloadToolbarWhenEditJson')
       watch = require 'node-watch'
       watch atom.config.get('flex-toolbar.toolbarConfigurationJsonPath'), =>
         @reloadToolbar()
 
-  initToolbar: () ->
-    atom.packages.activatePackage('toolbar')
-      .then (pkg) =>
-        @toolbar = pkg.mainModule
+  consumeToolBar: (toolbar) ->
+    @toolbar = toolbar 'flex-toolbar'
+    @reloadToolbar()
 
-        try
-          toolbarButtons = require atom.config.get('flex-toolbar.toolbarConfigurationJsonPath')
-          delete require.cache[atom.config.get('flex-toolbar.toolbarConfigurationJsonPath')]
-          @appendButtons(toolbarButtons)
-        catch error
-          console.log 'toolbar.json is not found.'
+  reloadToolbar: () ->
+    try
+      toolbarButtons = require atom.config.get('flex-toolbar.toolbarConfigurationJsonPath')
+      delete require.cache[atom.config.get('flex-toolbar.toolbarConfigurationJsonPath')]
+      # Remove and add buttons after successful JSON parse
+      @removeButtons()
+      @addButtons toolbarButtons
+      if atom.config.get('flex-toolbar.showConfigButton')
+        @toolbar.addButton
+          icon: 'gear'
+          callback: 'flex-toolbar:edit-config-file'
+          tooltip: 'Edit toolbar'
+        @toolbar.addSpacer()
+    catch error
+      console.debug 'JSON is not valid'
 
-        if atom.config.get('flex-toolbar.showConfigButton')
-          @toolbar.appendButton 'gear', 'flex-toolbar:edit-config-file', 'Edit toolbar', ''
-
-  appendButtons: (toolbarButtons) ->
+  addButtons: (toolbarButtons) ->
     if toolbarButtons?
       devMode = atom.inDevMode()
       for btn in toolbarButtons
         continue if btn.mode and btn.mode is 'dev' and not devMode
         switch btn.type
           when 'button'
-            if Array.isArray btn.callback
-              button = @toolbar.appendButton btn.icon, (callbacks) ->
-                for callback in callbacks
-                  atom.commands.dispatch document.activeElement, callback
-              , btn.tooltip, btn.iconset, btn.callback
-            else
-              button = @toolbar.appendButton btn.icon, btn.callback, btn.tooltip, btn.iconset
+            button = @toolbar_addButton btn
           when 'spacer'
-            button = @toolbar.appendSpacer()
+            button = @toolbar.addSpacer priority: btn.priority
           when 'url'
-            button = @toolbar.appendButton btn.icon, (url) ->
-              shell.openExternal(url)
-            , btn.tooltip, btn.iconset, btn.url
-        button.addClass 'tool-bar-mode-' + btn.mode if btn.mode
+            button = @toolbar.addButton
+              icon: btn.icon
+              callback: (url) ->
+                shell.openExternal url
+              tooltip: btn.tooltip
+              iconset: btn.iconset
+              data: btn.url
+              priority: btn.priority
+        button.addClass "tool-bar-mode-#{btn.mode}" if btn.mode
+
+  toolbar_addButton: (btn) ->
+    if Array.isArray btn.callback
+      @toolbar.addButton
+        icon: btn.icon
+        callback: (callbacks) ->
+          for callback in callbacks
+            atom.commands.dispatch document.activeElement, callback
+        tooltip: btn.tooltip
+        iconset: btn.iconset
+        priority: btn.priority
+    else
+      @toolbar.addButton
+        icon: btn.icon
+        callback: btn.callback
+        tooltip: btn.tooltip
+        iconset: btn.iconset
+        priority: btn.priority
 
   removeButtons: ->
-    {$} = require 'space-pen'
-    $(".tool-bar").empty()
-
-  reloadToolbar: ->
-    try
-      toolbarButtons = require atom.config.get('flex-toolbar.toolbarConfigurationJsonPath')
-      delete require.cache[atom.config.get('flex-toolbar.toolbarConfigurationJsonPath')]
-      @removeButtons()
-      @appendButtons toolbarButtons
-      if atom.config.get('flex-toolbar.showConfigButton')
-        @toolbar.appendButton 'gear', 'flex-toolbar:edit-config-file', 'Edit toolbar', ''
-    catch error
-      console.log 'json is not valid'
+    @toolbar.removeItems()
 
   deactivate: ->
     @subscriptions.dispose()
