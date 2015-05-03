@@ -1,5 +1,5 @@
 {
-  "name": "flex-toolbar",
+  "name": "flex-tool-bar",
   "main": "./lib/flex-tool-bar",
   "version": "0.1.10",
   "description": "Easily Customizable ToolBar for Atom",
