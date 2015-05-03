@@ -2,62 +2,62 @@ shell = require 'shell'
 path = require 'path'
 
 module.exports =
-  toolbar: null
+  toolBar: null
 
   config:
-    toolbarConfigurationJsonPath:
+    toolBarConfigurationJsonPath:
       type: 'string'
       default: path.join process.env.ATOM_HOME, 'toolbar.json'
     showConfigButton:
       type: 'boolean'
       default: true
-    reloadToolbarWhenEditJson:
+    reloadToolBarWhenEditJson:
       type: 'boolean'
       default: true
 
   activate: ->
     @subscriptions = atom.commands.add 'atom-workspace',
-      'flex-toolbar:edit-config-file': ->
-        atom.workspace.open atom.config.get('flex-toolbar.toolbarConfigurationJsonPath')
-    if atom.config.get('flex-toolbar.reloadToolbarWhenEditJson')
+      'flex-tool-bar:edit-config-file': ->
+        atom.workspace.open atom.config.get('flex-tool-bar.toolBarConfigurationJsonPath')
+    if atom.config.get('flex-tool-bar.reloadToolBarWhenEditJson')
       watch = require 'node-watch'
-      watch atom.config.get('flex-toolbar.toolbarConfigurationJsonPath'), =>
+      watch atom.config.get('flex-tool-bar.toolBarConfigurationJsonPath'), =>
         @reloadToolbar()
 
-  consumeToolBar: (toolbar) ->
-    @toolbar = toolbar 'flex-toolbar'
+  consumeToolBar: (toolBar) ->
+    @toolBar = toolBar 'flex-toolBar'
     @reloadToolbar true
 
   reloadToolbar: (init) ->
     try
-      toolbarButtons = require atom.config.get('flex-toolbar.toolbarConfigurationJsonPath')
-      delete require.cache[atom.config.get('flex-toolbar.toolbarConfigurationJsonPath')]
+      toolBarButtons = require atom.config.get('flex-tool-bar.toolBarConfigurationJsonPath')
+      delete require.cache[atom.config.get('flex-tool-bar.toolBarConfigurationJsonPath')]
       # Remove and add buttons after successful JSON parse
       @removeButtons()
-      @addButtons toolbarButtons
-      if atom.config.get('flex-toolbar.showConfigButton')
-        @toolbar.addButton
+      @addButtons toolBarButtons
+      if atom.config.get('flex-tool-bar.showConfigButton')
+        @toolBar.addButton
           icon: 'gear'
-          callback: 'flex-toolbar:edit-config-file'
-          tooltip: 'Edit toolbar'
-        @toolbar.addSpacer()
+          callback: 'flex-tool-bar:edit-config-file'
+          tooltip: 'Edit ToolBar'
+        @toolBar.addSpacer()
       atom.notifications.addSuccess 'The tool-bar was successfully updated.' if not init
     catch error
       atom.notifications.addError 'Your `toolbar.json` is **not valid JSON**!' if not init
       console.debug 'JSON is not valid'
 
-  addButtons: (toolbarButtons) ->
-    if toolbarButtons?
+  addButtons: (toolBarButtons) ->
+    if toolBarButtons?
       devMode = atom.inDevMode()
-      for btn in toolbarButtons
+      for btn in toolBarButtons
         continue if btn.mode and btn.mode is 'dev' and not devMode
         switch btn.type
           when 'button'
-            button = @toolbar_addButton btn
+            button = @toolBar_addButton btn
           when 'spacer'
-            button = @toolbar.addSpacer priority: btn.priority
+            button = @toolBar.addSpacer priority: btn.priority
           when 'url'
-            button = @toolbar.addButton
+            button = @toolBar.addButton
               icon: btn.icon
               callback: (url) ->
                 shell.openExternal url
@@ -67,9 +67,9 @@ module.exports =
               priority: btn.priority
         button.addClass "tool-bar-mode-#{btn.mode}" if btn.mode
 
-  toolbar_addButton: (btn) ->
+  toolBar_addButton: (btn) ->
     if Array.isArray btn.callback
-      @toolbar.addButton
+      @toolBar.addButton
         icon: btn.icon
         callback: (callbacks) ->
           for callback in callbacks
@@ -79,7 +79,7 @@ module.exports =
         priority: btn.priority
         data: btn.callback
     else
-      @toolbar.addButton
+      @toolBar.addButton
         icon: btn.icon
         callback: btn.callback
         tooltip: btn.tooltip
@@ -87,7 +87,7 @@ module.exports =
         priority: btn.priority
 
   removeButtons: ->
-    @toolbar.removeItems()
+    @toolBar.removeItems()
 
   deactivate: ->
     @subscriptions.dispose()

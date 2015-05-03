@@ -1,8 +1,8 @@
 {
   "name": "flex-toolbar",
-  "main": "./lib/flex-toolbar",
+  "main": "./lib/flex-tool-bar",
   "version": "0.1.10",
-  "description": "Easily Customizable Toolbar for Atom",
+  "description": "Easily Customizable ToolBar for Atom",
   "repository": "https://github.com/cakecatz/flex-toolbar",
   "license": "MIT",
   "keywords": [
@@ -18,7 +18,7 @@
     "space-pen": "^5.1.1"
   },
   "package-dependencies": {
-    "toolbar": "^0.1.0"
+    "tool-bar": "^0.1.0"
   },
   "consumedServices": {
     "tool-bar": {
