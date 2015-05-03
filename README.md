@@ -1,8 +1,8 @@
-# Flex-toolbar
+# Flex Tool Bar
 
-### Easily Customizable Toolbar for Atom
+### Easily Customizable ToolBar for Atom
 
-This is plugin of [toolbar](https://github.com/suda/toolbar).
+This is plugin of [tool-bar](https://atom.io/packages/tool-bar).
 
 You can config your toolbar with JSON file and can create link button for open web site.
 
@@ -12,7 +12,7 @@ If you edit your config file, type `Flex Toolbar: Edit my config file` on comman
 
 ### Configuration
 
-Toolbar have 3 types.
+FlexToolBar have 3 types.
 `button`, `url` and `spacer`.
 
 `button` is default button of toolbar.  
@@ -23,7 +23,7 @@ If you want see this feature, check this [screencast](http://quick.as/b5vafe4g).
 
 `spacer` is separator of buttons.
 
-#### Sample Code
+### Sample Code
     [
       {
         "type": "url",
@@ -42,5 +42,11 @@ If you want see this feature, check this [screencast](http://quick.as/b5vafe4g).
         "tooltip": "New File",
         "iconset": "ion",
         "mode": "dev"
+      },
+      {
+        "type": "button",
+        "icon": "columns",
+        "iconset": "fa",
+        "callback": ["pane:split-right", "pane:split-right"]
       }
     ]
