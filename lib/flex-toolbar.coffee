@@ -77,6 +77,7 @@ module.exports =
         tooltip: btn.tooltip
         iconset: btn.iconset
         priority: btn.priority
+        data: btn.callback
     else
       @toolbar.addButton
         icon: btn.icon
