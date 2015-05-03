@@ -1,6 +1,10 @@
+## 0.2.1
+- Fixed callback target
+
 ## 0.2.0
 - Use ToolBar Services API (by Jeroen van Warmerdam)
 - Notifications on toolbar edit (by Jeroen van Warmerdam)
+- Rename flex-toolbar to flex-tool-bar
 
 ## 0.1.10
 - Fixed many open edit toolbar tab

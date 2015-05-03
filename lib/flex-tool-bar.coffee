@@ -73,7 +73,7 @@ module.exports =
         icon: btn.icon
         callback: (callbacks) ->
           for callback in callbacks
-            atom.commands.dispatch document.activeElement, callback
+            atom.commands.dispatch atom.views.getView(atom.workspace.getActiveTextEditor()), callback
         tooltip: btn.tooltip
         iconset: btn.iconset
         priority: btn.priority
