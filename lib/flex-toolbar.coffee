@@ -26,9 +26,9 @@ module.exports =
 
   consumeToolBar: (toolbar) ->
     @toolbar = toolbar 'flex-toolbar'
-    @reloadToolbar()
+    @reloadToolbar true
 
-  reloadToolbar: () ->
+  reloadToolbar: (init) ->
     try
       toolbarButtons = require atom.config.get('flex-toolbar.toolbarConfigurationJsonPath')
       delete require.cache[atom.config.get('flex-toolbar.toolbarConfigurationJsonPath')]
@@ -41,7 +41,9 @@ module.exports =
           callback: 'flex-toolbar:edit-config-file'
           tooltip: 'Edit toolbar'
         @toolbar.addSpacer()
+      atom.notifications.addSuccess 'The tool-bar was successfully updated.' if not init
     catch error
+      atom.notifications.addError 'Your `toolbar.json` is **not valid JSON**!' if not init
       console.debug 'JSON is not valid'
 
   addButtons: (toolbarButtons) ->
