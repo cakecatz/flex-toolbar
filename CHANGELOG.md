@@ -1,3 +1,7 @@
+## 0.2.0
+- Use ToolBar Services API (by Jeroen van Warmerdam)
+- Notifications on toolbar edit (by Jeroen van Warmerdam)
+
 ## 0.1.10
 - Fixed many open edit toolbar tab
 - Fixed be removed toolbar.json
