@@ -67,6 +67,10 @@ module.exports =
               priority: btn.priority
         button.addClass "tool-bar-mode-#{btn.mode}" if btn.mode
 
+        if btn.style?
+          for k, v of btn.style
+            button.css(k, v)
+
   toolBar_addButton: (btn) ->
     if Array.isArray btn.callback
       @toolBar.addButton
