@@ -1,29 +1,32 @@
 # Flex Tool Bar
 
-### Easily Customizable ToolBar for Atom
+### Easily Customizable Toolbar for Atom
 
-This is plugin of [tool-bar](https://atom.io/packages/tool-bar).
+This is a plugin for the [Atom Tool Bar](https://atom.io/packages/tool-bar) package.
 
-You can config your toolbar with JSON file and can create link button for open web site.
+You can configure your toolbar buttons with a JSON file to perform specific actions in Atom or to open web sites in your default browser.
 
 ![screenshot](https://raw.githubusercontent.com/cakecatz/flex-toolbar/docs/screenshot.png)
 
-If you edit your config file, type `Flex Toolbar: Edit my config file` on command palette.
+To edit your config file, type `Flex Toolbar: Edit my config file` in the Atom command palette.
 
 ### Configuration
 
-FlexToolBar have 3 types.
+**Flex Tool Bar** has three "types" you can configure:
 `button`, `url` and `spacer`.
 
-`button` is default button of toolbar.  
-You can set actions like `application:new-file`.
+- `button` creates default buttons for your toolbar.
 
-`url` is open web page on default browser.  
-If you want see this feature, check this [screencast](http://quick.as/b5vafe4g).
+    You can use it to set actions like `application:new-file`.
 
-`spacer` is separator of buttons.
+- `url` creates buttons pointing to specific web pages.
+
+    Use this to open any web site, such as your GitHub notifications, in your default browser. See this feature in action in this [screencast](http://quick.as/b5vafe4g).
+
+- `spacer` adds separators between toolbar buttons.
 
 ### Sample Code
+
     [
       {
         "type": "url",
