@@ -91,9 +91,9 @@ module.exports =
     if Array.isArray btn.callback
       @toolBar.addButton
         icon: btn.icon
-        callback: (callbacks) ->
+        callback: (callbacks, target) ->
           for callback in callbacks
-            atom.commands.dispatch atom.views.getView(atom.workspace.getActiveTextEditor()), callback
+            atom.commands.dispatch target, callback
         tooltip: btn.tooltip
         iconset: btn.iconset
         priority: btn.priority
