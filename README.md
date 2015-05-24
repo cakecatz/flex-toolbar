@@ -25,6 +25,49 @@ To edit your config file, type `Flex Toolbar: Edit my config file` in the Atom c
 
 - `spacer` adds separators between toolbar buttons.
 
+### Features
+
+- multiple callback
+- button style
+- hide, disable button when specific grammar
+
+### Button style
+
+Can use CSS Property.
+
+    "style": {
+      "color": "red",
+      "background": "green",
+      "border": "1px solid blue"
+    }
+
+### Multiple callback
+
+    "callback": ["callback1", "callback2"]
+
+### Hide, Disable button
+
+You can hide or disable button when specific grammar.
+If you set like this,
+
+    "disable": "coffee"
+
+Will disable button when opened CoffeeScript file.
+
+Of course, can set Array to value.
+
+    "disable": [
+      "json",
+      "less"
+    ]
+
+You can use `!` :laughing:
+
+    "hide": "!Markdown"
+
+This will hide button when opened any file except Markdown.
+
+
 ### Sample Code
 
     [
@@ -51,5 +94,19 @@ To edit your config file, type `Flex Toolbar: Edit my config file` in the Atom c
         "icon": "columns",
         "iconset": "fa",
         "callback": ["pane:split-right", "pane:split-right"]
+      },
+      {
+        "type": "button",
+        "icon": "circuit-board",
+        "callback": "git-diff:toggle-diff-list",
+        "style": {
+          "color": "#FA4F28"
+        }
+      },
+      {
+        "type": "button",
+        "icon": "markdown",
+        "callback": "markdown-preview:toggle",
+        "disable": "!markdown"
       }
     ]
