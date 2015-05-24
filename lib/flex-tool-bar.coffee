@@ -39,8 +39,7 @@ module.exports =
 
   reloadToolbar: (init) ->
     try
-      toolBarButtons = require atom.config.get('flex-tool-bar.toolBarConfigurationJsonPath')
-      delete require.cache[atom.config.get('flex-tool-bar.toolBarConfigurationJsonPath')]
+      toolBarButtons = @loadConfig()
       # Remove and add buttons after successful JSON parse
       @removeButtons()
       @addButtons toolBarButtons
@@ -105,6 +104,26 @@ module.exports =
         tooltip: btn.tooltip
         iconset: btn.iconset
         priority: btn.priority
+
+  loadConfig: ->
+    configPath = atom.config.get('flex-tool-bar.toolBarConfigurationJsonPath')
+    ext = path.extname configPath
+
+    switch ext
+      when '.json'
+        config = require configPath
+        delete require.cache[configPath]
+
+      when '.json5'
+        require 'json5/lib/require'
+        config = require configPath
+        delete require.cache[configPath]
+
+      when '.cson'
+        CSON = require 'cson'
+        config = CSON.requireCSONFile configPath
+
+    return config
 
   grammarCondition: (grammars) ->
     result = false

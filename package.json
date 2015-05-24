@@ -14,6 +14,8 @@
   },
   "dependencies": {
     "atom-package-dependencies": "latest",
+    "cson": "^3.0.1",
+    "json5": "^0.4.0",
     "node-watch": "^0.3.4",
     "space-pen": "^5.1.1"
   },
