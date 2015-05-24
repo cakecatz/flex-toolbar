@@ -1,3 +1,8 @@
+## 0.3.0
+- Add style property
+- Add hide, disable property
+- Fixed callback target
+
 ## 0.2.1
 - Fixed callback target
 
