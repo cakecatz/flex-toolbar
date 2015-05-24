@@ -4,6 +4,8 @@ path = require 'path'
 module.exports =
   toolBar: null
 
+  currentGrammar: null
+
   config:
     toolBarConfigurationJsonPath:
       type: 'string'
@@ -16,6 +18,9 @@ module.exports =
       default: true
 
   activate: ->
+
+    @storeGrammar()
+
     @subscriptions = atom.commands.add 'atom-workspace',
       'flex-tool-bar:edit-config-file': ->
         atom.workspace.open atom.config.get('flex-tool-bar.toolBarConfigurationJsonPath')
@@ -23,6 +28,10 @@ module.exports =
       watch = require 'node-watch'
       watch atom.config.get('flex-tool-bar.toolBarConfigurationJsonPath'), =>
         @reloadToolbar()
+
+    atom.workspace.onDidChangeActivePaneItem (item) =>
+      if @storeGrammar()
+        @reloadToolbar true
 
   consumeToolBar: (toolBar) ->
     @toolBar = toolBar 'flex-toolBar'
@@ -50,6 +59,10 @@ module.exports =
     if toolBarButtons?
       devMode = atom.inDevMode()
       for btn in toolBarButtons
+
+        if btn.hide? && @grammarCondition(btn.hide)
+          continue
+
         continue if btn.mode and btn.mode is 'dev' and not devMode
         switch btn.type
           when 'button'
@@ -71,6 +84,9 @@ module.exports =
           for k, v of btn.style
             button.css(k, v)
 
+        if btn.disable? && @grammarCondition(btn.disable)
+          button.setEnabled false
+
   toolBar_addButton: (btn) ->
     if Array.isArray btn.callback
       @toolBar.addButton
@@ -89,6 +105,31 @@ module.exports =
         tooltip: btn.tooltip
         iconset: btn.iconset
         priority: btn.priority
+
+  grammarCondition: (grammars) ->
+    result = false
+    grammars = [grammars] if typeof grammars is 'string'
+
+    for grammar in grammars
+      reverse  = false
+      if grammar.includes '!'
+        grammar = grammar.replace '!', ''
+        reverse = true
+
+      if @currentGrammar.includes grammar.toLowerCase()
+        result = true
+
+      result = !result if reverse
+
+    return result
+
+  storeGrammar: ->
+    editor = atom.workspace.getActiveTextEditor()
+    if editor && editor.getGrammar().name.toLowerCase() isnt @currentGrammar
+      @currentGrammar = editor.getGrammar().name.toLowerCase()
+      return true
+    else
+      return false
 
   removeButtons: ->
     @toolBar.removeItems()
