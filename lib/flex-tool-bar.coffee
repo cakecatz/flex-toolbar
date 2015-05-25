@@ -3,30 +3,31 @@ path = require 'path'
 
 module.exports =
   toolBar: null
-
+  configFilePath: null
   currentGrammar: null
 
   config:
-    toolBarConfigurationJsonPath:
+    toolBarConfigurationFilePath:
       type: 'string'
-      default: path.join process.env.ATOM_HOME, 'toolbar.json'
+      default: path.join process.env.ATOM_HOME, '/'
     showConfigButton:
       type: 'boolean'
       default: true
-    reloadToolBarWhenEditJson:
+    reloadToolBarWhenEditConfigFile:
       type: 'boolean'
       default: true
 
   activate: ->
 
     @storeGrammar()
+    @resolveConfigPath()
 
     @subscriptions = atom.commands.add 'atom-workspace',
-      'flex-tool-bar:edit-config-file': ->
-        atom.workspace.open atom.config.get('flex-tool-bar.toolBarConfigurationJsonPath')
-    if atom.config.get('flex-tool-bar.reloadToolBarWhenEditJson')
+      'flex-tool-bar:edit-config-file': =>
+        atom.workspace.open @configFilePath
+    if atom.config.get('flex-tool-bar.reloadToolBarWhenEditConfigFile')
       watch = require 'node-watch'
-      watch atom.config.get('flex-tool-bar.toolBarConfigurationJsonPath'), =>
+      watch @configFilePath, =>
         @reloadToolbar()
 
     atom.workspace.onDidChangeActivePaneItem (item) =>
@@ -105,23 +106,42 @@ module.exports =
         iconset: btn.iconset
         priority: btn.priority
 
+  resolveConfigPath: ->
+    fs = require 'fs'
+    @configFilePath = atom.config.get('flex-tool-bar.toolBarConfigurationFilePath')
+    ext = path.extname @configFilePath
+    # priority: high - low
+    extList = ['.json', '.cson', '.json5']
+
+    if ext is ''
+      configFileDir = @configFilePath
+    else
+      configFileDir = path.dirname @configFilePath
+      extList = [ext].concat extList
+
+    fileList = fs.readdirSync configFileDir
+
+    for v in extList
+      if fileList.indexOf('toolbar' + v) >= 0
+        @configFilePath = path.join configFileDir, 'toolbar' + v
+        return
+
   loadConfig: ->
-    configPath = atom.config.get('flex-tool-bar.toolBarConfigurationJsonPath')
-    ext = path.extname configPath
+    ext = path.extname @configFilePath
 
     switch ext
       when '.json'
-        config = require configPath
-        delete require.cache[configPath]
+        config = require @configFilePath
+        delete require.cache[@configFilePath]
 
       when '.json5'
         require 'json5/lib/require'
-        config = require configPath
-        delete require.cache[configPath]
+        config = require @configFilePath
+        delete require.cache[@configFilePath]
 
       when '.cson'
         CSON = require 'cson'
-        config = CSON.requireCSONFile configPath
+        config = CSON.requireCSONFile @configFilePath
 
     return config
 
