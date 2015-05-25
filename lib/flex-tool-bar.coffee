@@ -59,7 +59,7 @@ module.exports =
       devMode = atom.inDevMode()
       for btn in toolBarButtons
 
-        if btn.hide? && @grammarCondition(btn.hide)
+        if ( btn.hide? && @grammarCondition(btn.hide) ) or ( btn.show? && !@grammarCondition(btn.show) )
           continue
 
         continue if btn.mode and btn.mode is 'dev' and not devMode
@@ -83,7 +83,7 @@ module.exports =
           for k, v of btn.style
             button.css(k, v)
 
-        if btn.disable? && @grammarCondition(btn.disable)
+        if ( btn.disable? && @grammarCondition(btn.disable) ) or ( btn.enable? && !@grammarCondition(btn.enable) )
           button.setEnabled false
 
   toolBar_addButton: (btn) ->
