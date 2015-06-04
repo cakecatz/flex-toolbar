@@ -1,4 +1,4 @@
-## 0.3.1
+## 0.4.0
 - Support CSON, JSON5 config file
 - ADD show, enable property
 
