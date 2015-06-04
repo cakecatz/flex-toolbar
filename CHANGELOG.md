@@ -1,3 +1,7 @@
+## 0.3.1
+- Support CSON, JSON5 config file
+- ADD show, enable property
+
 ## 0.3.0
 - Add style property
 - Add hide, disable property

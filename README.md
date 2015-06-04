@@ -4,7 +4,7 @@
 
 This is a plugin for the [Atom Tool Bar](https://atom.io/packages/tool-bar) package.
 
-You can configure your toolbar buttons with a JSON file to perform specific actions in Atom or to open web sites in your default browser.
+You can configure your toolbar buttons with a `JSON`, `CSON`, `JSON5` file to perform specific actions in Atom or to open web sites in your default browser.
 
 ![screenshot](https://raw.githubusercontent.com/cakecatz/flex-toolbar/docs/screenshot.png)
 
@@ -45,7 +45,7 @@ Can use CSS Property.
 
     "callback": ["callback1", "callback2"]
 
-### Hide, Disable button
+### Hide(Show), Disable(Enable) button
 
 You can hide or disable button when specific grammar.
 If you set like this,
@@ -66,6 +66,10 @@ You can use `!` :laughing:
     "hide": "!Markdown"
 
 This will hide button when opened any file except Markdown.
+
+    "show": "Markdown"
+    
+This is same above.
 
 
 ### Sample Code
