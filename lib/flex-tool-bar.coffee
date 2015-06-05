@@ -144,7 +144,7 @@ module.exports =
         grammar = grammar.replace '!', ''
         reverse = true
 
-      if @currentGrammar.includes grammar.toLowerCase()
+      if @currentGrammar? && @currentGrammar.includes grammar.toLowerCase()
         result = true
 
       result = !result if reverse
