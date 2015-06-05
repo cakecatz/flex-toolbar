@@ -107,24 +107,13 @@ module.exports =
         priority: btn.priority
 
   resolveConfigPath: ->
-    fs = require 'fs'
+    fs = require 'fs-plus'
     @configFilePath = atom.config.get('flex-tool-bar.toolBarConfigurationFilePath')
+    
     ext = path.extname @configFilePath
-    # priority: high - low
-    extList = ['.json', '.cson', '.json5']
 
     if ext is ''
-      configFileDir = @configFilePath
-    else
-      configFileDir = path.dirname @configFilePath
-      extList = [ext].concat extList
-
-    fileList = fs.readdirSync configFileDir
-
-    for v in extList
-      if fileList.indexOf('toolbar' + v) >= 0
-        @configFilePath = path.join configFileDir, 'toolbar' + v
-        return
+      @configFilePath = fs.resolve @configFilePath, 'toolbar', ['cson', 'json5', 'json']
 
   loadConfig: ->
     ext = path.extname @configFilePath
