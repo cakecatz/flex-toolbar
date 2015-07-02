@@ -9,7 +9,7 @@ module.exports =
   config:
     toolBarConfigurationFilePath:
       type: 'string'
-      default: path.join process.env.ATOM_HOME, '/'
+      default: path.join process.env.ATOM_HOME, 'toolbar.cson'
     showConfigButton:
       type: 'boolean'
       default: true

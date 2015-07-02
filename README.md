@@ -4,9 +4,9 @@
 
 This is a plugin for the [Atom Tool Bar](https://atom.io/packages/tool-bar) package.
 
-You can configure your toolbar buttons with a `JSON`, `CSON`, `JSON5` file to perform specific actions in Atom or to open web sites in your default browser.
+You can configure your toolbar buttons with a `CSON`, `JSON`, `JSON5` file to perform specific actions in Atom or to open web sites in your default browser.
 
-![screenshot](https://raw.githubusercontent.com/cakecatz/flex-toolbar/docs/screenshot.png)
+![screenshot](https://raw.githubusercontent.com/cakecatz/flex-toolbar/docs/screenshot_cson.png)
 
 To edit your config file, type `Flex Toolbar: Edit my config file` in the Atom command palette.
 
@@ -35,39 +35,39 @@ To edit your config file, type `Flex Toolbar: Edit my config file` in the Atom c
 
 Can use CSS Property.
 
-    "style": {
-      "color": "red",
-      "background": "green",
-      "border": "1px solid blue"
+    style: {
+      color: "red"
+      background: "green"
+      border: "1px solid blue"
     }
 
 ### Multiple callback
 
-    "callback": ["callback1", "callback2"]
+    callback: ["callback1", "callback2"]
 
 ### Hide(Show), Disable(Enable) button
 
 You can hide or disable button when specific grammar.
 If you set like this,
 
-    "disable": "coffee"
+    disable: "coffee"
 
 Will disable button when opened CoffeeScript file.
 
 Of course, can set Array to value.
 
-    "disable": [
-      "json",
+    disable: [
+      "json"
       "less"
     ]
 
 You can use `!` :laughing:
 
-    "hide": "!Markdown"
+    hide: "!Markdown"
 
 This will hide button when opened any file except Markdown.
 
-    "show": "Markdown"
+    show: "Markdown"
     
 This is same above.
 
@@ -76,41 +76,39 @@ This is same above.
 
     [
       {
-        "type": "url",
-        "icon": "octoface",
-        "url": "http://github.com",
-        "tooltip": "Github Page",
-        "iconset": ""
-      },
+        type: "url"
+        icon: "octoface"
+        url: "http://github.com"
+        tooltip: "Github Page"
+      }
       {
-        "type": "spacer"
-      },
+        type: "spacer"
+      }
       {
-        "type": "button",
-        "icon": "document",
-        "callback": "application:new-file",
-        "tooltip": "New File",
-        "iconset": "ion",
-        "mode": "dev"
-      },
+        type: "button"
+        icon: "document"
+        callback: "application:new-file"
+        tooltip: "New File"
+        iconset: "ion"
+        mode: "dev"
+      }
       {
-        "type": "button",
-        "icon": "columns",
-        "iconset": "fa",
-        "callback": ["pane:split-right", "pane:split-right"]
-      },
+        type: "button"
+        icon: "columns"
+        iconset: "fa"
+        callback: ["pane:split-right", "pane:split-right"]
+      }
       {
-        "type": "button",
-        "icon": "circuit-board",
-        "callback": "git-diff:toggle-diff-list",
-        "style": {
-          "color": "#FA4F28"
-        }
-      },
+        type: "button"
+        icon: "circuit-board"
+        callback: "git-diff:toggle-diff-list"
+        style:
+          color: "#FA4F28"
+      }
       {
-        "type": "button",
-        "icon": "markdown",
-        "callback": "markdown-preview:toggle",
-        "disable": "!markdown"
+        type: "button"
+        icon: "markdown"
+        callback: "markdown-preview:toggle"
+        disable: "!markdown"
       }
     ]

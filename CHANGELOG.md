@@ -1,3 +1,6 @@
+## 0.4.3
+- Change default config file type
+
 ## 0.4.2
 - Fixed bugs
 
