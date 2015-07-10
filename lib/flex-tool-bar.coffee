@@ -111,7 +111,8 @@ module.exports =
     @configFilePath = atom.config.get('flex-tool-bar.toolBarConfigurationFilePath')
     
     if !fs.isFileSync @configFilePath
-      @configFilePath = fs.resolve process.env.ATOM_HOME, 'toolbar', ['cson', 'json5', 'json']
+      config_dir = process.env.ATOM_HOME
+      @configFilePath = fs.resolve config_dir, 'toolbar', ['cson', 'json5', 'json']
 
   loadConfig: ->
     ext = path.extname @configFilePath
