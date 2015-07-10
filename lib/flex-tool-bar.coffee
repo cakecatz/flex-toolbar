@@ -110,10 +110,8 @@ module.exports =
     fs = require 'fs-plus'
     @configFilePath = atom.config.get('flex-tool-bar.toolBarConfigurationFilePath')
     
-    ext = path.extname @configFilePath
-
-    if ext is ''
-      @configFilePath = fs.resolve @configFilePath, 'toolbar', ['cson', 'json5', 'json']
+    if !fs.isFileSync @configFilePath
+      @configFilePath = fs.resolve process.env.ATOM_HOME, 'toolbar', ['cson', 'json5', 'json']
 
   loadConfig: ->
     ext = path.extname @configFilePath
