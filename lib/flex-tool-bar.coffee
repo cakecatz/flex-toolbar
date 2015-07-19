@@ -30,6 +30,9 @@ module.exports =
       watch @configFilePath, =>
         @reloadToolbar()
 
+    @subscriptions.add atom.config.onDidChange 'flex-tool-bar.showConfigButton', =>
+      @reloadToolbar true
+
     atom.workspace.onDidChangeActivePaneItem (item) =>
       if @storeGrammar()
         @reloadToolbar true
@@ -109,7 +112,7 @@ module.exports =
   resolveConfigPath: ->
     fs = require 'fs-plus'
     @configFilePath = atom.config.get('flex-tool-bar.toolBarConfigurationFilePath')
-    
+
     if !fs.isFileSync @configFilePath
       config_dir = process.env.ATOM_HOME
       @configFilePath = fs.resolve config_dir, 'toolbar', ['cson', 'json5', 'json']
