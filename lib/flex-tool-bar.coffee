@@ -1,5 +1,6 @@
 shell = require 'shell'
 path = require 'path'
+UrlReplace = require './url-replace'
 
 module.exports =
   toolBar: null
@@ -75,7 +76,9 @@ module.exports =
           when 'url'
             button = @toolBar.addButton
               icon: btn.icon
-              callback: (url) ->
+              callback: (url) =>
+                urlReplace = new UrlReplace()
+                url = urlReplace.replace url
                 shell.openExternal url
               tooltip: btn.tooltip
               iconset: btn.iconset
