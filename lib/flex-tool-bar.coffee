@@ -58,6 +58,7 @@ module.exports =
     catch error
       atom.notifications.addError 'Your `toolbar.json` is **not valid JSON**!' if not init
       console.debug 'JSON is not valid'
+      console.error error
 
   addButtons: (toolBarButtons) ->
     if toolBarButtons?
@@ -117,8 +118,11 @@ module.exports =
     @configFilePath = atom.config.get('flex-tool-bar.toolBarConfigurationFilePath')
 
     if !fs.isFileSync @configFilePath
-      config_dir = process.env.ATOM_HOME
-      @configFilePath = fs.resolve config_dir, 'toolbar', ['cson', 'json5', 'json']
+      configDir = process.env.ATOM_HOME
+      @configFilePath = fs.resolve configDir, 'toolbar', ['cson', 'json5', 'json']
+      unless @configFilePath
+        @configFilePath = path.join configDir, 'toolbar.cson'
+
 
   loadConfig: ->
     ext = path.extname @configFilePath
