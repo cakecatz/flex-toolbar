@@ -17,6 +17,9 @@ module.exports =
     reloadToolBarWhenEditConfigFile:
       type: 'boolean'
       default: true
+    useBrowserPlus:
+      type: 'boolean'
+      default: false
 
   activate: ->
 
@@ -80,7 +83,10 @@ module.exports =
               callback: (url) =>
                 urlReplace = new UrlReplace()
                 url = urlReplace.replace url
-                shell.openExternal url
+                if atom.config.get('flex-tool-bar.useBrowserPlus')
+                  atom.workspace.open url, split:"right"
+                else
+                  shell.openExternal url
               tooltip: btn.tooltip
               iconset: btn.iconset
               data: btn.url

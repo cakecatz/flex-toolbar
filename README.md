@@ -22,6 +22,8 @@ To edit your config file, type `Flex Toolbar: Edit my config file` in the Atom c
 - `url` creates buttons pointing to specific web pages.
 
     Use this to open any web site, such as your GitHub notifications, in your default browser. See this feature in action in this [screencast](http://quick.as/b5vafe4g).
+    
+    If you have the package [browser-plus](https://atom.io/packages/browser-plus) installed, you can use its in Atom browser to open your links. Just check the box in flex-toolbars settings.
 
 - `spacer` adds separators between toolbar buttons.
 
@@ -68,7 +70,7 @@ You can use `!` :laughing:
 This will hide button when opened any file except Markdown.
 
     show: "Markdown"
-    
+
 This is same above.
 
 
