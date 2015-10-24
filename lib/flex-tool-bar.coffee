@@ -83,8 +83,8 @@ module.exports =
               callback: (url) =>
                 urlReplace = new UrlReplace()
                 url = urlReplace.replace url
-                if atom.config.get('flex-tool-bar.useBrowserPlus')
-                  atom.workspace.open url, split:"right"
+                if ( atom.config.get('flex-tool-bar.useBrowserPlus') ) and atom.packages.isPackageActive('browser-plus')
+                  atom.workspace.open url, split:'right'
                 else
                   shell.openExternal url
               tooltip: btn.tooltip
