@@ -1,7 +1,6 @@
 shell = require 'shell'
 path = require 'path'
 UrlReplace = require './url-replace'
-
 module.exports =
   toolBar: null
   configFilePath: null
@@ -17,9 +16,11 @@ module.exports =
     reloadToolBarWhenEditConfigFile:
       type: 'boolean'
       default: true
+    useBrowserPlusWhenItIsActive:
+      type: 'boolean'
+      default: false
 
   activate: ->
-
     @storeGrammar()
     @resolveConfigPath()
 
@@ -80,7 +81,16 @@ module.exports =
               callback: (url) =>
                 urlReplace = new UrlReplace()
                 url = urlReplace.replace url
-                shell.openExternal url
+                if atom.config.get('flex-tool-bar.useBrowserPlusWhenItIsActive')
+                  if atom.packages.isPackageActive('browser-plus')
+                    atom.workspace.open url, split:'right'
+                  else
+                    warning = "Package browser-plus is not active. Using default browser instead!"
+                    options = detail: "Use apm install browser-plus to install the needed package."
+                    atom.notifications.addWarning warning, options
+                    shell.openExternal url
+                else
+                  shell.openExternal url
               tooltip: btn.tooltip
               iconset: btn.iconset
               data: btn.url
