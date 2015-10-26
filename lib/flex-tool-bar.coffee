@@ -18,7 +18,7 @@ module.exports =
       default: true
     useBrowserPlusWhenItIsActive:
       type: 'boolean'
-      default: true
+      default: false
 
   activate: ->
     @storeGrammar()
