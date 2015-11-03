@@ -1,10 +1,11 @@
 shell = require 'shell'
 path = require 'path'
-UrlReplace = require './url-replace'
+fs = require 'fs-plus'
 module.exports =
   toolBar: null
   configFilePath: null
   currentGrammar: null
+  buttonTypes: []
 
   config:
     toolBarConfigurationFilePath:
@@ -23,6 +24,7 @@ module.exports =
   activate: ->
     @storeGrammar()
     @resolveConfigPath()
+    @registerTypes()
 
     @subscriptions = atom.commands.add 'atom-workspace',
       'flex-tool-bar:edit-config-file': =>
@@ -39,11 +41,18 @@ module.exports =
       if @storeGrammar()
         @reloadToolbar true
 
+  registerTypes: ->
+    typeFiles = fs.listSync path.join __dirname, '../types'
+    typeFiles.forEach (typeFile) =>
+      typeName = path.basename typeFile, '.coffee'
+      @buttonTypes[typeName] = require typeFile
+
   consumeToolBar: (toolBar) ->
     @toolBar = toolBar 'flex-toolBar'
     @reloadToolbar true
 
   reloadToolbar: (init) ->
+    return unless @toolBar?
     try
       toolBarButtons = @loadConfig()
       # Remove and add buttons after successful JSON parse
@@ -70,31 +79,9 @@ module.exports =
           continue
 
         continue if btn.mode and btn.mode is 'dev' and not devMode
-        switch btn.type
-          when 'button'
-            button = @toolBar_addButton btn
-          when 'spacer'
-            button = @toolBar.addSpacer priority: btn.priority
-          when 'url'
-            button = @toolBar.addButton
-              icon: btn.icon
-              callback: (url) =>
-                urlReplace = new UrlReplace()
-                url = urlReplace.replace url
-                if atom.config.get('flex-tool-bar.useBrowserPlusWhenItIsActive')
-                  if atom.packages.isPackageActive('browser-plus')
-                    atom.workspace.open url, split:'right'
-                  else
-                    warning = "Package browser-plus is not active. Using default browser instead!"
-                    options = detail: "Use apm install browser-plus to install the needed package."
-                    atom.notifications.addWarning warning, options
-                    shell.openExternal url
-                else
-                  shell.openExternal url
-              tooltip: btn.tooltip
-              iconset: btn.iconset
-              data: btn.url
-              priority: btn.priority
+
+        button = @buttonTypes[btn.type](@toolBar, btn) if @buttonTypes[btn.type]
+
         button.addClass "tool-bar-mode-#{btn.mode}" if btn.mode
 
         if btn.style?
@@ -103,25 +90,6 @@ module.exports =
 
         if ( btn.disable? && @grammarCondition(btn.disable) ) or ( btn.enable? && !@grammarCondition(btn.enable) )
           button.setEnabled false
-
-  toolBar_addButton: (btn) ->
-    if Array.isArray btn.callback
-      @toolBar.addButton
-        icon: btn.icon
-        callback: (callbacks, target) ->
-          for callback in callbacks
-            atom.commands.dispatch target, callback
-        tooltip: btn.tooltip
-        iconset: btn.iconset
-        priority: btn.priority
-        data: btn.callback
-    else
-      @toolBar.addButton
-        icon: btn.icon
-        callback: btn.callback
-        tooltip: btn.tooltip
-        iconset: btn.iconset
-        priority: btn.priority
 
   resolveConfigPath: ->
     fs = require 'fs-plus'
@@ -179,7 +147,7 @@ module.exports =
       return false
 
   removeButtons: ->
-    @toolBar.removeItems()
+    @toolBar.removeItems() if @toolBar?
 
   deactivate: ->
     @subscriptions.dispose()
