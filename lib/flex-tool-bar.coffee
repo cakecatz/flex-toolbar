@@ -92,7 +92,6 @@ module.exports =
           button.setEnabled false
 
   resolveConfigPath: ->
-    fs = require 'fs-plus'
     @configFilePath = atom.config.get('flex-tool-bar.toolBarConfigurationFilePath')
 
     if !fs.isFileSync @configFilePath
