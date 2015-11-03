@@ -1,5 +1,7 @@
 # Flex Tool Bar
 
+[![Build Status](https://travis-ci.org/cakecatz/flex-toolbar.svg)](https://travis-ci.org/cakecatz/flex-toolbar)
+
 ### Easily Customizable Toolbar for Atom
 
 This is a plugin for the [Atom Tool Bar](https://atom.io/packages/tool-bar) package.
