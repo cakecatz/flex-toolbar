@@ -14,7 +14,7 @@ To edit your config file, type `Flex Toolbar: Edit my config file` in the Atom c
 
 ### Configuration
 
-**Flex Tool Bar** has three "types" you can configure:
+**Flex Tool Bar** has three `type`s you can configure:
 `button`, `url` and `spacer`.
 
 - `button` creates default buttons for your toolbar.
@@ -24,8 +24,8 @@ To edit your config file, type `Flex Toolbar: Edit my config file` in the Atom c
 - `url` creates buttons pointing to specific web pages.
 
     Use this to open any web site, such as your GitHub notifications, in your default browser. See this feature in action in this [screencast](http://quick.as/b5vafe4g).
-    
-    If you have the package [browser-plus](https://atom.io/packages/browser-plus) installed, you can use its in Atom browser to open your links. Just check the box in flex-toolbars settings.
+
+    If you have the package [browser-plus](https://atom.io/packages/browser-plus) installed, you can use it to open your links. Just check the box in flex-toolbar's settings.
 
 - `spacer` adds separators between toolbar buttons.
 
@@ -33,86 +33,103 @@ To edit your config file, type `Flex Toolbar: Edit my config file` in the Atom c
 
 - multiple callback
 - button style
-- hide, disable button when specific grammar
+- hide/disable a button in certain cases
 
 ### Button style
 
 Can use CSS Property.
-
-    style: {
-      color: "red"
-      background: "green"
-      border: "1px solid blue"
-    }
+```coffeescript
+style: {
+  color: "red"
+  background: "green"
+  border: "1px solid blue"
+}
+```
 
 ### Multiple callback
-
-    callback: ["callback1", "callback2"]
+```coffeescript
+callback: ["callback1", "callback2"]
+```
 
 ### Hide(Show), Disable(Enable) button
 
-You can hide or disable button when specific grammar.
-If you set like this,
+You can hide or disable buttons when a certain grammar is used in the active file or a specified file is matched.
 
-    disable: "coffee"
+If you set `disable` (`show`, `disable` or `enable`) this way:
+```coffeescript
+disable: "coffee"
+```
 
-Will disable button when opened CoffeeScript file.
+It will disable the button if a CoffeeScript file is open.
 
-Of course, can set Array to value.
+You can also look for a specific file using:
+```coffeescript
+disable: "./gulpfile.js"
+```
 
-    disable: [
-      "json"
-      "less"
-    ]
+The package uses [Glob](https://github.com/isaacs/node-glob), that is based on [minimatch](https://github.com/isaacs/minimatch), follow its [*syntax*](https://github.com/isaacs/node-glob#glob-primer).
+
+
+
+Of course, you can set it as an array.
+```coffeescript
+disable: [
+  "json"
+  "less"
+]
+```
 
 You can use `!` :laughing:
-
-    hide: "!Markdown"
+```coffeescript
+hide: "!Markdown"
+```
 
 This will hide button when opened any file except Markdown.
-
-    show: "Markdown"
+```coffeescript
+show: "Markdown"
+```
 
 This is same above.
 
 
 ### Sample Code
-
-    [
-      {
-        type: "url"
-        icon: "octoface"
-        url: "http://github.com"
-        tooltip: "Github Page"
-      }
-      {
-        type: "spacer"
-      }
-      {
-        type: "button"
-        icon: "document"
-        callback: "application:new-file"
-        tooltip: "New File"
-        iconset: "ion"
-        mode: "dev"
-      }
-      {
-        type: "button"
-        icon: "columns"
-        iconset: "fa"
-        callback: ["pane:split-right", "pane:split-right"]
-      }
-      {
-        type: "button"
-        icon: "circuit-board"
-        callback: "git-diff:toggle-diff-list"
-        style:
-          color: "#FA4F28"
-      }
-      {
-        type: "button"
-        icon: "markdown"
-        callback: "markdown-preview:toggle"
-        disable: "!markdown"
-      }
-    ]
+```coffeescript
+[
+  {
+    type: "url"
+    icon: "octoface"
+    url: "http://github.com"
+    tooltip: "Github Page"
+  }
+  {
+    type: "spacer"
+  }
+  {
+    type: "button"
+    icon: "document"
+    callback: "application:new-file"
+    tooltip: "New File"
+    iconset: "ion"
+    mode: "dev"
+  }
+  {
+    type: "button"
+    icon: "columns"
+    iconset: "fa"
+    callback: ["pane:split-right", "pane:split-right"]
+  }
+  {
+    type: "button"
+    icon: "circuit-board"
+    callback: "git-diff:toggle-diff-list"
+    style:
+      color: "#FA4F28"
+  }
+  {
+    type: "button"
+    icon: "markdown"
+    callback: "markdown-preview:toggle"
+    disable: "!markdown"
+  }
+]
+```
