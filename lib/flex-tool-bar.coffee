@@ -1,6 +1,7 @@
 shell = require 'shell'
 path = require 'path'
 fs = require 'fs-plus'
+glob = require 'glob'
 module.exports =
   toolBar: null
   configFilePath: null
@@ -120,6 +121,15 @@ module.exports =
 
     return config
 
+  getActiveProject: () ->
+    activePanePath = atom.workspace.getActivePaneItem().buffer.file.path
+    projectsPath = atom.project.getPaths()
+
+    for projectPath in projectsPath
+      return projectPath if activePanePath.replace(projectPath, '') isnt activePanePath
+
+    return activePanePath.replace /[^\/]+\.(.*?)$/, ''
+
   grammarCondition: (grammars) ->
     result = false
     grammars = [grammars] if typeof grammars is 'string'
@@ -130,7 +140,11 @@ module.exports =
         grammar = grammar.replace '!', ''
         reverse = true
 
-      if @currentGrammar? && @currentGrammar.includes grammar.toLowerCase()
+      if /(\/|\.|\*)/g.test grammar
+        activePath = @getActiveProject()
+        grammar = path.join activePath, grammar
+        result = true if glob.sync(grammar).length > 0
+      else if @currentGrammar? && @currentGrammar.includes grammar.toLowerCase()
         result = true
 
       result = !result if reverse
