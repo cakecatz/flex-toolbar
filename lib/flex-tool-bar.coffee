@@ -126,7 +126,7 @@ module.exports =
 
     for grammar in grammars
       reverse  = false
-      if grammar.includes '!'
+      if /^!/.test grammar
         grammar = grammar.replace '!', ''
         reverse = true
 
