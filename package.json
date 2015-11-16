@@ -15,10 +15,10 @@
   "dependencies": {
     "cson": "^3.0.2",
     "fs-plus": "^2.8.1",
-    "glob": "^5.0.15",
     "json5": "^0.4.0",
     "node-watch": "^0.3.4",
-    "space-pen": "^5.1.1"
+    "space-pen": "^5.1.1",
+    "tree-match-sync": "0.0.1"
   },
   "package-dependencies": {
     "tool-bar": "^0.1.9"
