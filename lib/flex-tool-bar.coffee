@@ -1,7 +1,7 @@
 shell = require 'shell'
 path = require 'path'
 fs = require 'fs-plus'
-glob = require 'glob'
+treeMatch = require 'tree-match-sync'
 module.exports =
   toolBar: null
   configFilePath: null
@@ -122,7 +122,7 @@ module.exports =
     return config
 
   getActiveProject: () ->
-    activePanePath = atom.workspace.getActivePaneItem().buffer.file.path
+    activePanePath = atom.workspace.getActiveTextEditor().getPath()
     projectsPath = atom.project.getPaths()
 
     for projectPath in projectsPath
@@ -132,24 +132,34 @@ module.exports =
 
   grammarCondition: (grammars) ->
     result = false
-    grammars = [grammars] if typeof grammars is 'string'
+    grammarType = Object.prototype.toString.call grammars
+    grammars = [grammars] if grammarType is '[object String]' or grammarType is '[object Object]'
 
     for grammar in grammars
       reverse  = false
-      if /^!/.test grammar
-        grammar = grammar.replace '!', ''
-        reverse = true
-
-      if /(\/|\.|\*)/g.test grammar
+      if Object.prototype.toString.call(grammar) is '[object Object]'
         activePath = @getActiveProject()
-        grammar = path.join activePath, grammar
-        result = true if glob.sync(grammar).length > 0
-      else if @currentGrammar? && @currentGrammar.includes grammar.toLowerCase()
-        result = true
+        options = if grammar.options then grammar.options else {}
+        tree = treeMatch activePath, grammar.pattern, options
+        console.log tree
+
+        result = true if Object.prototype.toString.call(tree) is '[object Array]' and tree.length > 0
+        console.log result
+      else
+        if /^!/.test grammar
+          grammar = grammar.replace '!', ''
+          reverse = true
+
+        if /^[^\/]+\.(.*?)$/.test grammar
+          result = true if atom.workspace.getActiveTextEditor().getPath().match(grammar)?.length > 0
+        else if @currentGrammar? && @currentGrammar.includes grammar.toLowerCase()
+          result = true
 
       result = !result if reverse
 
-    return result
+      return true if result is true
+
+    return false
 
   storeGrammar: ->
     editor = atom.workspace.getActiveTextEditor()
