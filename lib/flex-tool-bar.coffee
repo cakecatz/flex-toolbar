@@ -134,26 +134,28 @@ module.exports =
     result = false
     grammarType = Object.prototype.toString.call grammars
     grammars = [grammars] if grammarType is '[object String]' or grammarType is '[object Object]'
+    filePath = atom.workspace.getActiveTextEditor().getPath()
 
     for grammar in grammars
-      reverse  = false
+      reverse = false
+
       if Object.prototype.toString.call(grammar) is '[object Object]'
+        if filePath is undefined
+          continue
+
         activePath = @getActiveProject()
         options = if grammar.options then grammar.options else {}
         tree = treeMatch activePath, grammar.pattern, options
-        console.log tree
-
-        result = true if Object.prototype.toString.call(tree) is '[object Array]' and tree.length > 0
-        console.log result
+        return true if Object.prototype.toString.call(tree) is '[object Array]' and tree.length > 0
       else
         if /^!/.test grammar
           grammar = grammar.replace '!', ''
           reverse = true
 
         if /^[^\/]+\.(.*?)$/.test grammar
-          result = true if atom.workspace.getActiveTextEditor().getPath().match(grammar)?.length > 0
-        else if @currentGrammar? && @currentGrammar.includes grammar.toLowerCase()
-          result = true
+          result = true if filePath isnt undefined and filePath.match(grammar)?.length > 0
+        else
+          result = true if @currentGrammar? and @currentGrammar.includes grammar.toLowerCase()
 
       result = !result if reverse
 
