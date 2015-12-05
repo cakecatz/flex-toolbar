@@ -10,7 +10,7 @@ You can configure your toolbar buttons with a `CSON`, `JSON`, `JSON5` file to pe
 
 ![screenshot](https://raw.githubusercontent.com/cakecatz/flex-toolbar/docs/screenshot_cson.png)
 
-To edit your config file, type `Flex Toolbar: Edit my config file` in the Atom command palette.
+To edit your config file, type `Flex Tool Bar: Edit Config File` in the Atom command palette.
 
 ### Configuration
 
