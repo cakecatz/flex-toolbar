@@ -18,7 +18,7 @@
     "json5": "^0.4.0",
     "node-watch": "^0.3.4",
     "space-pen": "^5.1.1",
-    "tree-match-sync": "0.0.1"
+    "tree-match-sync": "0.0.2"
   },
   "package-dependencies": {
     "tool-bar": "^0.1.9"
