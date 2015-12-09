@@ -2,6 +2,7 @@ shell = require 'shell'
 path = require 'path'
 fs = require 'fs-plus'
 treeMatch = require 'tree-match-sync'
+treeIsInstalled = treeMatch.treeIsInstalled()
 module.exports =
   toolBar: null
   configFilePath: null
@@ -140,6 +141,10 @@ module.exports =
       reverse = false
 
       if Object.prototype.toString.call(grammar) is '[object Object]'
+        if !treeIsInstalled
+          atom.notifications.addError '[Tree](http://mama.indstate.edu/users/ice/tree/) is not installed, please install it.'
+          continue
+
         if filePath is undefined
           continue
 
