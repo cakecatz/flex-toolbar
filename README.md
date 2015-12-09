@@ -55,19 +55,26 @@ callback: ["callback1", "callback2"]
 
 You can hide or disable buttons when a certain grammar is used in the active file or a specified file is matched.
 
-If you set `disable` (`show`, `disable` or `enable`) this way:
+If you set `disable` (`show`, `hide` or `enable`) this way:
 ```coffeescript
 disable: "coffee"
 ```
 
 It will disable the button if a CoffeeScript file is open.
 
-You can also look for a specific file using:
+You can also look for a specific file using [globs](https://tr.im/glob):
 ```coffeescript
-disable: "./gulpfile.js"
+show: {
+  pattern: 'gulpfile.js'
+  options: {
+    maxDepth: 2
+  }
+}
 ```
 
-The package uses [Glob](https://github.com/isaacs/node-glob), that is based on [minimatch](https://github.com/isaacs/minimatch), follow its [*syntax*](https://github.com/isaacs/node-glob#glob-primer).
+The package uses [tree-match-sync](https://github.com/boredz/tree-match-sync) that depends on the `tree` command, [install it](https://github.com/boredz/tree-match-sync#installation) before using this feature.
+
+The options are explained [here](https://github.com/isaacs/minimatch#options) and it has an extra field: `maxDepth`, it translates to `tree`'s option `-L`, you should always set it.
 
 
 
