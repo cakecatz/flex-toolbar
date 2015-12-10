@@ -1,6 +1,8 @@
 shell = require 'shell'
 path = require 'path'
 fs = require 'fs-plus'
+treeMatch = require 'tree-match-sync'
+treeIsInstalled = treeMatch.treeIsInstalled()
 module.exports =
   toolBar: null
   configFilePath: null
@@ -120,22 +122,51 @@ module.exports =
 
     return config
 
+  getActiveProject: () ->
+    activePanePath = atom.workspace.getActiveTextEditor().getPath()
+    projectsPath = atom.project.getPaths()
+
+    for projectPath in projectsPath
+      return projectPath if activePanePath.replace(projectPath, '') isnt activePanePath
+
+    return activePanePath.replace /[^\/]+\.(.*?)$/, ''
+
   grammarCondition: (grammars) ->
     result = false
-    grammars = [grammars] if typeof grammars is 'string'
+    grammarType = Object.prototype.toString.call grammars
+    grammars = [grammars] if grammarType is '[object String]' or grammarType is '[object Object]'
+    filePath = atom.workspace.getActiveTextEditor().getPath()
 
     for grammar in grammars
-      reverse  = false
-      if grammar.includes '!'
-        grammar = grammar.replace '!', ''
-        reverse = true
+      reverse = false
 
-      if @currentGrammar? && @currentGrammar.includes grammar.toLowerCase()
-        result = true
+      if Object.prototype.toString.call(grammar) is '[object Object]'
+        if !treeIsInstalled
+          atom.notifications.addError '[Tree](http://mama.indstate.edu/users/ice/tree/) is not installed, please install it.'
+          continue
+
+        if filePath is undefined
+          continue
+
+        activePath = @getActiveProject()
+        options = if grammar.options then grammar.options else {}
+        tree = treeMatch activePath, grammar.pattern, options
+        return true if Object.prototype.toString.call(tree) is '[object Array]' and tree.length > 0
+      else
+        if /^!/.test grammar
+          grammar = grammar.replace '!', ''
+          reverse = true
+
+        if /^[^\/]+\.(.*?)$/.test grammar
+          result = true if filePath isnt undefined and filePath.match(grammar)?.length > 0
+        else
+          result = true if @currentGrammar? and @currentGrammar.includes grammar.toLowerCase()
 
       result = !result if reverse
 
-    return result
+      return true if result is true
+
+    return false
 
   storeGrammar: ->
     editor = atom.workspace.getActiveTextEditor()
