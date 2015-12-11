@@ -6,8 +6,8 @@ module.exports = (toolBar, button) ->
     priority: button.priority
 
   if Array.isArray button.callback
-    options.callback = (callbacks, target) ->
-      for callback in callbacks
+    options.callback = (_, target) ->
+      for callback in button.callback
         atom.commands.dispatch target, callback
   else
     options.callback = button.callback
