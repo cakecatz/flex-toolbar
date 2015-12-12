@@ -135,7 +135,7 @@ module.exports =
     result = false
     grammarType = Object.prototype.toString.call grammars
     grammars = [grammars] if grammarType is '[object String]' or grammarType is '[object Object]'
-    filePath = atom.workspace.getActiveTextEditor().getPath()
+    filePath = atom.workspace.getActiveTextEditor()?.getPath()
 
     for grammar in grammars
       reverse = false
