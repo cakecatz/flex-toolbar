@@ -1,4 +1,3 @@
-shell = require 'shell'
 path = require 'path'
 fs = require 'fs-plus'
 treeMatch = require 'tree-match-sync'

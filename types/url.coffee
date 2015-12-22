@@ -1,3 +1,4 @@
+shell = require 'shell'
 UrlReplace = require '../lib/url-replace'
 
 module.exports = (toolBar, button) ->
