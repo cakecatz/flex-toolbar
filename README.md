@@ -157,3 +157,18 @@ This is same above.
   }
 ]
 ```
+
+See more examples on [Wiki](https://github.com/cakecatz/flex-toolbar/wiki) ✨
+
+## Authors
+
+| [![Ryo Narita][cakecatz avator]](https://github.com/cakecatz) | [![Jeroen van Warmerdam][jerone avator]](https://github.com/jerone) |
+| :-----------------------------------------------------------: | :-----------------------------------------------------------------: |
+| [Ryo Narita](https://github.com/cakecatz)                     | [Jeroen van Warmerdam](https://github.com/jerone)                   |
+
+## License
+
+MIT © [Ryo Narita](https://github.com/cakecatz)
+
+[cakecatz avator]: https://avatars.githubusercontent.com/u/6136383?v=3&s=100
+[jerone avator]: https://avatars.githubusercontent.com/u/55841?v=3&s=100
