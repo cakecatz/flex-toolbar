@@ -29,5 +29,9 @@
         "^0.1.0": "consumeToolBar"
       }
     }
+  },
+  "devDependencies": {
+    "remark": "^4.0.0",
+    "remark-lint": "^3.0.0"
   }
 }

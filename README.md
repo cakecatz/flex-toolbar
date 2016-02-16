@@ -2,42 +2,50 @@
 
 [![Build Status](https://travis-ci.org/cakecatz/flex-toolbar.svg)](https://travis-ci.org/cakecatz/flex-toolbar)
 
-### Easily Customizable Toolbar for Atom
+## About
 
-This is a plugin for the [Atom Tool Bar](https://atom.io/packages/tool-bar) package.
+This is a plugin for
+the [Atom Tool Bar](https://atom.io/packages/tool-bar) package.
 
-You can configure your toolbar buttons with a `CSON`, `JSON`, `JSON5` file to perform specific actions in Atom or to open web sites in your default browser.
+You can configure your toolbar buttons with a `CSON`, `JSON`, `JSON5` file
+to perform specific actions in Atom
+or to open web sites in your default browser.
 
 ![screenshot](https://raw.githubusercontent.com/cakecatz/flex-toolbar/docs/screenshot_cson.png)
 
-To edit your config file, type `Flex Tool Bar: Edit Config File` in the Atom command palette.
+To edit your config file,
+type `Flex Tool Bar: Edit Config File` in the Atom command palette.
 
-### Configuration
+## Configuration
 
 **Flex Tool Bar** has three `type`s you can configure:
 `button`, `url` and `spacer`.
 
-- `button` creates default buttons for your toolbar.
+-   `button` creates default buttons for your toolbar.
 
     You can use it to set actions like `application:new-file`.
 
-- `url` creates buttons pointing to specific web pages.
+-   `url` creates buttons pointing to specific web pages.
 
-    Use this to open any web site, such as your GitHub notifications, in your default browser. See this feature in action in this [screencast](http://quick.as/b5vafe4g).
+    Use this to open any web site, such as your GitHub notifications,
+    in your default browser. See this feature in action in this [screencast](http://quick.as/b5vafe4g).
 
-    If you have the package [browser-plus](https://atom.io/packages/browser-plus) installed, you can use it to open your links. Just check the box in flex-toolbar's settings.
+    If you have the package [browser-plus](https://atom.io/packages/browser-plus)
+    installed, you can use it to open your links.
+    Just check the box in flex-toolbar's settings.
 
-- `spacer` adds separators between toolbar buttons.
+-   `spacer` adds separators between toolbar buttons.
 
 ### Features
 
-- multiple callback
-- button style
-- hide/disable a button in certain cases
+-   multiple callback
+-   button style
+-   hide/disable a button in certain cases
 
 ### Button style
 
 Can use CSS Property.
+
 ```coffeescript
 style: {
   color: "red"
@@ -47,15 +55,18 @@ style: {
 ```
 
 ### Multiple callback
+
 ```coffeescript
 callback: ["callback1", "callback2"]
 ```
 
 ### Hide(Show), Disable(Enable) button
 
-You can hide or disable buttons when a certain grammar is used in the active file or a specified file is matched.
+You can hide or disable buttons when a certain grammar is
+used in the active file or a specified file is matched.
 
 If you set `disable` (`show`, `hide` or `enable`) this way:
+
 ```coffeescript
 disable: "coffee"
 ```
@@ -63,6 +74,7 @@ disable: "coffee"
 It will disable the button if a CoffeeScript file is open.
 
 You can also look for a specific file using [globs](https://tr.im/glob):
+
 ```coffeescript
 show: {
   pattern: 'gulpfile.js'
@@ -72,13 +84,16 @@ show: {
 }
 ```
 
-The package uses [tree-match-sync](https://github.com/boredz/tree-match-sync) that depends on the `tree` command, [install it](https://github.com/boredz/tree-match-sync#installation) before using this feature.
+The package uses [tree-match-sync](https://github.com/boredz/tree-match-sync)
+that depends on the `tree` command, [install it](https://github.com/boredz/tree-match-sync#installation)
+before using this feature.
 
-The options are explained [here](https://github.com/isaacs/minimatch#options) and it has an extra field: `maxDepth`, it translates to `tree`'s option `-L`, you should always set it.
-
-
+The options are explained [here](https://github.com/isaacs/minimatch#options)
+and it has an extra field: `maxDepth`,
+it translates to `tree`'s option `-L`, you should always set it.
 
 Of course, you can set it as an array.
+
 ```coffeescript
 disable: [
   "json"
@@ -87,19 +102,21 @@ disable: [
 ```
 
 You can use `!` :laughing:
+
 ```coffeescript
 hide: "!Markdown"
 ```
 
 This will hide button when opened any file except Markdown.
+
 ```coffeescript
 show: "Markdown"
 ```
 
 This is same above.
 
+### Example
 
-### Sample Code
 ```coffeescript
 [
   {

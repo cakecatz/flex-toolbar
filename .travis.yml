@@ -8,7 +8,9 @@ notifications:
 env:
   - APM_TEST_PACKAGES="tool-bar flex-tool-bar"
 
-script: 'curl -s https://raw.githubusercontent.com/atom/ci/master/build-package.sh | sh'
+script:
+  - 'curl -s https://raw.githubusercontent.com/atom/ci/master/build-package.sh | sh'
+  - './node_modules/.bin/remark .'
 
 git:
   depth: 10
