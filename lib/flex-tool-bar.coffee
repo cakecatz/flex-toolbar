@@ -23,6 +23,8 @@ module.exports =
       default: false
 
   activate: ->
+    require('atom-package-deps').install('flex-tool-bar')
+
     @storeGrammar()
     @resolveConfigPath()
     @registerTypes()
