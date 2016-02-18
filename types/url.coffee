@@ -20,4 +20,4 @@ module.exports = (toolBar, button) ->
     tooltip: button.tooltip
     iconset: button.iconset
     data: button.url
-    priority: button.priority
+    priority: button.priority or 45

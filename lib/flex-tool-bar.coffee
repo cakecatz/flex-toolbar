@@ -66,7 +66,8 @@ module.exports =
           icon: 'gear'
           callback: 'flex-tool-bar:edit-config-file'
           tooltip: 'Edit ToolBar'
-        @toolBar.addSpacer()
+          priority: 45
+        @toolBar.addSpacer priority: 45
       atom.notifications.addSuccess 'The tool-bar was successfully updated.' if not init
     catch error
       atom.notifications.addError 'Your `toolbar.json` is **not valid JSON**!' if not init
