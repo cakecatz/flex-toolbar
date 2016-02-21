@@ -3,7 +3,7 @@ module.exports = (toolBar, button) ->
     icon: button.icon
     tooltip: button.tooltip
     iconset: button.iconset
-    priority: button.priority
+    priority: button.priority or 45
 
   if Array.isArray button.callback
     options.callback = (_, target) ->
