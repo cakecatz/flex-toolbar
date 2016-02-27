@@ -11,10 +11,7 @@ module.exports =
   config:
     toolBarConfigurationFilePath:
       type: 'string'
-      default: path.join process.env.ATOM_HOME, 'toolbar.cson'
-    showConfigButton:
-      type: 'boolean'
-      default: true
+      default: ''
     reloadToolBarWhenEditConfigFile:
       type: 'boolean'
       default: true
@@ -25,24 +22,70 @@ module.exports =
   activate: ->
     require('atom-package-deps').install('flex-tool-bar')
 
+    return unless @resolveConfigPath()
     @storeGrammar()
-    @resolveConfigPath()
     @registerTypes()
+    @registerCommand()
+    @registerEvent()
+    @registerWatch()
 
+    @reloadToolbar(true)
+
+  resolveConfigPath: ->
+    @configFilePath = atom.config.get 'flex-tool-bar.toolBarConfigurationFilePath'
+
+    # Default directory
+    @configFilePath = process.env.ATOM_HOME unless @configFilePath
+
+    # If configFilePath is a folder, check for `toolbar.(json|cson|json5)` file
+    unless fs.isFileSync(@configFilePath)
+      @configFilePath = fs.resolve @configFilePath, 'toolbar', ['cson', 'json5', 'json']
+
+    return true if @configFilePath
+
+    unless @configFilePath
+      @configFilePath = path.join process.env.ATOM_HOME, 'toolbar.cson'
+      defaultConfig = '''
+# This file is used by Flex Tool Bar to create buttons on your Tool Bar.
+# For more information how to use this package and create your own buttons,
+#   read the documentation on https://atom.io/packages/flex-tool-bar
+
+[
+  {
+    type: "button"
+    icon: "gear"
+    callback: "flex-tool-bar:edit-config-file"
+    tooltip: "Edit Tool Bar"
+  }
+  {
+    type: "spacer"
+  }
+]
+'''
+      try
+        fs.writeFileSync @configFilePath, defaultConfig
+        atom.notifications.addInfo 'We created a Tool Bar config file for you...', detail: @configFilePath
+        return true
+      catch err
+        @configFilePath = null
+        atom.notifications.addError 'Something went wrong creating the Tool Bar config file! Please restart Atom to try again.'
+        console.error err
+        return false
+
+  registerCommand: ->
     @subscriptions = atom.commands.add 'atom-workspace',
       'flex-tool-bar:edit-config-file': =>
-        atom.workspace.open @configFilePath
+        atom.workspace.open @configFilePath if @configFilePath
+
+  registerEvent: ->
+    atom.workspace.onDidChangeActivePaneItem (item) =>
+      @reloadToolbar() if @storeGrammar()
+
+  registerWatch: ->
     if atom.config.get('flex-tool-bar.reloadToolBarWhenEditConfigFile')
       watch = require 'node-watch'
       watch @configFilePath, =>
         @reloadToolbar()
-
-    @subscriptions.add atom.config.onDidChange 'flex-tool-bar.showConfigButton', =>
-      @reloadToolbar true
-
-    atom.workspace.onDidChangeActivePaneItem (item) =>
-      if @storeGrammar()
-        @reloadToolbar true
 
   registerTypes: ->
     typeFiles = fs.listSync path.join __dirname, '../types'
@@ -54,24 +97,15 @@ module.exports =
     @toolBar = toolBar 'flex-toolBar'
     @reloadToolbar true
 
-  reloadToolbar: (init) ->
+  reloadToolbar: (init=false) ->
     return unless @toolBar?
     try
       toolBarButtons = @loadConfig()
-      # Remove and add buttons after successful JSON parse
       @removeButtons()
       @addButtons toolBarButtons
-      if atom.config.get('flex-tool-bar.showConfigButton')
-        @toolBar.addButton
-          icon: 'gear'
-          callback: 'flex-tool-bar:edit-config-file'
-          tooltip: 'Edit ToolBar'
-          priority: 45
-        @toolBar.addSpacer priority: 45
-      atom.notifications.addSuccess 'The tool-bar was successfully updated.' if not init
+      atom.notifications.addSuccess 'The tool-bar was successfully updated.' unless init
     catch error
-      atom.notifications.addError 'Your `toolbar.json` is **not valid JSON**!' if not init
-      console.debug 'JSON is not valid'
+      atom.notifications.addError 'Your `toolbar.json` is **not valid JSON**!'
       console.error error
 
   addButtons: (toolBarButtons) ->
@@ -94,16 +128,6 @@ module.exports =
 
         if ( btn.disable? && @grammarCondition(btn.disable) ) or ( btn.enable? && !@grammarCondition(btn.enable) )
           button.setEnabled false
-
-  resolveConfigPath: ->
-    @configFilePath = atom.config.get('flex-tool-bar.toolBarConfigurationFilePath')
-
-    if !fs.isFileSync @configFilePath
-      configDir = process.env.ATOM_HOME
-      @configFilePath = fs.resolve configDir, 'toolbar', ['cson', 'json5', 'json']
-      unless @configFilePath
-        @configFilePath = path.join configDir, 'toolbar.cson'
-
 
   loadConfig: ->
     ext = path.extname @configFilePath
@@ -172,7 +196,7 @@ module.exports =
 
   storeGrammar: ->
     editor = atom.workspace.getActiveTextEditor()
-    if editor && editor.getGrammar().name.toLowerCase() isnt @currentGrammar
+    if editor and editor.getGrammar().name.toLowerCase() isnt @currentGrammar
       @currentGrammar = editor.getGrammar().name.toLowerCase()
       return true
     else
