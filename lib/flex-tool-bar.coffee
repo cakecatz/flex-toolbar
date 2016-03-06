@@ -97,13 +97,13 @@ module.exports =
     @toolBar = toolBar 'flex-toolBar'
     @reloadToolbar true
 
-  reloadToolbar: (init=false) ->
+  reloadToolbar: (withNotification=false) ->
     return unless @toolBar?
     try
       toolBarButtons = @loadConfig()
       @removeButtons()
       @addButtons toolBarButtons
-      atom.notifications.addSuccess 'The tool-bar was successfully updated.' unless init
+      atom.notifications.addSuccess 'The tool-bar was successfully updated.' if withNotification
     catch error
       atom.notifications.addError 'Your `toolbar.json` is **not valid JSON**!'
       console.error error
