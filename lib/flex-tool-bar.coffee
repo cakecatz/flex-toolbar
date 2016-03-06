@@ -95,7 +95,7 @@ module.exports =
 
   consumeToolBar: (toolBar) ->
     @toolBar = toolBar 'flex-toolBar'
-    @reloadToolbar true
+    @reloadToolbar
 
   reloadToolbar: (withNotification=false) ->
     return unless @toolBar?
