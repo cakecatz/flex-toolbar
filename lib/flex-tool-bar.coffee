@@ -29,7 +29,7 @@ module.exports =
     @registerEvent()
     @registerWatch()
 
-    @reloadToolbar(true)
+    @reloadToolbar(false)
 
   resolveConfigPath: ->
     @configFilePath = atom.config.get 'flex-tool-bar.toolBarConfigurationFilePath'
@@ -85,7 +85,7 @@ module.exports =
     if atom.config.get('flex-tool-bar.reloadToolBarWhenEditConfigFile')
       watch = require 'node-watch'
       watch @configFilePath, =>
-        @reloadToolbar()
+        @reloadToolbar(true)
 
   registerTypes: ->
     typeFiles = fs.listSync path.join __dirname, '../types'
@@ -95,7 +95,7 @@ module.exports =
 
   consumeToolBar: (toolBar) ->
     @toolBar = toolBar 'flex-toolBar'
-    @reloadToolbar true
+    @reloadToolbar(false)
 
   reloadToolbar: (withNotification=false) ->
     return unless @toolBar?
