@@ -84,8 +84,8 @@ show: {
 }
 ```
 
-The package uses [tree-match-sync](https://github.com/boredz/tree-match-sync)
-that depends on the `tree` command, [install it](https://github.com/boredz/tree-match-sync#installation)
+The package uses [tree-match-sync](https://github.com/bored/tree-match-sync)
+that depends on the `tree` command, [install it](https://github.com/bored/tree-match-sync#installation)
 before using this feature.
 
 The options are explained [here](https://github.com/isaacs/minimatch#options)
@@ -122,7 +122,7 @@ This is same above.
   {
     type: "url"
     icon: "octoface"
-    url: "http://github.com"
+    url: "https://github.com/"
     tooltip: "Github Page"
   }
   {
