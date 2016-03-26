@@ -32,7 +32,10 @@ type `Flex Tool Bar: Edit Config File` in the Atom command palette.
 
     If you have the package [browser-plus](https://atom.io/packages/browser-plus)
     installed, you can use it to open your links.
-    Just check the box in flex-toolbar's settings.
+    Just check the box in Flex Tool Bar's settings.
+
+    Also Atom URI are allowed. For example
+    `atom://config/packages/flex-tool-bar` will open Flex Tool Bar's settings.
 
 -   `spacer` adds separators between toolbar buttons.
 
