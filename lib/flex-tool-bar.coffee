@@ -254,7 +254,8 @@ module.exports =
   storeProject: ->
     editor = atom.workspace.getActiveTextEditor()
     if editor and editor?.buffer?.file?.getParent()?.path? isnt @currentProject
-      @currentGrammar = editor?.buffer.file.getParent().path
+      if editor?.buffer?.file?.getParent()?.path?
+        @currentProject = editor.buffer.file.getParent().path
       return true
     else
       return false
