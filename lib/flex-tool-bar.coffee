@@ -84,9 +84,7 @@ module.exports =
       projectCount = editor.project.rootDirectories.length
       count = 0
       while count < projectCount
-        console.log count
         pathToCheck = editor.project.rootDirectories[count].path
-        console.log pathToCheck
         if editor.buffer.file.getParent().path.includes(pathToCheck)
           @projectToolbarConfigPath = fs.resolve pathToCheck, 'toolbar', ['cson', 'json5', 'json']
         count++
