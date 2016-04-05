@@ -78,6 +78,7 @@ module.exports =
         return false
 
   resolveProjectConfigPath: ->
+    @projectToolbarConfigPath = null
     editor = atom.workspace.getActiveTextEditor()
 
     if editor?.buffer?.file?.getParent()?.path?
