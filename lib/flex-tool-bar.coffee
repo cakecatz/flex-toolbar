@@ -119,7 +119,7 @@ module.exports =
           @reloadToolbar(true)
 
   switchProject: ->
-    return unless @resolveProjectConfigPath()
+    @resolveProjectConfigPath()
     @registerProjectWatch()
     @reloadToolbar(false)
 
