@@ -112,7 +112,7 @@ module.exports =
         @reloadToolbar(true)
 
   registerProjectWatch: ->
-      if @projectToolbarConfigPath and jQuery.inArray(@projectToolbarConfigPath, @watchList) < 0
+      if @projectToolbarConfigPath and Array.prototype.indexOf(@projectToolbarConfigPath, @watchList) < 0
         @watchList.push @projectToolbarConfigPath
         watch = require 'node-watch'
         watch @projectToolbarConfigPath, =>
