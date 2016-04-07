@@ -161,6 +161,10 @@ This is same above.
 ]
 ```
 
+### Per Project Configuration
+
+If you want buttons that are only for a specific project. Create a toolbar configuration file at the root of your project directory that is listed in the Atom Tree View. All buttons added to the project toolbar will append to the global toolbar buttons.
+
 See more examples on [Wiki](https://github.com/cakecatz/flex-toolbar/wiki) ✨
 
 ## Authors
