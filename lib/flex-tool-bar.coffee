@@ -1,6 +1,8 @@
 path = require 'path'
 fs = require 'fs-plus'
 treeMatch = require 'tree-match-sync'
+shell = require 'shell'
+UrlReplace = require './url-replace'
 treeIsInstalled = treeMatch.treeIsInstalled()
 module.exports =
   toolBar: null
@@ -118,8 +120,42 @@ module.exports =
 
         continue if btn.mode and btn.mode is 'dev' and not devMode
 
-        button = @buttonTypes[btn.type](@toolBar, btn) if @buttonTypes[btn.type]
-
+        switch btn.type
+          when 'button'
+            button = @toolBar_addButton btn
+          when 'spacer'
+            button = @toolBar.addSpacer priority: btn.priority
+          when 'url'
+            button = @toolBar.addButton
+              icon: btn.icon
+              callback: (url) =>
+                urlReplace = new UrlReplace()
+                url = urlReplace.replace url
+                if atom.config.get('flex-tool-bar.useBrowserPlusWhenItIsActive')
+                  if atom.packages.isPackageActive('browser-plus')
+                    atom.workspace.open url, split:'right'
+                  else
+                    warning = "Package browser-plus is not active. Using default browser instead!"
+                    options = detail: "Use apm install browser-plus to install the needed package."
+                    atom.notifications.addWarning warning, options
+                    shell.openExternal url
+                else
+                  shell.openExternal url
+              tooltip: btn.tooltip
+              iconset: btn.iconset
+              data: btn.url
+              priority: btn.priority
+          when 'bookmark'
+            button = @toolBar.addButton
+              icon: btn.icon
+              iconset: btn.iconset
+              tooltip: btn.tooltip
+              data: btn.url
+              priority: btn.priority
+              callback: (url) =>
+                urlReplace = new UrlReplace()
+                url = urlReplace.replace url
+                atom.workspace.open (url)
         button.addClass "tool-bar-mode-#{btn.mode}" if btn.mode
 
         if btn.style?
@@ -128,6 +164,25 @@ module.exports =
 
         if ( btn.disable? && @grammarCondition(btn.disable) ) or ( btn.enable? && !@grammarCondition(btn.enable) )
           button.setEnabled false
+
+  toolBar_addButton: (btn) ->
+    if Array.isArray btn.callback
+      @toolBar.addButton
+        icon: btn.icon
+        callback: (callbacks, target) ->
+          for callback in callbacks
+            atom.commands.dispatch target, callback
+        tooltip: btn.tooltip
+        iconset: btn.iconset
+        priority: btn.priority
+        data: btn.callback
+    else
+      @toolBar.addButton
+        icon: btn.icon
+        callback: btn.callback
+        tooltip: btn.tooltip
+        iconset: btn.iconset
+        priority: btn.priority
 
   loadConfig: ->
     ext = path.extname @configFilePath
