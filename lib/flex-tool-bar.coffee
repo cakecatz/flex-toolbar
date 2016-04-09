@@ -1,6 +1,8 @@
 path = require 'path'
 fs = require 'fs-plus'
 treeMatch = require 'tree-match-sync'
+shell = require 'shell'
+UrlReplace = require './url-replace'
 treeIsInstalled = treeMatch.treeIsInstalled()
 module.exports =
   toolBar: null
@@ -128,6 +130,25 @@ module.exports =
 
         if ( btn.disable? && @grammarCondition(btn.disable) ) or ( btn.enable? && !@grammarCondition(btn.enable) )
           button.setEnabled false
+
+  toolBar_addButton: (btn) ->
+    if Array.isArray btn.callback
+      @toolBar.addButton
+        icon: btn.icon
+        callback: (callbacks, target) ->
+          for callback in callbacks
+            atom.commands.dispatch target, callback
+        tooltip: btn.tooltip
+        iconset: btn.iconset
+        priority: btn.priority
+        data: btn.callback
+    else
+      @toolBar.addButton
+        icon: btn.icon
+        callback: btn.callback
+        tooltip: btn.tooltip
+        iconset: btn.iconset
+        priority: btn.priority
 
   loadConfig: ->
     ext = path.extname @configFilePath
