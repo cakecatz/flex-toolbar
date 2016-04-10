@@ -18,8 +18,8 @@ type `Flex Tool Bar: Edit Config File` in the Atom command palette.
 
 ## Configuration
 
-**Flex Tool Bar** has three `type`s you can configure:
-`button`, `url` and `spacer`.
+**Flex Tool Bar** has four `type`s you can configure:
+`button`, `url`, `file` and `spacer`.
 
 -   `button` creates default buttons for your toolbar.
 
@@ -36,6 +36,10 @@ type `Flex Tool Bar: Edit Config File` in the Atom command palette.
 
     Also Atom URI are allowed. For example
     `atom://config/packages/flex-tool-bar` will open Flex Tool Bar's settings.
+
+-   `file` creates buttons pointing to specific files that will be opened in Atom.
+
+    You can use it to open files of nearly any kind that Atom supports, such as logs, configs or simply a project's `README.md`.
 
 -   `spacer` adds separators between toolbar buttons.
 
@@ -158,6 +162,13 @@ This is same above.
     callback: "markdown-preview:toggle"
     disable: "!markdown"
   }
+  {
+    type: "file"
+    iconset: "fa"
+    icon: "book"
+    url: "README.md"
+    tooltip: "View Documentation"
+  }  
 ]
 ```
 
