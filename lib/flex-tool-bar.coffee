@@ -1,6 +1,7 @@
 path = require 'path'
 fs = require 'fs-plus'
 treeMatch = require 'tree-match-sync'
+{ CompositeDisposable } = require 'atom'
 treeIsInstalled = treeMatch.treeIsInstalled()
 module.exports =
   toolBar: null
@@ -25,6 +26,9 @@ module.exports =
     require('atom-package-deps').install('flex-tool-bar')
 
     return unless @resolveConfigPath()
+
+    @subscriptions = new CompositeDisposable
+
     @resolveProjectConfigPath()
     @storeProject()
     @storeGrammar()
@@ -96,12 +100,12 @@ module.exports =
     return true if @projectToolbarConfigPath
 
   registerCommand: ->
-    @subscriptions = atom.commands.add 'atom-workspace',
+    @subscriptions.add atom.commands.add 'atom-workspace',
       'flex-tool-bar:edit-config-file': =>
         atom.workspace.open @configFilePath if @configFilePath
 
   registerEvent: ->
-    atom.workspace.onDidChangeActivePaneItem (item) =>
+    @subscriptions.add atom.workspace.onDidChangeActivePaneItem (item) =>
       @switchProject() if @storeProject()
       @reloadToolbar() if @storeGrammar()
 
@@ -272,6 +276,7 @@ module.exports =
 
   deactivate: ->
     @subscriptions.dispose()
+    @subscriptions = null
     @removeButtons()
 
   serialize: ->
