@@ -116,10 +116,10 @@ module.exports =
         @reloadToolbar(true)
 
   registerProjectWatch: ->
-      if @projectToolbarConfigPath and Array.prototype.indexOf(@projectToolbarConfigPath, @watchList) < 0
         @watchList.push @projectToolbarConfigPath
         watch = require 'node-watch'
         watch @projectToolbarConfigPath, =>
+    if @projectToolbarConfigPath and @watchList.indexOf(@projectToolbarConfigPath) < 0
           @reloadToolbar(true)
 
   switchProject: ->
