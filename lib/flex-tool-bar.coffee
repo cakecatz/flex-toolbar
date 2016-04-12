@@ -6,7 +6,9 @@ module.exports =
   toolBar: null
   configFilePath: null
   currentGrammar: null
+  currentProject: null
   buttonTypes: []
+  watchList: []
 
   config:
     toolBarConfigurationFilePath:
@@ -23,11 +25,14 @@ module.exports =
     require('atom-package-deps').install('flex-tool-bar')
 
     return unless @resolveConfigPath()
+    @resolveProjectConfigPath()
+    @storeProject()
     @storeGrammar()
     @registerTypes()
     @registerCommand()
     @registerEvent()
     @registerWatch()
+    @registerProjectWatch()
 
     @reloadToolbar(false)
 
@@ -72,6 +77,24 @@ module.exports =
         console.error err
         return false
 
+  resolveProjectConfigPath: ->
+    @projectToolbarConfigPath = null
+    editor = atom.workspace.getActiveTextEditor()
+
+    if editor?.buffer?.file?.getParent()?.path?
+      projectCount = editor.project.rootDirectories.length
+      count = 0
+      while count < projectCount
+        pathToCheck = editor.project.rootDirectories[count].path
+        if editor.buffer.file.getParent().path.includes(pathToCheck)
+          @projectToolbarConfigPath = fs.resolve pathToCheck, 'toolbar', ['cson', 'json5', 'json']
+        count++
+
+    if @projectToolbarConfigPath is @configFilePath
+      @projectToolbarConfigPath = null
+
+    return true if @projectToolbarConfigPath
+
   registerCommand: ->
     @subscriptions = atom.commands.add 'atom-workspace',
       'flex-tool-bar:edit-config-file': =>
@@ -79,6 +102,7 @@ module.exports =
 
   registerEvent: ->
     atom.workspace.onDidChangeActivePaneItem (item) =>
+      @switchProject() if @storeProject()
       @reloadToolbar() if @storeGrammar()
 
   registerWatch: ->
@@ -86,6 +110,18 @@ module.exports =
       watch = require 'node-watch'
       watch @configFilePath, =>
         @reloadToolbar(true)
+
+  registerProjectWatch: ->
+      if @projectToolbarConfigPath and Array.prototype.indexOf(@projectToolbarConfigPath, @watchList) < 0
+        @watchList.push @projectToolbarConfigPath
+        watch = require 'node-watch'
+        watch @projectToolbarConfigPath, =>
+          @reloadToolbar(true)
+
+  switchProject: ->
+    @resolveProjectConfigPath()
+    @registerProjectWatch()
+    @reloadToolbar(false)
 
   registerTypes: ->
     typeFiles = fs.listSync path.join __dirname, '../types'
@@ -146,6 +182,26 @@ module.exports =
         CSON = require 'cson'
         config = CSON.requireCSONFile @configFilePath
 
+    if @projectToolbarConfigPath
+      ext = path.extname @projectToolbarConfigPath
+
+      switch ext
+        when '.json'
+          projConfig = require @projectToolbarConfigPath
+          delete require.cache[@projectToolbarConfigPath]
+
+        when '.json5'
+          require 'json5/lib/require'
+          projConfig = require @projectToolbarConfigPath
+          delete require.cache[@projectToolbarConfigPath]
+
+        when '.cson'
+          CSON = require 'cson'
+          projConfig = CSON.requireCSONFile @projectToolbarConfigPath
+
+      for i of projConfig
+        config.push projConfig[i]
+
     return config
 
   getActiveProject: () ->
@@ -193,6 +249,15 @@ module.exports =
       return true if result is true
 
     return false
+
+  storeProject: ->
+    editor = atom.workspace.getActiveTextEditor()
+    if editor and editor?.buffer?.file?.getParent()?.path? isnt @currentProject
+      if editor?.buffer?.file?.getParent()?.path?
+        @currentProject = editor.buffer.file.getParent().path
+      return true
+    else
+      return false
 
   storeGrammar: ->
     editor = atom.workspace.getActiveTextEditor()
