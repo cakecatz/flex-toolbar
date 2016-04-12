@@ -1,5 +1,6 @@
 path = require 'path'
 fs = require 'fs-plus'
+chokidar = require 'chokidar'
 treeMatch = require 'tree-match-sync'
 { CompositeDisposable } = require 'atom'
 treeIsInstalled = treeMatch.treeIsInstalled()
@@ -28,6 +29,7 @@ module.exports =
     return unless @resolveConfigPath()
 
     @subscriptions = new CompositeDisposable
+    @watcherList = []
 
     @resolveProjectConfigPath()
     @storeProject()
@@ -111,16 +113,18 @@ module.exports =
 
   registerWatch: ->
     if atom.config.get('flex-tool-bar.reloadToolBarWhenEditConfigFile')
-      watch = require 'node-watch'
-      watch @configFilePath, =>
-        @reloadToolbar(true)
+      watcher = chokidar.watch @configFilePath
+        .on 'change', =>
+          @reloadToolbar(true)
+      @watcherList.push watcher
 
   registerProjectWatch: ->
-        @watchList.push @projectToolbarConfigPath
-        watch = require 'node-watch'
-        watch @projectToolbarConfigPath, =>
     if @projectToolbarConfigPath and @watchList.indexOf(@projectToolbarConfigPath) < 0
+      @watchList.push @projectToolbarConfigPath
+      watcher = chokidar.watch @projectToolbarConfigPath
+        .on 'change', (event, filename) =>
           @reloadToolbar(true)
+      @watcherList.push watcher
 
   switchProject: ->
     @resolveProjectConfigPath()
@@ -275,6 +279,9 @@ module.exports =
     @toolBar.removeItems() if @toolBar?
 
   deactivate: ->
+    @watcherList.forEach (watcher) ->
+      watcher.close()
+    @watcherList = null
     @subscriptions.dispose()
     @subscriptions = null
     @removeButtons()

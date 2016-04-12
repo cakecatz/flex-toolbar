@@ -14,10 +14,10 @@
   },
   "dependencies": {
     "atom-package-deps": "^4.0.1",
+    "chokidar": "^1.4.3",
     "cson": "^3.0.2",
     "fs-plus": "^2.8.1",
     "json5": "^0.5.0",
-    "node-watch": "^0.3.4",
     "space-pen": "^5.1.1",
     "tree-match-sync": "0.0.2"
   },
