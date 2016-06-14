@@ -152,13 +152,22 @@ module.exports =
   reloadToolbar: (withNotification=false) ->
     return unless @toolBar?
     try
+      @fixToolBarHeight()
       toolBarButtons = @loadConfig()
       @removeButtons()
       @addButtons toolBarButtons
       atom.notifications.addSuccess 'The tool-bar was successfully updated.' if withNotification
+      @unfixToolBarHeight()
     catch error
+      @unfixToolBarHeight()
       atom.notifications.addError 'Your `toolbar.json` is **not valid JSON**!'
       console.error error
+
+  fixToolBarHeight: ->
+    @toolBar.toolBar.element.style.height = "#{@toolBar.toolBar.element.offsetHeight}px"
+
+  unfixToolBarHeight: ->
+    @toolBar.toolBar.element.style.height = null
 
   addButtons: (toolBarButtons) ->
     if toolBarButtons?
