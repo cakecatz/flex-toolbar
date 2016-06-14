@@ -108,8 +108,16 @@ module.exports =
 
   registerEvent: ->
     @subscriptions.add atom.workspace.onDidChangeActivePaneItem (item) =>
-      @switchProject() if @storeProject()
-      @reloadToolbar() if @storeGrammar()
+
+      if @didChangeGrammer()
+        @storeGrammar()
+        @reloadToolbar()
+        return
+
+      if @storeProject()
+        @switchProject()
+        return
+
 
   registerWatch: ->
     if atom.config.get('flex-tool-bar.reloadToolBarWhenEditConfigFile')
@@ -269,11 +277,11 @@ module.exports =
 
   storeGrammar: ->
     editor = atom.workspace.getActiveTextEditor()
-    if editor and editor.getGrammar().name.toLowerCase() isnt @currentGrammar
-      @currentGrammar = editor.getGrammar().name.toLowerCase()
-      return true
-    else
-      return false
+    @currentGrammar = editor.getGrammar().name.toLowerCase()
+
+  didChangeGrammer: ->
+    editor = atom.workspace.getActiveTextEditor()
+    editor and editor.getGrammar().name.toLowerCase() isnt @currentGrammar
 
   removeButtons: ->
     @toolBar.removeItems() if @toolBar?
