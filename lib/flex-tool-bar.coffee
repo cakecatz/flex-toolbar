@@ -88,10 +88,10 @@ module.exports =
     editor = atom.workspace.getActiveTextEditor()
 
     if editor?.buffer?.file?.getParent()?.path?
-      projectCount = editor.project.rootDirectories.length
+      projectCount = atom.project.getPaths().length
       count = 0
       while count < projectCount
-        pathToCheck = editor.project.rootDirectories[count].path
+        pathToCheck = atom.project.getPaths()[count]
         if editor.buffer.file.getParent().path.includes(pathToCheck)
           @projectToolbarConfigPath = fs.resolve pathToCheck, 'toolbar', ['cson', 'json5', 'json']
         count++
