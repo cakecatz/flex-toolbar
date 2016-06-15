@@ -109,7 +109,7 @@ module.exports =
   registerEvent: ->
     @subscriptions.add atom.workspace.onDidChangeActivePaneItem (item) =>
 
-      if @didChangeGrammer()
+      if @didChangeGrammar()
         @storeGrammar()
         @reloadToolbar()
         return
@@ -288,7 +288,7 @@ module.exports =
     editor = atom.workspace.getActiveTextEditor()
     @currentGrammar = editor?.getGrammar()?.name.toLowerCase()
 
-  didChangeGrammer: ->
+  didChangeGrammar: ->
     editor = atom.workspace.getActiveTextEditor()
     editor and editor.getGrammar().name.toLowerCase() isnt @currentGrammar
 
