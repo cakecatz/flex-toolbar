@@ -286,7 +286,7 @@ module.exports =
 
   storeGrammar: ->
     editor = atom.workspace.getActiveTextEditor()
-    @currentGrammar = editor.getGrammar().name.toLowerCase()
+    @currentGrammar = editor?.getGrammar()?.name.toLowerCase()
 
   didChangeGrammer: ->
     editor = atom.workspace.getActiveTextEditor()
