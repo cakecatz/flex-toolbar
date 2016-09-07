@@ -4,6 +4,7 @@ chokidar = require 'chokidar'
 treeMatch = require 'tree-match-sync'
 { CompositeDisposable } = require 'atom'
 treeIsInstalled = treeMatch.treeIsInstalled()
+changeCase = require 'change-case'
 module.exports =
   toolBar: null
   configFilePath: null
@@ -184,8 +185,8 @@ module.exports =
         button.addClass "tool-bar-mode-#{btn.mode}" if btn.mode
 
         if btn.style?
-          for k, v of btn.style
-            button.css(k, v)
+          for propName, v of btn.style
+            button.element.style[changeCase.camelCase(propName)] = v
 
         if ( btn.disable? && @grammarCondition(btn.disable) ) or ( btn.enable? && !@grammarCondition(btn.enable) )
           button.setEnabled false
