@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "atom-package-deps": "^4.0.1",
+    "change-case": "^3.0.0",
     "chokidar": "^1.4.3",
     "cson": "^3.0.2",
     "fs-plus": "^2.8.1",
