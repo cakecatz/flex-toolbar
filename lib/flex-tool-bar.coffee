@@ -182,7 +182,7 @@ module.exports =
 
         button = @buttonTypes[btn.type](@toolBar, btn) if @buttonTypes[btn.type]
 
-        @addClass button.element, "tool-bar-mode-#{btn.mode}" if btn.mode
+        button.element.classList.add "tool-bar-mode-#{btn.mode}" if btn.mode
 
         if btn.style?
           for propName, v of btn.style
@@ -190,12 +190,6 @@ module.exports =
 
         if ( btn.disable? && @grammarCondition(btn.disable) ) or ( btn.enable? && !@grammarCondition(btn.enable) )
           button.setEnabled false
-
-  addClass: (el, className) ->
-    if el.classList
-      el.classList.add(className)
-    else
-      el.className += " #{className}"
 
   loadConfig: ->
     ext = path.extname @configFilePath
