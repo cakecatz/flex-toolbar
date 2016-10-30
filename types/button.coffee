@@ -4,12 +4,6 @@ module.exports = (toolBar, button) ->
     tooltip: button.tooltip
     iconset: button.iconset
     priority: button.priority or 45
-
-  if Array.isArray button.callback
-    options.callback = (_, target) ->
-      for callback in button.callback
-        atom.commands.dispatch target, callback
-  else
-    options.callback = button.callback
+    callback: button.callback
 
   return toolBar.addButton options
