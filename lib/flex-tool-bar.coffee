@@ -196,7 +196,7 @@ module.exports =
 
     switch ext
       when '.js', '.coffee'
-        config = require(@configFilePath)()
+        config = require(@configFilePath)
         delete require.cache[@configFilePath]
 
       when '.json'
@@ -217,7 +217,7 @@ module.exports =
 
       switch ext
         when '.js', '.coffee'
-          projConfig = require(@projectToolbarConfigPath)()
+          projConfig = require(@projectToolbarConfigPath)
           delete require.cache[@projectToolbarConfigPath]
 
         when '.json'
