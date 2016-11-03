@@ -7,7 +7,7 @@
 This is a plugin for
 the [Atom Tool Bar](https://atom.io/packages/tool-bar) package.
 
-You can configure your toolbar buttons with a `CSON`, `JSON`, `JSON5` file
+You can configure your toolbar buttons with a `CSON`, `JSON`, `JSON5`, `js`, `coffee` file
 to perform specific actions in Atom
 or to open web sites in your default browser.
 
@@ -18,8 +18,8 @@ type `Flex Tool Bar: Edit Config File` in the Atom command palette.
 
 ## Configuration
 
-**Flex Tool Bar** has three `type`s you can configure:
-`button`, `url` and `spacer`.
+**Flex Tool Bar** has four `type`s you can configure:
+`button`, `url`, `function` and `spacer`.
 
 -   `button` creates default buttons for your toolbar.
 
@@ -37,11 +37,16 @@ type `Flex Tool Bar: Edit Config File` in the Atom command palette.
     Also Atom URI are allowed. For example
     `atom://config/packages/flex-tool-bar` will open Flex Tool Bar's settings.
 
+-   `function` creates buttons that can call a function with the previous target as a parameter
+
+    This requires the config file to be a `.js` or `.coffee` file that exports the array of buttons
+
 -   `spacer` adds separators between toolbar buttons.
 
 ### Features
 
 -   multiple callback
+-   function callback
 -   button style
 -   hide/disable a button in certain cases
 
@@ -61,6 +66,13 @@ style: {
 
 ```coffeescript
 callback: ["callback1", "callback2"]
+```
+
+### Function callback
+
+```coffeescript
+callback: target ->
+  console.log target
 ```
 
 ### Hide(Show), Disable(Enable) button
@@ -118,10 +130,63 @@ show: "Markdown"
 
 This is same above.
 
-### Example
+### .cson Example
 
 ```coffeescript
 [
+  {
+    type: "url"
+    icon: "octoface"
+    url: "https://github.com/"
+    tooltip: "Github Page"
+  }
+  {
+    type: "spacer"
+  }
+  {
+    type: "button"
+    icon: "document"
+    callback: "application:new-file"
+    tooltip: "New File"
+    iconset: "ion"
+    mode: "dev"
+  }
+  {
+    type: "button"
+    icon: "columns"
+    iconset: "fa"
+    callback: ["pane:split-right", "pane:split-right"]
+  }
+  {
+    type: "button"
+    icon: "circuit-board"
+    callback: "git-diff:toggle-diff-list"
+    style:
+      color: "#FA4F28"
+  }
+  {
+    type: "button"
+    icon: "markdown"
+    callback: "markdown-preview:toggle"
+    disable: "!markdown"
+  }
+]
+```
+
+### .coffee Example
+
+```coffeescript
+module.exports = [
+  {
+    type: "function"
+    icon: "bug"
+    callback: (target) ->
+      console.dir target
+    tooltip: "Debug Target"
+  }
+  {
+    type: "spacer"
+  }
   {
     type: "url"
     icon: "octoface"

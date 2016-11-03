@@ -49,9 +49,9 @@ module.exports =
     # Default directory
     @configFilePath = process.env.ATOM_HOME unless @configFilePath
 
-    # If configFilePath is a folder, check for `toolbar.(json|cson|json5)` file
+    # If configFilePath is a folder, check for `toolbar.(json|cson|json5|js|coffee)` file
     unless fs.isFileSync(@configFilePath)
-      @configFilePath = fs.resolve @configFilePath, 'toolbar', ['cson', 'json5', 'json']
+      @configFilePath = fs.resolve @configFilePath, 'toolbar', ['cson', 'json5', 'json', 'js', 'coffee']
 
     return true if @configFilePath
 
@@ -94,7 +94,7 @@ module.exports =
       while count < projectCount
         pathToCheck = atom.project.getPaths()[count]
         if editor.buffer.file.getParent().path.includes(pathToCheck)
-          @projectToolbarConfigPath = fs.resolve pathToCheck, 'toolbar', ['cson', 'json5', 'json']
+          @projectToolbarConfigPath = fs.resolve pathToCheck, 'toolbar', ['cson', 'json5', 'json', 'js', 'coffee']
         count++
 
     if @projectToolbarConfigPath is @configFilePath
@@ -195,6 +195,10 @@ module.exports =
     ext = path.extname @configFilePath
 
     switch ext
+      when '.js', '.coffee'
+        config = require(@configFilePath)
+        delete require.cache[@configFilePath]
+
       when '.json'
         config = require @configFilePath
         delete require.cache[@configFilePath]
@@ -212,6 +216,10 @@ module.exports =
       ext = path.extname @projectToolbarConfigPath
 
       switch ext
+        when '.js', '.coffee'
+          projConfig = require(@projectToolbarConfigPath)
+          delete require.cache[@projectToolbarConfigPath]
+
         when '.json'
           projConfig = require @projectToolbarConfigPath
           delete require.cache[@projectToolbarConfigPath]
