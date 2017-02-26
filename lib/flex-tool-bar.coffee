@@ -188,6 +188,11 @@ module.exports =
           for propName, v of btn.style
             button.element.style[changeCase.camelCase(propName)] = v
 
+        if btn.className?
+          ary = btn.className.split ","
+          for val in ary
+            button.element.classList.add val.trim()
+
         if ( btn.disable? && @grammarCondition(btn.disable) ) or ( btn.enable? && !@grammarCondition(btn.enable) )
           button.setEnabled false
 
