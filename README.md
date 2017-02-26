@@ -47,7 +47,7 @@ type `Flex Tool Bar: Edit Config File` in the Atom command palette.
 
 -   multiple callback
 -   function callback
--   add inline button styles
+-   inline button styles
 -   add class(s) to buttons
 -   hide/disable a button in certain cases
 
@@ -63,7 +63,7 @@ style: {
 }
 ```
 
-### Button style
+### Button class
 
 Using a comma separated list you can add your own class names to buttons.
 This is great if you want to take advantage of native styles like Font Awesome
