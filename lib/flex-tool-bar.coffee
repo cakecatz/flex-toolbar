@@ -47,7 +47,7 @@ module.exports =
     @configFilePath = atom.config.get 'flex-tool-bar.toolBarConfigurationFilePath'
 
     # Default directory
-    @configFilePath = process.env.ATOM_HOME unless @configFilePath
+    @configFilePath = atom.configDirPath unless @configFilePath
 
     # If configFilePath is a folder, check for `toolbar.(json|cson|json5|js|coffee)` file
     unless fs.isFileSync(@configFilePath)
@@ -56,7 +56,7 @@ module.exports =
     return true if @configFilePath
 
     unless @configFilePath
-      @configFilePath = path.join process.env.ATOM_HOME, 'toolbar.cson'
+      @configFilePath = path.join atom.configDirPath, 'toolbar.cson'
       defaultConfig = '''
 # This file is used by Flex Tool Bar to create buttons on your Tool Bar.
 # For more information how to use this package and create your own buttons,
