@@ -1,3 +1,10 @@
+## [v0.12.0](https://github.com/cakecatz/flex-toolbar/compare/v0.11.0...v0.12.0) - 2017-03-11
+- Fix loading when using `tool-bar@1.1.0`. [PR #98](https://github.com/cakecatz/flex-toolbar/pull/98) (by [@zertosh](https://github.com/zertosh))
+- Use `atom.configDirPath` instead of `ATOM_HOME`. [PR #97](https://github.com/cakecatz/flex-toolbar/pull/97) (by [@danielbayley](https://github.com/danielbayley))
+- Add ability to add user defined class' to a button. [PR #95](https://github.com/cakecatz/flex-toolbar/pull/95) (by [@blizzardengle](https://github.com/blizzardengle))
+- Add Function callback. [PR #86](https://github.com/cakecatz/flex-toolbar/pull/85) (by [@UziTech](https://github.com/UziTech))
+- Add `.js` and `.coffee` config file types. [PR #86](https://github.com/cakecatz/flex-toolbar/pull/85) (by [@UziTech](https://github.com/UziTech))
+
 ## 0.4.4
 - Fixed resolveConfigPath not searching for toolbar.json (by Andrew Douglas)
 
