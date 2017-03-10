@@ -150,6 +150,10 @@ module.exports =
     @toolBar = toolBar 'flex-toolBar'
     @reloadToolbar(false)
 
+  getToolbarView: ->
+    # This is an undocumented API that moved in tool-bar@1.1.0
+    @toolBar.toolBarView || @toolBar.toolBar
+
   reloadToolbar: (withNotification=false) ->
     return unless @toolBar?
     try
@@ -165,10 +169,10 @@ module.exports =
       console.error error
 
   fixToolBarHeight: ->
-    @toolBar.toolBar.element.style.height = "#{@toolBar.toolBar.element.offsetHeight}px"
+    @getToolbarView().element.style.height = "#{@getToolbarView().element.offsetHeight}px"
 
   unfixToolBarHeight: ->
-    @toolBar.toolBar.element.style.height = null
+    @getToolbarView().element.style.height = null
 
   addButtons: (toolBarButtons) ->
     if toolBarButtons?
