@@ -47,12 +47,13 @@ type `Flex Tool Bar: Edit Config File` in the Atom command palette.
 
 -   multiple callback
 -   function callback
--   button style
+-   inline button styles
+-   add class(s) to buttons
 -   hide/disable a button in certain cases
 
 ### Button style
 
-Can use CSS Property.
+You can use CSS styles per button.
 
 ```coffeescript
 style: {
@@ -60,6 +61,16 @@ style: {
   background: "green"
   border: "1px solid blue"
 }
+```
+
+### Button class
+
+Using a comma separated list you can add your own class names to buttons.
+This is great if you want to take advantage of native styles like Font Awesome
+or if you have your own styles you prefer to keep in a stylesheet.
+
+```coffeescript
+className: "fa-rotate-90, custom-class"
 ```
 
 ### Multiple callback
@@ -170,6 +181,13 @@ This is same above.
     callback: "markdown-preview:toggle"
     disable: "!markdown"
   }
+  {
+    type: "button"
+    icon: "sitemap"
+    iconset: "fa"
+    className: "fa-rotate-180"
+    tooltip: "This is just an example it does nothing"
+  }
 ]
 ```
 
@@ -222,6 +240,13 @@ module.exports = [
     icon: "markdown"
     callback: "markdown-preview:toggle"
     disable: "!markdown"
+  }
+  {
+    type: "button"
+    icon: "sitemap"
+    iconset: "fa"
+    className: "fa-rotate-180"
+    tooltip: "This is just an example it does nothing"
   }
 ]
 ```
