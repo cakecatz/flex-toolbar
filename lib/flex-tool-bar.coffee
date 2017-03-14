@@ -20,9 +20,15 @@ module.exports =
     reloadToolBarWhenEditConfigFile:
       type: 'boolean'
       default: true
+    reloadToolBarNotification:
+      type: 'boolean'
+      default: true
     useBrowserPlusWhenItIsActive:
       type: 'boolean'
       default: false
+
+  reloadToolBarNotification: ->
+    atom.config.get 'flex-tool-bar.reloadToolBarNotification'
 
   activate: ->
     require('atom-package-deps').install('flex-tool-bar')
@@ -124,7 +130,7 @@ module.exports =
     if atom.config.get('flex-tool-bar.reloadToolBarWhenEditConfigFile')
       watcher = chokidar.watch @configFilePath
         .on 'change', =>
-          @reloadToolbar(true)
+          @reloadToolbar(@reloadToolBarNotification())
       @watcherList.push watcher
 
   registerProjectWatch: ->
@@ -132,7 +138,7 @@ module.exports =
       @watchList.push @projectToolbarConfigPath
       watcher = chokidar.watch @projectToolbarConfigPath
         .on 'change', (event, filename) =>
-          @reloadToolbar(true)
+          @reloadToolbar(@reloadToolBarNotification())
       @watcherList.push watcher
 
   switchProject: ->
