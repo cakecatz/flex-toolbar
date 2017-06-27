@@ -1,6 +1,6 @@
 {
   "name": "flex-tool-bar",
-  "main": "./lib/flex-tool-bar",
+  "main": "./lib/main.js",
   "version": "0.12.0",
   "description": "Easily Customizable ToolBar for Atom",
   "repository": "https://github.com/cakecatz/flex-toolbar",
@@ -13,11 +13,12 @@
     "atom": ">=0.188.0 <2.0.0"
   },
   "dependencies": {
-    "atom-package-deps": "^4.0.1",
+    "atom-package-deps": "^4.6.0",
     "change-case": "^3.0.0",
-    "chokidar": "^1.4.3",
+    "chokidar": "^1.7.0",
     "cson": "^3.0.2",
-    "fs-plus": "^2.8.1",
+    "event-kit": "^2.3.0",
+    "fs-extra": "^3.0.1",
     "json5": "^0.5.0",
     "space-pen": "^5.1.1",
     "tree-match-sync": "0.0.2"
@@ -40,5 +41,20 @@
     "eslint-plugin-standard": "^2.1.1",
     "remark": "^4.1.2",
     "remark-lint": "^3.0.0"
+  },
+  "configSchema": {
+    "toolBarConfigurationFilePath": {
+      "type": "string",
+      "description": "",
+      "default": ""
+    },
+    "reloadToolBarWhenEditConfigFile": {
+      "type": "boolean",
+      "default": true
+    },
+    "useBrowserPlusWhenItIsActive": {
+      "type": "boolean",
+      "default": false
+    }
   }
 }
