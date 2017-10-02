@@ -47,9 +47,43 @@ type `Flex Tool Bar: Edit Config File` in the Atom command palette.
 
 -   multiple callback
 -   function callback
+-   button icons
 -   inline button styles
 -   add class(s) to buttons
 -   hide/disable a button in certain cases
+
+### Button Icon
+
+The defult iconset is [Octicons](https://octicons.github.com/) (Atom's flavour).
+
+Example:
+```coffeescript
+{
+  type: 'button'
+  tooltip: 'New File'
+  callback: 'application:new-file'
+  icon: 'file-add'
+}
+```
+
+But you can specify the following iconsets:
+- [Ionicons](http://ionicons.com) (`ion`)
+- [FontAwesome](http://fortawesome.github.io/Font-Awesome) (`fa`)
+- [Foundation](http://zurb.com/playground/foundation-icon-fonts-3) (`fi`)
+- [IcoMoon](https://icomoon.io) (`icomoon`)
+- [Devicon](http://devicon.fr) (`devicon`)
+- [MaterialDesignIcons](https://materialdesignicons.com/) (`mdi`)
+
+Example:
+```coffeescript
+{
+  type: 'button'
+  tooltip: 'Save File'
+  callback: 'core:save'
+  icon: 'floppy-o'
+  iconset: 'fa'
+}
+```
 
 ### Button style
 
@@ -90,6 +124,8 @@ callback: target ->
 
 You can hide or disable buttons when a certain grammar is
 used in the active file or a specified file is matched.
+
+> If you don't know what language to use, see this [issue](https://github.com/cakecatz/flex-toolbar/issues/105).
 
 If you set `disable` (`show`, `hide` or `enable`) this way:
 
@@ -141,7 +177,9 @@ show: "Markdown"
 
 This is same above.
 
-### .cson Example
+### Examples
+
+#### .cson Example
 
 ```coffeescript
 [
@@ -191,7 +229,7 @@ This is same above.
 ]
 ```
 
-### .coffee Example
+#### .coffee Example
 
 ```coffeescript
 module.exports = [
