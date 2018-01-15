@@ -32,17 +32,16 @@
       }
     }
   },
+  "atomTestRunner": "atom-jasmine2-test-runner",
   "scripts": {
-    "lint": "remark . & coffeelint ."
-  },
-  "remarkConfig": {
-    "plugins": [
-      "remark-preset-lint-recommended"
-    ]
+    "test": "atom --test ./spec && npm run lint",
+    "lint": "remark . & coffeelint . & eslint ."
   },
   "devDependencies": {
+    "atom-jasmine2-test-runner": "^1.3.1",
+    "coffeelint": "^2.0.7",
+    "eslint": "^4.15.0",
     "remark-cli": "^4.0.0",
-    "remark-preset-lint-recommended": "^3.0.1",
-    "coffeelint": "^2.0.7"
+    "remark-preset-lint-recommended": "^3.0.1"
   }
 }
