@@ -277,13 +277,13 @@ module.exports =
       else
 
         if condition.grammar?
-          return true if @loopThrough(condition.grammar, @grammarCondition)
+          return true if @loopThrough(condition.grammar, @grammarCondition.bind(this))
 
         if condition.pattern?
-          return true if @loopThrough(condition.pattern, @patternCondition)
+          return true if @loopThrough(condition.pattern, @patternCondition.bind(this))
 
         if condition.package?
-          return true if @loopThrough(condition.package, @packageCondition)
+          return true if @loopThrough(condition.package, @packageCondition.bind(this))
 
   grammarCondition: (condition) ->
     filePath = atom.workspace.getActivePaneItem()?.getPath?()
@@ -318,7 +318,7 @@ module.exports =
       condition = condition.replace '!', ''
       reverse = true
 
-    result = true if atom.packages.isPackageLoaded(condition) and not atom.packages.isPackageDisabled(condition)
+    result = true if atom.packages.isPackageActive(condition)
     result = !result if reverse
 
     result
