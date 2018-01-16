@@ -1,4 +1,4 @@
-shell = require 'shell'
+{shell} = require 'electron'
 UrlReplace = require '../lib/url-replace'
 
 module.exports = (toolBar, button) ->
