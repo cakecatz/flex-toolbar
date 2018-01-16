@@ -108,8 +108,8 @@ describe('FlexToolBar', function () {
 		it('should check @currentGrammar', function () {
 			flexToolBar.currentGrammar = 'js';
 
-			const matchJs = flexToolBar.grammarCondition('js');
-			const matchCoffee = flexToolBar.grammarCondition('coffee');
+			const matchJs = flexToolBar.condition('js');
+			const matchCoffee = flexToolBar.condition('coffee');
 			expect(matchJs).toBe(true);
 			expect(matchCoffee).toBe(false);
 		});
@@ -117,8 +117,8 @@ describe('FlexToolBar', function () {
 		it('should check .pattern', async function () {
 			await atom.workspace.open('./fixtures/sample.js');
 
-			const matchJs = flexToolBar.grammarCondition({pattern: '*.js'});
-			const matchCoffee = flexToolBar.grammarCondition({pattern: '*.coffee'});
+			const matchJs = flexToolBar.condition({pattern: '*.js'});
+			const matchCoffee = flexToolBar.condition({pattern: '*.coffee'});
 			expect(matchJs).toBe(true);
 			expect(matchCoffee).toBe(false);
 		});
@@ -127,14 +127,35 @@ describe('FlexToolBar', function () {
 	describe('image file', function () {
 		beforeEach(async function () {
 			await atom.packages.activatePackage('image-view');
-			await atom.workspace.open('./fixtures/pixel.png');
 		});
-		it('should set grammar to null', function () {
+		it('should set grammar to null', async function () {
+			await atom.workspace.open('./fixtures/pixel.png');
 			expect(flexToolBar.currentGrammar).toBeNull();
 		});
-		it('should check .pattern', function () {
-			const matchPng = flexToolBar.grammarCondition({pattern: '*.png'});
+		it('should check .pattern', async function () {
+			await atom.workspace.open('./fixtures/pixel.png');
+			let matchPng = flexToolBar.condition({pattern: '*.png'});
+			let matchJpg = flexToolBar.condition({pattern: '*.jpg'});
 			expect(matchPng).toBe(true);
+			expect(matchJpg).toBe(false);
+
+			await atom.workspace.open('./fixtures/pixel.jpg');
+			matchPng = flexToolBar.condition({pattern: '*.png'});
+			matchJpg = flexToolBar.condition({pattern: '*.jpg'});
+			expect(matchPng).toBe(false);
+			expect(matchJpg).toBe(true);
+		});
+	});
+
+	describe('package condition', function () {
+		it('should check .package', async function () {
+			let match = flexToolBar.condition({package: 'language-text'});
+			expect(match).toBe(false);
+
+			await atom.packages.activatePackage('language-text');
+
+			match = flexToolBar.condition({package: 'language-text'});
+			expect(match).toBe(true);
 		});
 	});
 
@@ -145,10 +166,8 @@ describe('FlexToolBar', function () {
 				const { exec } = require('child_process');
 				exec('npm run lint', {
 					cwd: __dirname
-				}, function (err, stdout, stderr) {
+				}, function (err, stdout) {
 					if (err) {
-						// deslint-disable-next-line no-console
-						console.error(stdout, stderr);
 						expect(stdout).toBeFalsy();
 					}
 
