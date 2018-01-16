@@ -4,6 +4,8 @@ UrlReplace = require '../lib/url-replace'
 module.exports = (toolBar, button) ->
   return toolBar.addButton
     icon: button.icon
+    text: button.text
+    html: button.html
     callback: (url) ->
       urlReplace = new UrlReplace()
       url = urlReplace.replace url
