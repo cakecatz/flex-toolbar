@@ -1,3 +1,6 @@
+## [v0.13.0](https://github.com/cakecatz/flex-toolbar/compare/v0.13.0...v0.13.1) - 2018-01-16
+-   Fix file pattern matching [#57](https://github.com/cakecatz/flex-toolbar/issues/57)
+
 ## [v0.13.0](https://github.com/cakecatz/flex-toolbar/compare/v0.12.0...v0.13.0) - 2018-01-15
 -   Fix updating toolbar on config change [PR #114](https://github.com/cakecatz/flex-toolbar/pull/114) (by [@UziTech](https://github.com/UziTech))
 -   Add information about icon sets to the README [PR #199](https://github.com/cakecatz/flex-toolbar/pull/119) (by [@TJProgrammer](https://github.com/TJProgrammer))
