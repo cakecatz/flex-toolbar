@@ -43,7 +43,7 @@ module.exports =
     @storeGrammar()
     @registerTypes()
     @registerCommand()
-    @registerEvent()
+    @registerEvents()
     @registerWatch()
     @registerProjectWatch()
 
@@ -107,7 +107,16 @@ module.exports =
       'flex-tool-bar:edit-config-file': =>
         atom.workspace.open @configFilePath if @configFilePath
 
-  registerEvent: ->
+  registerEvents: ->
+    @subscriptions.add atom.packages.onDidActivateInitialPackages  =>
+      @reloadToolbar()
+
+      @subscriptions.add atom.packages.onDidActivatePackage =>
+        @reloadToolbar()
+
+      @subscriptions.add atom.packages.onDidDeactivatePackage =>
+        @reloadToolbar()
+
     @subscriptions.add atom.workspace.onDidChangeActivePaneItem (item) =>
 
       if @storeProject()
@@ -149,6 +158,7 @@ module.exports =
     @toolBar.toolBarView || @toolBar.toolBar
 
   reloadToolbar: (withNotification=false) ->
+    console.log 'reloading tooblar'
     return unless @toolBar?
     try
       @fixToolBarHeight()
@@ -252,50 +262,76 @@ module.exports =
 
     return config
 
-  condition: (conditions) ->
-    conditions = [conditions] if not Array.isArray conditions
-    filePath = atom.workspace.getActivePaneItem()?.getPath?()
+  loopThrough: (items, func) ->
+    items = [items] if not Array.isArray items
+    for item in items
+      return true if func(item)
 
-    for condition in conditions
+    return false
+
+  condition: (conditions) ->
+    return @loopThrough conditions, (condition) =>
 
       if typeof condition is 'string'
-        reverse = false
-        if /^!/.test condition
-          condition = condition.replace '!', ''
-          reverse = true
-
-        if /^[^\/]+\.(.*?)$/.test condition
-          result = true if filePath isnt undefined and filePath.match(condition)?.length > 0
-        else
-          result = true if @currentGrammar? and @currentGrammar.includes condition.toLowerCase()
-
-        result = !result if reverse
-        return true if result
+        return true if @grammarCondition(condition)
 
       else if typeof condition is 'function'
-        return true if condition()
+        return true if @functionCondition(condition)
 
       else
 
-        if condition.pattern?
-          if filePath isnt undefined
-            result = globToRegexp(condition.pattern, extended: true).test filePath
+        if condition.function?
+          return true if @loopThrough(condition.function, @functionCondition)
 
-          return true if result is true
+        if condition.grammar?
+          return true if @loopThrough(condition.grammar, @grammarCondition)
+
+        if condition.pattern?
+          return true if @loopThrough(condition.pattern, @patternCondition)
 
         if condition.package?
-          pkg = condition.package
-          reverse = false
-          if /^!/.test pkg
-            pkg = pkg.replace '!', ''
-            reverse = true
+          return true if @loopThrough(condition.package, @packageCondition)
 
-          result = true if atom.packages.isPackageLoaded(pkg) and not atom.packages.isPackageDisabled(pkg)
-          result = !result if reverse
-          return true if result
+  functionCondition: (condition) ->
+    condition()
 
+  grammarCondition: (condition) ->
+    filePath = atom.workspace.getActivePaneItem()?.getPath?()
+    result = false
+    reverse = false
+    if /^!/.test condition
+      condition = condition.replace '!', ''
+      reverse = true
 
-    return false
+    if /^[^\/]+\.(.*?)$/.test condition
+      result = true if filePath isnt undefined and filePath.match(condition)?.length > 0
+    else
+      result = true if @currentGrammar? and @currentGrammar.includes condition.toLowerCase()
+
+    result = !result if reverse
+
+    result
+
+  patternCondition: (condition) ->
+    filePath = atom.workspace.getActivePaneItem()?.getPath?()
+    result = false
+
+    if filePath isnt undefined
+      result = globToRegexp(condition, extended: true).test filePath
+
+    result
+
+  packageCondition: (condition) ->
+    result = false
+    reverse = false
+    if /^!/.test condition
+      condition = condition.replace '!', ''
+      reverse = true
+
+    result = true if atom.packages.isPackageLoaded(condition) and not atom.packages.isPackageDisabled(condition)
+    result = !result if reverse
+
+    result
 
   storeProject: ->
     editor = atom.workspace.getActivePaneItem()
