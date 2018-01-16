@@ -270,7 +270,11 @@ module.exports =
           result = true if @currentGrammar? and @currentGrammar.includes condition.toLowerCase()
 
         result = !result if reverse
-        return true if result is true
+        return true if result
+
+      else if typeof condition is 'function'
+        return true if condition()
+
       else
 
         if condition.pattern?
@@ -286,9 +290,9 @@ module.exports =
             pkg = pkg.replace '!', ''
             reverse = true
 
-          result = atom.packages.isPackageLoaded(pkg) and not atom.packages.isPackageDisabled(pkg)
+          result = true if atom.packages.isPackageLoaded(pkg) and not atom.packages.isPackageDisabled(pkg)
           result = !result if reverse
-          return true if result is true
+          return true if result
 
 
     return false
