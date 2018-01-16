@@ -1,3 +1,8 @@
+## [v0.13.0](https://github.com/cakecatz/flex-toolbar/compare/v0.12.0...v0.13.0) - 2018-01-15
+-   Fix updating toolbar on config change [PR #114](https://github.com/cakecatz/flex-toolbar/pull/114) (by [@UziTech](https://github.com/UziTech))
+-   Add information about icon sets to the README [PR #199](https://github.com/cakecatz/flex-toolbar/pull/119) (by [@TJProgrammer](https://github.com/TJProgrammer))
+-   Add option to disable reload notification [PR #101](https://github.com/cakecatz/flex-toolbar/pull/101) (by [@danielbayley](https://github.com/danielbayley))
+
 ## [v0.12.0](https://github.com/cakecatz/flex-toolbar/compare/v0.11.0...v0.12.0) - 2017-03-11
 -   Fix loading when using `tool-bar@1.1.0`. [PR #98](https://github.com/cakecatz/flex-toolbar/pull/98) (by [@zertosh](https://github.com/zertosh))
 -   Use `atom.configDirPath` instead of `ATOM_HOME`. [PR #97](https://github.com/cakecatz/flex-toolbar/pull/97) (by [@danielbayley](https://github.com/danielbayley))
