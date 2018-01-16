@@ -5,13 +5,14 @@ describe('FlexToolBar', function () {
 	beforeEach(async function () {
 		await atom.packages.activatePackage('tool-bar');
 		await atom.packages.activatePackage('flex-tool-bar');
+		await atom.packages.activatePackage('language-javascript');
 	});
 
 	describe('activate', function () {
 		it('should store grammar', async function () {
-			await atom.workspace.open('./fixtures/sample.js');
-			this.editor = atom.workspace.getActiveTextEditor();
-			expect(flexToolBar.currentGrammar).toBe(this.editor.getGrammar().name.toLowerCase());
+			const editor = await atom.workspace.open('./fixtures/sample.js');
+
+			expect(flexToolBar.currentGrammar).toBe(editor.getGrammar().name.toLowerCase());
 		});
 	});
 
@@ -120,6 +121,20 @@ describe('FlexToolBar', function () {
 			const matchCoffee = flexToolBar.grammarCondition({pattern: '*.coffee'});
 			expect(matchJs).toBe(true);
 			expect(matchCoffee).toBe(false);
+		});
+	});
+
+	describe('image file', function () {
+		beforeEach(async function () {
+			await atom.packages.activatePackage('image-view');
+			await atom.workspace.open('./fixtures/pixel.png');
+		});
+		it('should set grammar to null', function () {
+			expect(flexToolBar.currentGrammar).toBeNull();
+		});
+		it('should check .pattern', function () {
+			const matchPng = flexToolBar.grammarCondition({pattern: '*.png'});
+			expect(matchPng).toBe(true);
 		});
 	});
 });

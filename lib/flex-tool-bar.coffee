@@ -91,14 +91,15 @@ module.exports =
 
   resolveProjectConfigPath: ->
     @projectToolbarConfigPath = null
-    editor = atom.workspace.getActiveTextEditor()
+    editor = atom.workspace.getActivePaneItem()
+    file = editor?.buffer?.file or editor?.file
 
-    if editor?.buffer?.file?.getParent()?.path?
+    if file?.getParent()?.path?
       projectCount = atom.project.getPaths().length
       count = 0
       while count < projectCount
         pathToCheck = atom.project.getPaths()[count]
-        if editor.buffer.file.getParent().path.includes(pathToCheck)
+        if file.getParent().path.includes(pathToCheck)
           @projectToolbarConfigPath = fs.resolve pathToCheck, 'toolbar', ['cson', 'json5', 'json', 'js', 'coffee']
         count++
 
@@ -115,14 +116,13 @@ module.exports =
   registerEvent: ->
     @subscriptions.add atom.workspace.onDidChangeActivePaneItem (item) =>
 
-      if @didChangeGrammar()
-        @storeGrammar()
-        @reloadToolbar()
-        return
-
       if @storeProject()
-        @switchProject()
-        return
+        @storeGrammar()
+        @resolveProjectConfigPath()
+        @registerProjectWatch()
+        @reloadToolbar()
+      else if @storeGrammar()
+        @reloadToolbar()
 
 
   registerWatch: ->
@@ -140,11 +140,6 @@ module.exports =
           @reloadToolbar(@reloadToolBarNotification())
       @watcherList.push watcher
 
-  switchProject: ->
-    @resolveProjectConfigPath()
-    @registerProjectWatch()
-    @reloadToolbar(false)
-
   registerTypes: ->
     typeFiles = fs.listSync path.join __dirname, '../types'
     typeFiles.forEach (typeFile) =>
@@ -153,7 +148,7 @@ module.exports =
 
   consumeToolBar: (toolBar) ->
     @toolBar = toolBar 'flex-toolBar'
-    @reloadToolbar(false)
+    @reloadToolbar()
 
   getToolbarView: ->
     # This is an undocumented API that moved in tool-bar@1.1.0
@@ -266,7 +261,7 @@ module.exports =
   grammarCondition: (grammars) ->
     result = false
     grammars = [grammars] if not Array.isArray grammars
-    filePath = atom.workspace.getActiveTextEditor()?.getPath()
+    filePath = atom.workspace.getActivePaneItem()?.getPath?()
 
     for grammar in grammars
       reverse = false
@@ -294,21 +289,25 @@ module.exports =
     return false
 
   storeProject: ->
-    editor = atom.workspace.getActiveTextEditor()
-    if editor and editor?.buffer?.file?.getParent()?.path? isnt @currentProject
-      if editor?.buffer?.file?.getParent()?.path?
-        @currentProject = editor.buffer.file.getParent().path
+    editor = atom.workspace.getActivePaneItem()
+    file = editor?.buffer?.file or editor?.file
+    project = file?.getParent?().path
+
+    if project isnt @currentProject
+      @currentProject = project or null
       return true
     else
       return false
 
   storeGrammar: ->
-    editor = atom.workspace.getActiveTextEditor()
-    @currentGrammar = editor?.getGrammar()?.name.toLowerCase()
+    editor = atom.workspace.getActivePaneItem()
+    grammar = editor?.getGrammar?().name.toLowerCase()
 
-  didChangeGrammar: ->
-    editor = atom.workspace.getActiveTextEditor()
-    editor and editor.getGrammar().name.toLowerCase() isnt @currentGrammar
+    if grammar isnt @currentGrammar
+      @currentGrammar = grammar or null
+      return true
+    else
+      return false
 
   removeButtons: ->
     @toolBar.removeItems() if @toolBar?
