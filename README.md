@@ -37,6 +37,14 @@ type `Flex Tool Bar: Edit Config File` in the Atom command palette.
     Also Atom URI are allowed. For example
     `atom://config/packages/flex-tool-bar` will open Flex Tool Bar's settings.
 
+    You can also create dynamic urls with the following placeholders:
+
+    -   `{repo-name}` The repo name for the current repo
+    -   `{repo-owner}` The GitHub user for the current repo
+    -   `{atom-version}` The current version of Atom
+
+    e.g. `https://github.com/{repo-owner}/{repo-name}`
+
 -   `function` creates buttons that can call a function with the previous target as a parameter
 
     This requires the config file to be a `.js` or `.coffee` file that exports the array of buttons
@@ -45,7 +53,7 @@ type `Flex Tool Bar: Edit Config File` in the Atom command palette.
 
 ### Features
 
--   multiple callback
+-   multiple callbacks
 -   function callback
 -   button icons
 -   inline button styles
@@ -54,7 +62,7 @@ type `Flex Tool Bar: Edit Config File` in the Atom command palette.
 
 ### Button Icon
 
-The defult iconset is [Octicons](https://octicons.github.com/) (Atom's flavour).
+The default iconset is [Octicons](https://octicons.github.com/) (Atom's flavor).
 
 Example:
 ```coffeescript
