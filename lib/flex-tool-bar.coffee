@@ -173,7 +173,7 @@ module.exports =
       devMode = atom.inDevMode()
       for btn in toolBarButtons
 
-        if ( btn.hide? && @grammarCondition(btn.hide) ) or ( btn.show? && !@grammarCondition(btn.show) )
+        if ( btn.hide? && @condition(btn.hide) ) or ( btn.show? && !@condition(btn.show) )
           continue
 
         continue if btn.mode and btn.mode is 'dev' and not devMode
@@ -191,7 +191,7 @@ module.exports =
           for val in ary
             button.element.classList.add val.trim()
 
-        if ( btn.disable? && @grammarCondition(btn.disable) ) or ( btn.enable? && !@grammarCondition(btn.enable) )
+        if ( btn.disable? && @condition(btn.disable) ) or ( btn.enable? && !@condition(btn.enable) )
           button.setEnabled false
 
   removeCache: (filePath) ->
@@ -252,33 +252,44 @@ module.exports =
 
     return config
 
-  grammarCondition: (grammars) ->
-    result = false
-    grammars = [grammars] if not Array.isArray grammars
+  condition: (conditions) ->
+    conditions = [conditions] if not Array.isArray conditions
     filePath = atom.workspace.getActivePaneItem()?.getPath?()
 
-    for grammar in grammars
-      reverse = false
+    for condition in conditions
 
-      if grammar.pattern?
-        if filePath is undefined
-          continue
-
-        match = globToRegexp(grammar.pattern, extended: true).test filePath
-        return match
-      else
-        if /^!/.test grammar
-          grammar = grammar.replace '!', ''
+      if typeof condition is 'string'
+        reverse = false
+        if /^!/.test condition
+          condition = condition.replace '!', ''
           reverse = true
 
-        if /^[^\/]+\.(.*?)$/.test grammar
-          result = true if filePath isnt undefined and filePath.match(grammar)?.length > 0
+        if /^[^\/]+\.(.*?)$/.test condition
+          result = true if filePath isnt undefined and filePath.match(condition)?.length > 0
         else
-          result = true if @currentGrammar? and @currentGrammar.includes grammar.toLowerCase()
+          result = true if @currentGrammar? and @currentGrammar.includes condition.toLowerCase()
 
-      result = !result if reverse
+        result = !result if reverse
+        return true if result is true
+      else
 
-      return true if result is true
+        if condition.pattern?
+          if filePath isnt undefined
+            result = globToRegexp(condition.pattern, extended: true).test filePath
+
+          return true if result is true
+
+        if condition.package?
+          pkg = condition.package
+          reverse = false
+          if /^!/.test pkg
+            pkg = pkg.replace '!', ''
+            reverse = true
+
+          result = atom.packages.isPackageLoaded(pkg) and not atom.packages.isPackageDisabled(pkg)
+          result = !result if reverse
+          return true if result is true
+
 
     return false
 
