@@ -158,7 +158,6 @@ module.exports =
     @toolBar.toolBarView || @toolBar.toolBar
 
   reloadToolbar: (withNotification=false) ->
-    console.log 'reloading tooblar'
     return unless @toolBar?
     try
       @fixToolBarHeight()
@@ -275,13 +274,7 @@ module.exports =
       if typeof condition is 'string'
         return true if @grammarCondition(condition)
 
-      else if typeof condition is 'function'
-        return true if @functionCondition(condition)
-
       else
-
-        if condition.function?
-          return true if @loopThrough(condition.function, @functionCondition)
 
         if condition.grammar?
           return true if @loopThrough(condition.grammar, @grammarCondition)
@@ -291,9 +284,6 @@ module.exports =
 
         if condition.package?
           return true if @loopThrough(condition.package, @packageCondition)
-
-  functionCondition: (condition) ->
-    condition()
 
   grammarCondition: (condition) ->
     filePath = atom.workspace.getActivePaneItem()?.getPath?()

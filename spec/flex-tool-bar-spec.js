@@ -163,24 +163,6 @@ describe('FlexToolBar', function () {
 		});
 	});
 
-	describe('function condition', function () {
-		it('should check condition and return boolean', function () {
-			let match;
-
-			match = flexToolBar.condition(() => true);
-			expect(match).toBe(true);
-
-			match = flexToolBar.condition(() => 1);
-			expect(match).toBe(true);
-
-			match = flexToolBar.condition(() => false);
-			expect(match).toBe(false);
-
-			match = flexToolBar.condition(() => 0);
-			expect(match).toBe(false);
-		});
-	});
-
 	if (!global.headless) {
 		// show linting errors in atom test window
 		describe('linting', function () {
