@@ -200,26 +200,36 @@ module.exports =
         if ( btn.disable? && @grammarCondition(btn.disable) ) or ( btn.enable? && !@grammarCondition(btn.enable) )
           button.setEnabled false
 
+  removeCache: (filePath) ->
+    delete require.cache[filePath];
+
+    if snapshotResult?.customRequire?.cache?
+      relativeFilePath = path.relative("#{process.cwd()}#{path.sep}resources#{path.sep}app#{path.sep}static", filePath)
+      if process.platform is 'win32'
+        relativeFilePath = relativeFilePath.replace(/\\/g, '/')
+      delete snapshotResult.customRequire.cache[relativeFilePath]
+
   loadConfig: ->
     ext = path.extname @configFilePath
 
     switch ext
       when '.js', '.coffee'
         config = require(@configFilePath)
-        delete require.cache[@configFilePath]
+        @removeCache(@configFilePath)
 
       when '.json'
         config = require @configFilePath
-        delete require.cache[@configFilePath]
+        @removeCache(@configFilePath)
 
       when '.json5'
         require 'json5/lib/require'
         config = require @configFilePath
-        delete require.cache[@configFilePath]
+        @removeCache(@configFilePath)
 
       when '.cson'
         CSON = require 'cson'
         config = CSON.requireCSONFile @configFilePath
+        @removeCache(@configFilePath)
 
     if @projectToolbarConfigPath
       ext = path.extname @projectToolbarConfigPath
@@ -227,20 +237,21 @@ module.exports =
       switch ext
         when '.js', '.coffee'
           projConfig = require(@projectToolbarConfigPath)
-          delete require.cache[@projectToolbarConfigPath]
+          @removeCache(@projectToolbarConfigPath)
 
         when '.json'
           projConfig = require @projectToolbarConfigPath
-          delete require.cache[@projectToolbarConfigPath]
+          @removeCache(@projectToolbarConfigPath)
 
         when '.json5'
           require 'json5/lib/require'
           projConfig = require @projectToolbarConfigPath
-          delete require.cache[@projectToolbarConfigPath]
+          @removeCache(@projectToolbarConfigPath)
 
         when '.cson'
           CSON = require 'cson'
           projConfig = CSON.requireCSONFile @projectToolbarConfigPath
+          @removeCache(@projectToolbarConfigPath)
 
       for i of projConfig
         config.push projConfig[i]
