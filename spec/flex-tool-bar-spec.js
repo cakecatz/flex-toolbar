@@ -108,12 +108,24 @@ describe('FlexToolBar', function () {
 		it('should check @currentGrammar', function () {
 			flexToolBar.currentGrammar = 'js';
 
-			const matchJs = flexToolBar.condition('js');
-			const matchCoffee = flexToolBar.condition('coffee');
-			expect(matchJs).toBe(true);
-			expect(matchCoffee).toBe(false);
+			const match = flexToolBar.condition('js');
+			const notMatch = flexToolBar.condition('!js');
+			expect(match).toBe(true);
+			expect(notMatch).toBe(false);
 		});
 
+		it('should check .grammar', function () {
+			flexToolBar.currentGrammar = 'js';
+
+			const match = flexToolBar.condition({grammar: 'js'});
+			const notMatch = flexToolBar.condition({grammar: '!js'});
+			expect(match).toBe(true);
+			expect(notMatch).toBe(false);
+		});
+	});
+
+
+	describe('pattern condition', function () {
 		it('should check .pattern', async function () {
 			await atom.workspace.open('./fixtures/sample.js');
 
@@ -151,14 +163,18 @@ describe('FlexToolBar', function () {
 
 	describe('package condition', function () {
 		it('should check .package', async function () {
-			let match;
+			let notMatch, match;
 
+			notMatch = flexToolBar.condition({package: '!language-text'});
 			match = flexToolBar.condition({package: 'language-text'});
+			expect(notMatch).toBe(true);
 			expect(match).toBe(false);
 
 			await atom.packages.activatePackage('language-text');
 
+			notMatch = flexToolBar.condition({package: '!language-text'});
 			match = flexToolBar.condition({package: 'language-text'});
+			expect(notMatch).toBe(false);
 			expect(match).toBe(true);
 		});
 	});
