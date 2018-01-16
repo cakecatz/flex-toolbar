@@ -1,9 +1,8 @@
 path = require 'path'
 fs = require 'fs-plus'
 chokidar = require 'chokidar'
-treeMatch = require 'tree-match-sync'
+globToRegexp = require 'glob-to-regexp'
 { CompositeDisposable } = require 'atom'
-treeIsInstalled = treeMatch.treeIsInstalled()
 changeCase = require 'change-case'
 module.exports =
   toolBar: null
@@ -171,8 +170,8 @@ module.exports =
       @unfixToolBarHeight()
     catch error
       @unfixToolBarHeight()
-      atom.notifications.addError 'Your `toolbar.json` is **not valid JSON**!'
-      console.error error
+      atom.notifications.addError "Could not load your toolbar from `#{fs.tildify(@configFilePath)}`"
+      throw error
 
   fixToolBarHeight: ->
     @getToolbarView().element.style.height = "#{@getToolbarView().element.offsetHeight}px"
@@ -264,36 +263,20 @@ module.exports =
 
     return config
 
-  getActiveProject: () ->
-    activePanePath = atom.workspace.getActiveTextEditor().getPath()
-    projectsPath = atom.project.getPaths()
-
-    for projectPath in projectsPath
-      return projectPath if activePanePath.replace(projectPath, '') isnt activePanePath
-
-    return activePanePath.replace /[^\/]+\.(.*?)$/, ''
-
   grammarCondition: (grammars) ->
     result = false
-    grammarType = Object.prototype.toString.call grammars
-    grammars = [grammars] if grammarType is '[object String]' or grammarType is '[object Object]'
+    grammars = [grammars] if not Array.isArray grammars
     filePath = atom.workspace.getActiveTextEditor()?.getPath()
 
     for grammar in grammars
       reverse = false
 
-      if Object.prototype.toString.call(grammar) is '[object Object]'
-        if !treeIsInstalled
-          atom.notifications.addError '[Tree](http://mama.indstate.edu/users/ice/tree/) is not installed, please install it.'
-          continue
-
+      if grammar.pattern?
         if filePath is undefined
           continue
 
-        activePath = @getActiveProject()
-        options = if grammar.options then grammar.options else {}
-        tree = treeMatch activePath, grammar.pattern, options
-        return true if Object.prototype.toString.call(tree) is '[object Array]' and tree.length > 0
+        match = globToRegexp(grammar.pattern, extended: true).test filePath
+        return match
       else
         if /^!/.test grammar
           grammar = grammar.replace '!', ''

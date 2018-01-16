@@ -102,4 +102,24 @@ describe('FlexToolBar', function () {
 			}));
 		});
 	});
+
+	describe('grammar condition', function () {
+		it('should check @currentGrammar', function () {
+			flexToolBar.currentGrammar = 'js';
+
+			const matchJs = flexToolBar.grammarCondition('js');
+			const matchCoffee = flexToolBar.grammarCondition('coffee');
+			expect(matchJs).toBe(true);
+			expect(matchCoffee).toBe(false);
+		});
+
+		it('should check .pattern', async function () {
+			await atom.workspace.open('./fixtures/sample.js');
+
+			const matchJs = flexToolBar.grammarCondition({pattern: '*.js'});
+			const matchCoffee = flexToolBar.grammarCondition({pattern: '*.coffee'});
+			expect(matchJs).toBe(true);
+			expect(matchCoffee).toBe(false);
+		});
+	});
 });

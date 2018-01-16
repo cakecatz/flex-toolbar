@@ -148,19 +148,8 @@ You can also look for a specific file using [globs](https://tr.im/glob):
 ```coffeescript
 show: {
   pattern: 'gulpfile.js'
-  options: {
-    maxDepth: 2
-  }
 }
 ```
-
-The package uses [tree-match-sync](https://github.com/bored/tree-match-sync)
-that depends on the `tree` command, [install it](https://github.com/bored/tree-match-sync#installation)
-before using this feature.
-
-The options are explained [here](https://github.com/isaacs/minimatch#options)
-and it has an extra field: `maxDepth`,
-it translates to `tree`'s option `-L`, you should always set it.
 
 Of course, you can set it as an array.
 
