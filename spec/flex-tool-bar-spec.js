@@ -5,11 +5,11 @@ describe('FlexToolBar', function () {
 	beforeEach(async function () {
 		await atom.packages.activatePackage('tool-bar');
 		await atom.packages.activatePackage('flex-tool-bar');
-		await atom.packages.activatePackage('language-javascript');
 	});
 
 	describe('activate', function () {
 		it('should store grammar', async function () {
+			await atom.packages.activatePackage('language-javascript');
 			const editor = await atom.workspace.open('./fixtures/sample.js');
 
 			expect(flexToolBar.currentGrammar).toBe(editor.getGrammar().name.toLowerCase());

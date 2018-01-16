@@ -4,6 +4,7 @@ chokidar = require 'chokidar'
 globToRegexp = require 'glob-to-regexp'
 { CompositeDisposable } = require 'atom'
 changeCase = require 'change-case'
+
 module.exports =
   toolBar: null
   configFilePath: null
@@ -15,7 +16,7 @@ module.exports =
   config:
     toolBarConfigurationFilePath:
       type: 'string'
-      default: ''
+      default: atom.getConfigDirPath()
     reloadToolBarWhenEditConfigFile:
       type: 'boolean'
       default: true
@@ -51,9 +52,6 @@ module.exports =
   resolveConfigPath: ->
     @configFilePath = atom.config.get 'flex-tool-bar.toolBarConfigurationFilePath'
 
-    # Default directory
-    @configFilePath = atom.configDirPath unless @configFilePath
-
     # If configFilePath is a folder, check for `toolbar.(json|cson|json5|js|coffee)` file
     unless fs.isFileSync(@configFilePath)
       @configFilePath = fs.resolve @configFilePath, 'toolbar', ['cson', 'json5', 'json', 'js', 'coffee']
@@ -61,7 +59,7 @@ module.exports =
     return true if @configFilePath
 
     unless @configFilePath
-      @configFilePath = path.join atom.configDirPath, 'toolbar.cson'
+      @configFilePath = path.join atom.getConfigDirPath(), 'toolbar.cson'
       defaultConfig = '''
 # This file is used by Flex Tool Bar to create buttons on your Tool Bar.
 # For more information how to use this package and create your own buttons,
@@ -95,13 +93,9 @@ module.exports =
     file = editor?.buffer?.file or editor?.file
 
     if file?.getParent()?.path?
-      projectCount = atom.project.getPaths().length
-      count = 0
-      while count < projectCount
-        pathToCheck = atom.project.getPaths()[count]
+      for pathToCheck in atom.project.getPaths()
         if file.getParent().path.includes(pathToCheck)
           @projectToolbarConfigPath = fs.resolve pathToCheck, 'toolbar', ['cson', 'json5', 'json', 'js', 'coffee']
-        count++
 
     if @projectToolbarConfigPath is @configFilePath
       @projectToolbarConfigPath = null
