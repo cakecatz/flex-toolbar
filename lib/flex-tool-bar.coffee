@@ -43,7 +43,7 @@ module.exports =
     @storeGrammar()
     @registerTypes()
     @registerCommand()
-    @registerEvent()
+    @registerEvents()
     @registerWatch()
     @registerProjectWatch()
 
@@ -107,7 +107,16 @@ module.exports =
       'flex-tool-bar:edit-config-file': =>
         atom.workspace.open @configFilePath if @configFilePath
 
-  registerEvent: ->
+  registerEvents: ->
+    @subscriptions.add atom.packages.onDidActivateInitialPackages  =>
+      @reloadToolbar()
+
+      @subscriptions.add atom.packages.onDidActivatePackage =>
+        @reloadToolbar()
+
+      @subscriptions.add atom.packages.onDidDeactivatePackage =>
+        @reloadToolbar()
+
     @subscriptions.add atom.workspace.onDidChangeActivePaneItem (item) =>
 
       if @storeProject()
@@ -173,7 +182,7 @@ module.exports =
       devMode = atom.inDevMode()
       for btn in toolBarButtons
 
-        if ( btn.hide? && @grammarCondition(btn.hide) ) or ( btn.show? && !@grammarCondition(btn.show) )
+        if ( btn.hide? && @condition(btn.hide) ) or ( btn.show? && !@condition(btn.show) )
           continue
 
         continue if btn.mode and btn.mode is 'dev' and not devMode
@@ -191,7 +200,7 @@ module.exports =
           for val in ary
             button.element.classList.add val.trim()
 
-        if ( btn.disable? && @grammarCondition(btn.disable) ) or ( btn.enable? && !@grammarCondition(btn.enable) )
+        if ( btn.disable? && @condition(btn.disable) ) or ( btn.enable? && !@condition(btn.enable) )
           button.setEnabled false
 
   removeCache: (filePath) ->
@@ -252,35 +261,67 @@ module.exports =
 
     return config
 
-  grammarCondition: (grammars) ->
-    result = false
-    grammars = [grammars] if not Array.isArray grammars
-    filePath = atom.workspace.getActivePaneItem()?.getPath?()
-
-    for grammar in grammars
-      reverse = false
-
-      if grammar.pattern?
-        if filePath is undefined
-          continue
-
-        match = globToRegexp(grammar.pattern, extended: true).test filePath
-        return match
-      else
-        if /^!/.test grammar
-          grammar = grammar.replace '!', ''
-          reverse = true
-
-        if /^[^\/]+\.(.*?)$/.test grammar
-          result = true if filePath isnt undefined and filePath.match(grammar)?.length > 0
-        else
-          result = true if @currentGrammar? and @currentGrammar.includes grammar.toLowerCase()
-
-      result = !result if reverse
-
-      return true if result is true
+  loopThrough: (items, func) ->
+    items = [items] if not Array.isArray items
+    for item in items
+      return true if func(item)
 
     return false
+
+  condition: (conditions) ->
+    return @loopThrough conditions, (condition) =>
+
+      if typeof condition is 'string'
+        return true if @grammarCondition(condition)
+
+      else
+
+        if condition.grammar?
+          return true if @loopThrough(condition.grammar, @grammarCondition.bind(this))
+
+        if condition.pattern?
+          return true if @loopThrough(condition.pattern, @patternCondition.bind(this))
+
+        if condition.package?
+          return true if @loopThrough(condition.package, @packageCondition.bind(this))
+
+  grammarCondition: (condition) ->
+    filePath = atom.workspace.getActivePaneItem()?.getPath?()
+    result = false
+    reverse = false
+    if /^!/.test condition
+      condition = condition.replace '!', ''
+      reverse = true
+
+    if /^[^\/]+\.(.*?)$/.test condition
+      result = true if filePath isnt undefined and filePath.match(condition)?.length > 0
+    else
+      result = true if @currentGrammar? and @currentGrammar.includes condition.toLowerCase()
+
+    result = !result if reverse
+
+    result
+
+  patternCondition: (condition) ->
+    filePath = atom.workspace.getActivePaneItem()?.getPath?()
+    result = false
+
+    if filePath isnt undefined
+      result = globToRegexp(condition, extended: true).test filePath
+
+    result
+
+  packageCondition: (condition) ->
+    result = false
+    reverse = false
+    if /^!/.test condition
+      condition = condition.replace '!', ''
+      reverse = true
+
+    result = true if atom.packages.isPackageActive(condition)
+    result = !result if reverse
+
+    result
 
   storeProject: ->
     editor = atom.workspace.getActivePaneItem()

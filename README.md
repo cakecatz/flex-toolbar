@@ -67,10 +67,10 @@ The default iconset is [Octicons](https://octicons.github.com/) (Atom's flavor).
 Example:
 ```coffeescript
 {
-  type: 'button'
-  tooltip: 'New File'
-  callback: 'application:new-file'
-  icon: 'file-add'
+  type: "button"
+  tooltip: "New File"
+  callback: "application:new-file"
+  icon: "file-add"
 }
 ```
 
@@ -85,11 +85,11 @@ But you can specify the following iconsets:
 Example:
 ```coffeescript
 {
-  type: 'button'
-  tooltip: 'Save File'
-  callback: 'core:save'
-  icon: 'floppy-o'
-  iconset: 'fa'
+  type: "button"
+  tooltip: "Save File"
+  callback: "core:save"
+  icon: "floppy-o"
+  iconset: "fa"
 }
 ```
 
@@ -131,14 +131,17 @@ callback: target ->
 ### Hide(Show), Disable(Enable) button
 
 You can hide or disable buttons when a certain grammar is
-used in the active file or a specified file is matched.
+used in the active file, a specified file is matched, or
+a package is active.
 
 > If you don't know what language to use, see this [issue](https://github.com/cakecatz/flex-toolbar/issues/105).
 
 If you set `disable` (`show`, `hide` or `enable`) this way:
 
 ```coffeescript
-disable: "coffee"
+disable: {
+  grammar: "coffee"
+}
 ```
 
 It will disable the button if a CoffeeScript file is open.
@@ -147,29 +150,43 @@ You can also look for a specific file using [globs](https://tr.im/glob):
 
 ```coffeescript
 show: {
-  pattern: 'gulpfile.js'
+  pattern: "*.js"
+}
+```
+
+You can also look for a specific package using:
+
+```coffeescript
+show: {
+  package: "context-git"
 }
 ```
 
 Of course, you can set it as an array.
 
 ```coffeescript
-disable: [
-  "json"
-  "less"
-]
+disable: {
+  grammar: [
+    "json"
+    "less"
+  ]
+}
 ```
 
-You can use `!` :laughing:
+You can use `!` in grammar and package :laughing:
 
 ```coffeescript
-hide: "!Markdown"
+hide: {
+  grammar: "!Markdown"
+}
 ```
 
 This will hide button when opened any file except Markdown.
 
 ```coffeescript
-show: "Markdown"
+show: {
+  grammar: "Markdown"
+}
 ```
 
 This is same above.
