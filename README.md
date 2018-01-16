@@ -67,12 +67,12 @@ Example:
 ```
 
 But you can specify the following iconsets:
-- [Ionicons](http://ionicons.com) (`ion`)
-- [FontAwesome](http://fortawesome.github.io/Font-Awesome) (`fa`)
-- [Foundation](http://zurb.com/playground/foundation-icon-fonts-3) (`fi`)
-- [IcoMoon](https://icomoon.io) (`icomoon`)
-- [Devicon](http://devicon.fr) (`devicon`)
-- [MaterialDesignIcons](https://materialdesignicons.com/) (`mdi`)
+-   [Ionicons](http://ionicons.com) (`ion`)
+-   [FontAwesome](http://fortawesome.github.io/Font-Awesome) (`fa`)
+-   [Foundation](http://zurb.com/playground/foundation-icon-fonts-3) (`fi`)
+-   [IcoMoon](https://icomoon.io) (`icomoon`)
+-   [Devicon](http://devicon.fr) (`devicon`)
+-   [MaterialDesignIcons](https://materialdesignicons.com/) (`mdi`)
 
 Example:
 ```coffeescript

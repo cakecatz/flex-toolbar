@@ -207,7 +207,7 @@ module.exports =
           button.setEnabled false
 
   removeCache: (filePath) ->
-    delete require.cache[filePath];
+    delete require.cache[filePath]
 
     if snapshotResult?.customRequire?.cache?
       relativeFilePath = path.relative("#{process.cwd()}#{path.sep}resources#{path.sep}app#{path.sep}static", filePath)
