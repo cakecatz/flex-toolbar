@@ -131,8 +131,8 @@ callback: target ->
 ### Hide(Show), Disable(Enable) button
 
 You can hide or disable buttons when a certain grammar is
-used in the active file, a specified file is matched, a
-package is active, or a function returns true.
+used in the active file, a specified file is matched, or
+a package is active.
 
 > If you don't know what language to use, see this [issue](https://github.com/cakecatz/flex-toolbar/issues/105).
 
