@@ -137,4 +137,24 @@ describe('FlexToolBar', function () {
 			expect(matchPng).toBe(true);
 		});
 	});
+
+	if (!global.headless) {
+		// show linting errors in atom test window
+		describe('linting', function () {
+			it('should pass linting', function (done) {
+				const { exec } = require('child_process');
+				exec('npm run lint', {
+					cwd: __dirname
+				}, function (err, stdout, stderr) {
+					if (err) {
+						// deslint-disable-next-line no-console
+						console.error(stdout, stderr);
+						expect(stdout).toBeFalsy();
+					}
+
+					done();
+				});
+			}, 60000);
+		});
+	}
 });
