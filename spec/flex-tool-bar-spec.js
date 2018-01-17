@@ -179,6 +179,106 @@ describe('FlexToolBar', function () {
 		});
 	});
 
+	describe('function condition', function () {
+		beforeEach(function () {
+			jasmine.clock().install();
+		});
+
+		afterEach(function () {
+			jasmine.clock().uninstall();
+		});
+
+		it('should check condition and return boolean', function () {
+			let match;
+
+			match = flexToolBar.condition(() => true);
+			expect(match).toBe(true);
+
+			match = flexToolBar.condition(() => 1);
+			expect(match).toBe(true);
+
+			match = flexToolBar.condition(() => false);
+			expect(match).toBe(false);
+
+			match = flexToolBar.condition(() => 0);
+			expect(match).toBe(false);
+		});
+
+		it('should poll function conditions', async function () {
+			await atom.workspace.open('./fixtures/sample.js');
+
+			spyOn(flexToolBar, 'pollFunctions').and.callThrough();
+			spyOn(flexToolBar, 'reloadToolbar').and.callThrough();
+			spyOn(flexToolBar, 'loadConfig').and.returnValues([{
+				text: 'test',
+				callback: 'application:about',
+				show: {
+					function: (editor) => editor.isModified()
+				}
+			}]);
+
+			flexToolBar.reloadToolbar();
+
+			expect(flexToolBar.functionConditions.length).toBe(1);
+
+			jasmine.clock().tick(900);
+
+			expect(flexToolBar.pollFunctions).toHaveBeenCalledTimes(4);
+			expect(flexToolBar.reloadToolbar).toHaveBeenCalledTimes(1);
+		});
+
+		it('should not poll if no function conditions', async function () {
+			await atom.workspace.open('./fixtures/sample.js');
+
+			spyOn(flexToolBar, 'pollFunctions').and.callThrough();
+			spyOn(flexToolBar, 'reloadToolbar').and.callThrough();
+			spyOn(flexToolBar, 'loadConfig').and.returnValues([{
+				text: 'test',
+				callback: 'application:about',
+				show: {
+					pattern: '*.js'
+				}
+			}]);
+
+			flexToolBar.reloadToolbar();
+
+			expect(flexToolBar.functionConditions.length).toBe(0);
+
+			jasmine.clock().tick(1000);
+
+			expect(flexToolBar.pollFunctions).toHaveBeenCalledTimes(1);
+			expect(flexToolBar.reloadToolbar).toHaveBeenCalledTimes(1);
+		});
+
+		it('should reload if a function condition changes', async function () {
+			const textEditor = await atom.workspace.open('./fixtures/sample.js');
+
+			spyOn(flexToolBar, 'pollFunctions').and.callThrough();
+			spyOn(flexToolBar, 'reloadToolbar').and.callThrough();
+			spyOn(flexToolBar, 'loadConfig').and.returnValues([{
+				text: 'test',
+				callback: 'application:about',
+				show: {
+					function: (editor) => editor.isModified()
+				}
+			}]);
+
+			flexToolBar.reloadToolbar();
+
+			expect(flexToolBar.pollFunctions).toHaveBeenCalledTimes(1);
+			expect(flexToolBar.reloadToolbar).toHaveBeenCalledTimes(1);
+
+			jasmine.clock().tick(300);
+
+			spyOn(textEditor, 'isModified').and.returnValues(true);
+
+			jasmine.clock().tick(600);
+
+			expect(flexToolBar.pollFunctions).toHaveBeenCalledTimes(3);
+			expect(flexToolBar.reloadToolbar).toHaveBeenCalledTimes(2);
+		});
+	});
+
 	if (!global.headless) {
 		// show linting errors in atom test window
 		describe('linting', function () {

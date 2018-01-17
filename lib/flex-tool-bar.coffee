@@ -12,6 +12,10 @@ module.exports =
   currentProject: null
   buttonTypes: []
   watchList: []
+  functionConditions: []
+  functionPoll: null
+  pollTimeout: 0
+  reloadToolBarNotification: false
 
   config:
     toolBarConfigurationFilePath:
@@ -26,9 +30,10 @@ module.exports =
     useBrowserPlusWhenItIsActive:
       type: 'boolean'
       default: false
-
-  reloadToolBarNotification: ->
-    atom.config.get 'flex-tool-bar.reloadToolBarNotification'
+    pollFunctionConditionsToReloadWhenChanged:
+      type: 'integer'
+      description: 'set to 0 to stop polling'
+      default: 300
 
   activate: ->
     require('atom-package-deps').install('flex-tool-bar')
@@ -46,8 +51,35 @@ module.exports =
     @registerEvents()
     @registerWatch()
     @registerProjectWatch()
+    @observeConfig()
 
     @reloadToolbar(false)
+
+  pollFunctions: ->
+    if @functionConditions.length > 0 and @pollTimeout > 0
+      @functionPoll = setTimeout =>
+        reload = false
+        editor = atom.workspace.getActivePaneItem()
+
+        for condition in @functionConditions
+          if condition.value isnt !!condition.func(editor)
+            reload = true
+            break
+
+        if reload
+          @reloadToolbar()
+        else
+          @pollFunctions()
+      , @pollTimeout
+
+  observeConfig: ->
+    atom.config.observe 'flex-tool-bar.pollFunctionConditionsToReloadWhenChanged', (value) =>
+      clearTimeout @functionPoll
+      @pollTimeout = value
+      @pollFunctions()
+
+    atom.config.observe 'flex-tool-bar.reloadToolBarNotification', (value) =>
+      @reloadToolBarNotification = value
 
   resolveConfigPath: ->
     @configFilePath = atom.config.get 'flex-tool-bar.toolBarConfigurationFilePath'
@@ -132,7 +164,7 @@ module.exports =
     if atom.config.get('flex-tool-bar.reloadToolBarWhenEditConfigFile')
       watcher = chokidar.watch @configFilePath
         .on 'change', =>
-          @reloadToolbar(@reloadToolBarNotification())
+          @reloadToolbar(@reloadToolBarNotification)
       @watcherList.push watcher
 
   registerProjectWatch: ->
@@ -140,7 +172,7 @@ module.exports =
       @watchList.push @projectToolbarConfigPath
       watcher = chokidar.watch @projectToolbarConfigPath
         .on 'change', (event, filename) =>
-          @reloadToolbar(@reloadToolBarNotification())
+          @reloadToolbar(@reloadToolBarNotification)
       @watcherList.push watcher
 
   registerTypes: ->
@@ -180,6 +212,8 @@ module.exports =
   addButtons: (toolBarButtons) ->
     if toolBarButtons?
       devMode = atom.inDevMode()
+      clearTimeout @functionPoll
+      @functionConditions = []
       for btn in toolBarButtons
 
         if ( btn.hide? && @condition(btn.hide) ) or ( btn.show? && !@condition(btn.show) )
@@ -202,6 +236,8 @@ module.exports =
 
         if ( btn.disable? && @condition(btn.disable) ) or ( btn.enable? && !@condition(btn.enable) )
           button.setEnabled false
+
+      @pollFunctions()
 
   removeCache: (filePath) ->
     delete require.cache[filePath]
@@ -274,7 +310,13 @@ module.exports =
       if typeof condition is 'string'
         return true if @grammarCondition(condition)
 
+      else if typeof condition is 'function'
+        return true if @functionCondition(condition)
+
       else
+
+        if condition.function?
+          return true if @loopThrough(condition.function, @functionCondition.bind(this))
 
         if condition.grammar?
           return true if @loopThrough(condition.grammar, @grammarCondition.bind(this))
@@ -284,6 +326,15 @@ module.exports =
 
         if condition.package?
           return true if @loopThrough(condition.package, @packageCondition.bind(this))
+
+  functionCondition: (condition) ->
+    value = !!condition(atom.workspace.getActivePaneItem())
+
+    @functionConditions.push
+      func: condition
+      value: value
+
+    value
 
   grammarCondition: (condition) ->
     filePath = atom.workspace.getActivePaneItem()?.getPath?()
