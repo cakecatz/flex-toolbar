@@ -1,3 +1,6 @@
+## [v0.14.0](https://github.com/cakecatz/flex-toolbar/compare/v0.13.2...v0.14.0) - 2018-01-17
+-   Add package conditions [#126](https://github.com/cakecatz/flex-toolbar/pull/126) (by [@UziTech](https://github.com/UziTech))
+
 ## [v0.13.2](https://github.com/cakecatz/flex-toolbar/compare/v0.13.1...v0.13.2) - 2018-01-16
 -   Fix pattern matching images [#73](https://github.com/cakecatz/flex-toolbar/issues/73)
 
