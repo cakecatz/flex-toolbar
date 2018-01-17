@@ -79,11 +79,21 @@ module.exports =
 '''
       try
         fs.writeFileSync @configFilePath, defaultConfig
-        atom.notifications.addInfo 'We created a Tool Bar config file for you...', detail: @configFilePath
+        atom.notifications.addInfo 'We created a Tool Bar config file for you...', {
+          detail: @configFilePath
+          dismissable: true
+          buttons: [{
+            text: 'Edit Config'
+            onDidClick: => atom.workspace.open @configFilePath
+          }]
+        }
         return true
       catch err
         @configFilePath = null
-        atom.notifications.addError 'Something went wrong creating the Tool Bar config file! Please restart Atom to try again.'
+        atom.notifications.addError 'Something went wrong creating the Tool Bar config file! Please restart Atom to try again.', {
+          detail: err.stack
+          dismissable: true
+        }
         console.error err
         return false
 
@@ -168,7 +178,7 @@ module.exports =
       @unfixToolBarHeight()
     catch error
       @unfixToolBarHeight()
-      atom.notifications.addError "Could not load your toolbar from `#{fs.tildify(@configFilePath)}`"
+      atom.notifications.addError "Could not load your toolbar from `#{fs.tildify(@configFilePath)}`", dismissable: true
       throw error
 
   fixToolBarHeight: ->
