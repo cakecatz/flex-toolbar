@@ -1,7 +1,7 @@
 {
   "name": "flex-tool-bar",
   "main": "./lib/flex-tool-bar",
-  "version": "0.9.0",
+  "version": "0.14.0",
   "description": "Easily Customizable ToolBar for Atom",
   "repository": "https://github.com/cakecatz/flex-toolbar",
   "license": "MIT",
@@ -13,13 +13,14 @@
     "atom": ">=0.188.0 <2.0.0"
   },
   "dependencies": {
-    "atom-package-deps": "^4.0.1",
-    "cson": "^3.0.2",
-    "fs-plus": "^2.8.1",
-    "json5": "^0.5.0",
-    "node-watch": "^0.3.4",
-    "space-pen": "^5.1.1",
-    "tree-match-sync": "0.0.2"
+    "atom-package-deps": "^4.6.1",
+    "change-case": "^3.0.1",
+    "chokidar": "^2.0.0",
+    "cson": "^4.1.0",
+    "fs-plus": "^3.0.1",
+    "json5": "^0.5.1",
+    "space-pen": "^5.1.2",
+    "glob-to-regexp": "0.3.0"
   },
   "package-deps": [
     "tool-bar"
@@ -27,12 +28,20 @@
   "consumedServices": {
     "tool-bar": {
       "versions": {
-        "^0.1.0": "consumeToolBar"
+        "^0 || ^1": "consumeToolBar"
       }
     }
   },
+  "atomTestRunner": "atom-jasmine2-test-runner",
+  "scripts": {
+    "test": "atom --test ./spec && npm run lint",
+    "lint": "remark . & coffeelint . & eslint ."
+  },
   "devDependencies": {
-    "remark": "^4.1.2",
-    "remark-lint": "^3.0.0"
+    "atom-jasmine2-test-runner": "^1.3.1",
+    "coffeelint": "^2.0.7",
+    "eslint": "^4.15.0",
+    "remark-cli": "^4.0.0",
+    "remark-preset-lint-recommended": "^3.0.1"
   }
 }

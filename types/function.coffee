@@ -4,6 +4,8 @@ module.exports = (toolBar, button) ->
     tooltip: button.tooltip
     iconset: button.iconset
     priority: button.priority or 45
-    callback: button.callback
+    data: button.callback
+    callback: (data, target) ->
+      data(target)
 
   return toolBar.addButton options
