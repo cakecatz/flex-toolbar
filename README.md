@@ -316,7 +316,7 @@ module.exports = [
     iconset: "fa"
     icon: "book"
     url: "README.md"
-    tooltip: "View Documentation"  
+    tooltip: "View Documentation"
   }  
 ]
 ```
