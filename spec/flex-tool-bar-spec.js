@@ -179,6 +179,30 @@ describe('FlexToolBar', function () {
 		});
 	});
 
+	describe('correct project config path', function () {
+		beforeAll(function () {
+			flexToolBar.configFilePath = path.resolve(__dirname, './fixtures/config/config.json');
+		});
+
+		it('should load toolbar.cson from specified path', function () {
+			atom.config.set('flex-tool-bar.toolBarProjectConfigurationFilePath', '.');
+			flexToolBar.resolveProjectConfigPath();
+			expect(flexToolBar.projectToolbarConfigPath).toBe(path.resolve(__dirname, './fixtures/toolbar.cson'));
+		});
+
+		it('should load specified config file', function () {
+			atom.config.set('flex-tool-bar.toolBarProjectConfigurationFilePath', './config/config.cson');
+			flexToolBar.resolveProjectConfigPath();
+			expect(flexToolBar.projectToolbarConfigPath).toBe(path.resolve(__dirname, './fixtures/config/config.cson'));
+		});
+
+		it('should not load if path equals global config file', function () {
+			atom.config.set('flex-tool-bar.toolBarProjectConfigurationFilePath', './config/config.json');
+			flexToolBar.resolveProjectConfigPath();
+			expect(flexToolBar.projectToolbarConfigPath).toBe(null);
+		});
+	});
+
 	if (!global.headless) {
 		// show linting errors in atom test window
 		describe('linting', function () {
