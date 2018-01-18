@@ -1,3 +1,6 @@
+## [next](https://github.com/cakecatz/flex-toolbar/compare/v0.14.0...master) - 2018-01-17
+-   Add project config path setting [#128](https://github.com/cakecatz/flex-toolbar/pull/128) (by [@malnvenshorn](https://github.com/malnvenshorn))
+
 ## [v0.14.0](https://github.com/cakecatz/flex-toolbar/compare/v0.13.2...v0.14.0) - 2018-01-17
 -   Add package conditions [#126](https://github.com/cakecatz/flex-toolbar/pull/126) (by [@UziTech](https://github.com/UziTech))
 
