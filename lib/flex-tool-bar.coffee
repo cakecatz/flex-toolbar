@@ -17,6 +17,9 @@ module.exports =
     toolBarConfigurationFilePath:
       type: 'string'
       default: atom.getConfigDirPath()
+    toolBarProjectConfigurationFilePath:
+      type: 'string'
+      default: '.'
     reloadToolBarWhenEditConfigFile:
       type: 'boolean'
       default: true
@@ -99,13 +102,18 @@ module.exports =
 
   resolveProjectConfigPath: ->
     @projectToolbarConfigPath = null
+    relativeProjectConfigPath = atom.config.get 'flex-tool-bar.toolBarProjectConfigurationFilePath'
     editor = atom.workspace.getActivePaneItem()
     file = editor?.buffer?.file or editor?.file
 
     if file?.getParent()?.path?
       for pathToCheck in atom.project.getPaths()
         if file.getParent().path.includes(pathToCheck)
-          @projectToolbarConfigPath = fs.resolve pathToCheck, 'toolbar', ['cson', 'json5', 'json', 'js', 'coffee']
+          pathToCheck = path.join pathToCheck, relativeProjectConfigPath
+          if fs.isFileSync(pathToCheck)
+            @projectToolbarConfigPath = pathToCheck
+          else
+            @projectToolbarConfigPath = fs.resolve pathToCheck, 'toolbar', ['cson', 'json5', 'json', 'js', 'coffee']
 
     if @projectToolbarConfigPath is @configFilePath
       @projectToolbarConfigPath = null
