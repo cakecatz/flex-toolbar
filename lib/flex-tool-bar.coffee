@@ -14,18 +14,22 @@ module.exports =
   watchList: []
 
   config:
+    persistentProjectToolBar:
+      description: 'Project tool bar will stay when focus is moved away from a project file'
+      type: 'boolean'
+      default: false
+    reloadToolBarNotification:
+      type: 'boolean'
+      default: true
+    reloadToolBarWhenEditConfigFile:
+      type: 'boolean'
+      default: true
     toolBarConfigurationFilePath:
       type: 'string'
       default: atom.getConfigDirPath()
     toolBarProjectConfigurationFilePath:
       type: 'string'
       default: '.'
-    reloadToolBarWhenEditConfigFile:
-      type: 'boolean'
-      default: true
-    reloadToolBarNotification:
-      type: 'boolean'
-      default: true
     useBrowserPlusWhenItIsActive:
       type: 'boolean'
       default: false
@@ -101,7 +105,8 @@ module.exports =
         return false
 
   resolveProjectConfigPath: ->
-    @projectToolbarConfigPath = null
+    persistent = atom.config.get 'flex-tool-bar.persistentProjectToolBar'
+    @projectToolbarConfigPath = null unless persistent
     relativeProjectConfigPath = atom.config.get 'flex-tool-bar.toolBarProjectConfigurationFilePath'
     editor = atom.workspace.getActivePaneItem()
     file = editor?.buffer?.file or editor?.file
@@ -113,7 +118,8 @@ module.exports =
           if fs.isFileSync(pathToCheck)
             @projectToolbarConfigPath = pathToCheck
           else
-            @projectToolbarConfigPath = fs.resolve pathToCheck, 'toolbar', ['cson', 'json5', 'json', 'js', 'coffee']
+            found = fs.resolve pathToCheck, 'toolbar', ['cson', 'json5', 'json', 'js', 'coffee']
+            @projectToolbarConfigPath = found if found
 
     if @projectToolbarConfigPath is @configFilePath
       @projectToolbarConfigPath = null
