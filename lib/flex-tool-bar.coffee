@@ -196,10 +196,10 @@ module.exports =
       throw error
 
   fixToolBarHeight: ->
-    @getToolbarView().element.style.height = "#{@getToolbarView().element.offsetHeight}px"
+    @getToolbarView()?.element?.style.height = "#{@getToolbarView().element.offsetHeight}px"
 
   unfixToolBarHeight: ->
-    @getToolbarView().element.style.height = null
+    @getToolbarView()?.element?.style.height = null
 
   addButtons: (toolBarButtons) ->
     if toolBarButtons?
@@ -369,7 +369,7 @@ module.exports =
       return false
 
   removeButtons: ->
-    @toolBar.removeItems() if @toolBar?
+    @toolBar?.removeItems()
 
   deactivate: ->
     @watcherList.forEach (watcher) ->
@@ -378,5 +378,6 @@ module.exports =
     @subscriptions.dispose()
     @subscriptions = null
     @removeButtons()
+    @toolBar = null
 
   serialize: ->
