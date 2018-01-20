@@ -19,15 +19,22 @@ module.exports =
   reloadToolBarNotification: false
 
   config:
-    toolBarConfigurationFilePath:
-      type: 'string'
-      default: atom.getConfigDirPath()
-    reloadToolBarWhenEditConfigFile:
+    persistentProjectToolBar:
+      description: 'Project tool bar will stay when focus is moved away from a project file'
       type: 'boolean'
-      default: true
+      default: false
     reloadToolBarNotification:
       type: 'boolean'
       default: true
+    reloadToolBarWhenEditConfigFile:
+      type: 'boolean'
+      default: true
+    toolBarConfigurationFilePath:
+      type: 'string'
+      default: atom.getConfigDirPath()
+    toolBarProjectConfigurationFilePath:
+      type: 'string'
+      default: '.'
     useBrowserPlusWhenItIsActive:
       type: 'boolean'
       default: false
@@ -131,14 +138,21 @@ module.exports =
         return false
 
   resolveProjectConfigPath: ->
-    @projectToolbarConfigPath = null
+    persistent = atom.config.get 'flex-tool-bar.persistentProjectToolBar'
+    @projectToolbarConfigPath = null unless persistent
+    relativeProjectConfigPath = atom.config.get 'flex-tool-bar.toolBarProjectConfigurationFilePath'
     editor = atom.workspace.getActivePaneItem()
     file = editor?.buffer?.file or editor?.file
 
     if file?.getParent()?.path?
       for pathToCheck in atom.project.getPaths()
         if file.getParent().path.includes(pathToCheck)
-          @projectToolbarConfigPath = fs.resolve pathToCheck, 'toolbar', ['cson', 'json5', 'json', 'js', 'coffee']
+          pathToCheck = path.join pathToCheck, relativeProjectConfigPath
+          if fs.isFileSync(pathToCheck)
+            @projectToolbarConfigPath = pathToCheck
+          else
+            found = fs.resolve pathToCheck, 'toolbar', ['cson', 'json5', 'json', 'js', 'coffee']
+            @projectToolbarConfigPath = found if found
 
     if @projectToolbarConfigPath is @configFilePath
       @projectToolbarConfigPath = null
@@ -215,10 +229,10 @@ module.exports =
       throw error
 
   fixToolBarHeight: ->
-    @getToolbarView().element.style.height = "#{@getToolbarView().element.offsetHeight}px"
+    @getToolbarView()?.element?.style.height = "#{@getToolbarView().element.offsetHeight}px"
 
   unfixToolBarHeight: ->
-    @getToolbarView().element.style.height = null
+    @getToolbarView()?.element?.style.height = null
 
   addButtons: (toolBarButtons) ->
     if toolBarButtons?
@@ -425,7 +439,7 @@ module.exports =
       return false
 
   removeButtons: ->
-    @toolBar.removeItems() if @toolBar?
+    @toolBar?.removeItems()
 
   deactivate: ->
     @watcherList.forEach (watcher) ->
@@ -434,5 +448,6 @@ module.exports =
     @subscriptions.dispose()
     @subscriptions = null
     @removeButtons()
+    @toolBar = null
 
   serialize: ->

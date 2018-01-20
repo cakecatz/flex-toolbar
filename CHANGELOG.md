@@ -1,3 +1,10 @@
+## [v0.15.0](https://github.com/cakecatz/flex-toolbar/compare/v0.14.0...v0.15.0) - 2018-01-19
+-   Add project config path setting [#128](https://github.com/cakecatz/flex-toolbar/pull/128) (by [@malnvenshorn](https://github.com/malnvenshorn))
+-   Add persistent project tool bar setting [#129](https://github.com/cakecatz/flex-toolbar/pull/129) (by [@UziTech](https://github.com/UziTech))
+
+## [v0.14.0](https://github.com/cakecatz/flex-toolbar/compare/v0.13.2...v0.14.0) - 2018-01-17
+-   Add package conditions [#126](https://github.com/cakecatz/flex-toolbar/pull/126) (by [@UziTech](https://github.com/UziTech))
+
 ## [v0.13.2](https://github.com/cakecatz/flex-toolbar/compare/v0.13.1...v0.13.2) - 2018-01-16
 -   Fix pattern matching images [#73](https://github.com/cakecatz/flex-toolbar/issues/73)
 
