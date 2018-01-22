@@ -420,7 +420,7 @@ module.exports =
   storeProject: ->
     editor = atom.workspace.getActivePaneItem()
     file = editor?.buffer?.file or editor?.file
-    project = file?.getParent?().path
+    project = file?.getParent?()?.path
 
     if project isnt @currentProject
       @currentProject = project or null
@@ -430,7 +430,7 @@ module.exports =
 
   storeGrammar: ->
     editor = atom.workspace.getActivePaneItem()
-    grammar = editor?.getGrammar?().name.toLowerCase()
+    grammar = editor?.getGrammar?()?.name.toLowerCase()
 
     if grammar isnt @currentGrammar
       @currentGrammar = grammar or null
