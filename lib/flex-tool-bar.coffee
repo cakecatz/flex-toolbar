@@ -243,13 +243,14 @@ module.exports =
       for btn in toolBarButtons
 
         try
-          if ( btn.hide? && @condition(btn.hide) ) or ( btn.show? && !@condition(btn.show) )
-            continue
+          hide = ( btn.hide? && @condition(btn.hide) ) or ( btn.show? && !@condition(btn.show) )
+          disable = ( btn.disable? && @condition(btn.disable) ) or ( btn.enable? && !@condition(btn.enable) )
         catch err
           btnErrors.push "#{err.message}\n#{util.inspect(btn, depth: 4)}"
           continue
 
-        continue if btn.mode and btn.mode is 'dev' and not devMode
+        continue if hide
+        continue if btn.mode? and btn.mode is 'dev' and not devMode
 
         button = @buttonTypes[btn.type](@toolBar, btn) if @buttonTypes[btn.type]
 
@@ -264,11 +265,7 @@ module.exports =
           for val in ary
             button.element.classList.add val.trim()
 
-        try
-          if ( btn.disable? && @condition(btn.disable) ) or ( btn.enable? && !@condition(btn.enable) )
-            button.setEnabled false
-        catch err
-          btnErrors.push "#{err.message}\n#{util.inspect(btn, depth: 4)}"
+        button.setEnabled(false) if disable
 
       if btnErrors.length > 0
         atom.notifications.addError 'Invalid toolbar.json', {
