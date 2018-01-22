@@ -132,7 +132,7 @@ callback: target ->
 
 You can hide or disable buttons when a certain grammar is
 used in the active file, a specified file is matched, a
-package is active, or a based on a function.
+package is active, or based on a function.
 
 > If you don't know what language to use, see this [issue](https://github.com/cakecatz/flex-toolbar/issues/105).
 
