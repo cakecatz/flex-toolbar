@@ -1,3 +1,6 @@
+## [v0.15.1](https://github.com/cakecatz/flex-toolbar/compare/v0.14.0...v0.15.0) - 2018-01-19
+-   Fix getGrammar() is undefined [#131](https://github.com/cakecatz/flex-toolbar/issues/131)
+
 ## [v0.15.0](https://github.com/cakecatz/flex-toolbar/compare/v0.14.0...v0.15.0) - 2018-01-19
 -   Add project config path setting [#128](https://github.com/cakecatz/flex-toolbar/pull/128) (by [@malnvenshorn](https://github.com/malnvenshorn))
 -   Add persistent project tool bar setting [#129](https://github.com/cakecatz/flex-toolbar/pull/129) (by [@UziTech](https://github.com/UziTech))
