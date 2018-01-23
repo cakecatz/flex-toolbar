@@ -362,33 +362,37 @@ module.exports =
 
   loopThrough: (items, func) ->
     items = [items] if not Array.isArray items
+    ret = false
     for item in items
-      return true if func(item)
+      ret = func(item) or ret
 
-    return false
+    return ret
 
   condition: (conditions) ->
     return @loopThrough conditions, (condition) =>
+      ret = false
 
       if typeof condition is 'string'
-        return true if @grammarCondition(condition)
+        ret = @grammarCondition(condition) or ret
 
       else if typeof condition is 'function'
-        return true if @functionCondition(condition)
+        ret = @functionCondition(condition) or ret
 
       else
 
         if condition.function?
-          return true if @loopThrough(condition.function, @functionCondition.bind(this))
+          ret = @loopThrough(condition.function, @functionCondition.bind(this)) or ret
 
         if condition.grammar?
-          return true if @loopThrough(condition.grammar, @grammarCondition.bind(this))
+          ret = @loopThrough(condition.grammar, @grammarCondition.bind(this)) or ret
 
         if condition.pattern?
-          return true if @loopThrough(condition.pattern, @patternCondition.bind(this))
+          ret = @loopThrough(condition.pattern, @patternCondition.bind(this)) or ret
 
         if condition.package?
-          return true if @loopThrough(condition.package, @packageCondition.bind(this))
+          ret = @loopThrough(condition.package, @packageCondition.bind(this)) or ret
+
+      return ret
 
   functionCondition: (condition) ->
     value = !!condition(atom.workspace.getActivePaneItem())
