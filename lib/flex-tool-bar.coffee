@@ -1,4 +1,5 @@
 path = require 'path'
+util = require 'util'
 fs = require 'fs-plus'
 chokidar = require 'chokidar'
 globToRegexp = require 'glob-to-regexp'
@@ -12,6 +13,10 @@ module.exports =
   currentProject: null
   buttonTypes: []
   watchList: []
+  functionConditions: []
+  functionPoll: null
+  pollTimeout: 0
+  reloadToolBarNotification: false
 
   config:
     persistentProjectToolBar:
@@ -33,9 +38,10 @@ module.exports =
     useBrowserPlusWhenItIsActive:
       type: 'boolean'
       default: false
-
-  reloadToolBarNotification: ->
-    atom.config.get 'flex-tool-bar.reloadToolBarNotification'
+    pollFunctionConditionsToReloadWhenChanged:
+      type: 'integer'
+      description: 'set to 0 to stop polling'
+      default: 300
 
   activate: ->
     require('atom-package-deps').install('flex-tool-bar')
@@ -53,8 +59,52 @@ module.exports =
     @registerEvents()
     @registerWatch()
     @registerProjectWatch()
+    @observeConfig()
 
     @reloadToolbar(false)
+
+  pollFunctions: ->
+    if @functionConditions.length > 0 and @pollTimeout > 0
+      @functionPoll = setTimeout =>
+        reload = false
+        editor = atom.workspace.getActivePaneItem()
+
+        for condition in @functionConditions
+          try
+            if condition.value isnt !!condition.func(editor)
+              reload = true
+              break
+          catch err
+            buttons = [{
+              text: 'Edit Config'
+              onDidClick: => atom.workspace.open @configFilePath
+            }]
+            if @projectToolbarConfigPath?
+              buttons.push [{
+                text: 'Edit Project Config'
+                onDidClick: => atom.workspace.open @projectToolbarConfigPath
+              }]
+            atom.notifications.addError 'Invalid toolbar config', {
+              detail: err.stack or err.toString()
+              dismissable: true
+              buttons: buttons
+            }
+            return
+
+        if reload
+          @reloadToolbar()
+        else
+          @pollFunctions()
+      , @pollTimeout
+
+  observeConfig: ->
+    atom.config.observe 'flex-tool-bar.pollFunctionConditionsToReloadWhenChanged', (value) =>
+      clearTimeout @functionPoll
+      @pollTimeout = value
+      @pollFunctions()
+
+    atom.config.observe 'flex-tool-bar.reloadToolBarNotification', (value) =>
+      @reloadToolBarNotification = value
 
   resolveConfigPath: ->
     @configFilePath = atom.config.get 'flex-tool-bar.toolBarConfigurationFilePath'
@@ -106,7 +156,7 @@ module.exports =
 
   resolveProjectConfigPath: ->
     persistent = atom.config.get 'flex-tool-bar.persistentProjectToolBar'
-    @projectToolbarConfigPath = null unless persistent
+    @projectToolbarConfigPath = null unless persistent and fs.isFileSync(@projectToolbarConfigPath)
     relativeProjectConfigPath = atom.config.get 'flex-tool-bar.toolBarProjectConfigurationFilePath'
     editor = atom.workspace.getActivePaneItem()
     file = editor?.buffer?.file or editor?.file
@@ -156,7 +206,7 @@ module.exports =
     if atom.config.get('flex-tool-bar.reloadToolBarWhenEditConfigFile')
       watcher = chokidar.watch @configFilePath
         .on 'change', =>
-          @reloadToolbar(@reloadToolBarNotification())
+          @reloadToolbar(@reloadToolBarNotification)
       @watcherList.push watcher
 
   registerProjectWatch: ->
@@ -164,7 +214,7 @@ module.exports =
       @watchList.push @projectToolbarConfigPath
       watcher = chokidar.watch @projectToolbarConfigPath
         .on 'change', (event, filename) =>
-          @reloadToolbar(@reloadToolBarNotification())
+          @reloadToolbar(@reloadToolBarNotification)
       @watcherList.push watcher
 
   registerTypes: ->
@@ -204,12 +254,20 @@ module.exports =
   addButtons: (toolBarButtons) ->
     if toolBarButtons?
       devMode = atom.inDevMode()
+      clearTimeout @functionPoll
+      @functionConditions = []
+      btnErrors = []
       for btn in toolBarButtons
 
-        if ( btn.hide? && @condition(btn.hide) ) or ( btn.show? && !@condition(btn.show) )
+        try
+          hide = ( btn.hide? && @checkConditions(btn.hide) ) or ( btn.show? && !@checkConditions(btn.show) )
+          disable = ( btn.disable? && @checkConditions(btn.disable) ) or ( btn.enable? && !@checkConditions(btn.enable) )
+        catch err
+          btnErrors.push "#{err.message or err.toString()}\n#{util.inspect(btn, depth: 4)}"
           continue
 
-        continue if btn.mode and btn.mode is 'dev' and not devMode
+        continue if hide
+        continue if btn.mode? and btn.mode is 'dev' and not devMode
 
         button = @buttonTypes[btn.type](@toolBar, btn) if @buttonTypes[btn.type]
 
@@ -224,8 +282,25 @@ module.exports =
           for val in ary
             button.element.classList.add val.trim()
 
-        if ( btn.disable? && @condition(btn.disable) ) or ( btn.enable? && !@condition(btn.enable) )
-          button.setEnabled false
+        button.setEnabled(false) if disable
+
+      if btnErrors.length > 0
+        buttons = [{
+          text: 'Edit Config'
+          onDidClick: => atom.workspace.open @configFilePath
+        }]
+        if @projectToolbarConfigPath?
+          buttons.push [{
+            text: 'Edit Project Config'
+            onDidClick: => atom.workspace.open @projectToolbarConfigPath
+          }]
+        atom.notifications.addError 'Invalid toolbar config', {
+          detail: btnErrors.join '\n\n'
+          dismissable: true
+          buttons: buttons
+        }
+
+      @pollFunctions()
 
   removeCache: (filePath) ->
     delete require.cache[filePath]
@@ -287,27 +362,46 @@ module.exports =
 
   loopThrough: (items, func) ->
     items = [items] if not Array.isArray items
+    ret = false
     for item in items
-      return true if func(item)
+      ret = func(item) or ret
 
-    return false
+    return !!ret
 
-  condition: (conditions) ->
+  checkConditions: (conditions) ->
     return @loopThrough conditions, (condition) =>
+      ret = false
 
       if typeof condition is 'string'
-        return true if @grammarCondition(condition)
+        ret = @grammarCondition(condition) or ret
+
+      else if typeof condition is 'function'
+        ret = @functionCondition(condition) or ret
 
       else
 
+        if condition.function?
+          ret = @loopThrough(condition.function, @functionCondition.bind(this)) or ret
+
         if condition.grammar?
-          return true if @loopThrough(condition.grammar, @grammarCondition.bind(this))
+          ret = @loopThrough(condition.grammar, @grammarCondition.bind(this)) or ret
 
         if condition.pattern?
-          return true if @loopThrough(condition.pattern, @patternCondition.bind(this))
+          ret = @loopThrough(condition.pattern, @patternCondition.bind(this)) or ret
 
         if condition.package?
-          return true if @loopThrough(condition.package, @packageCondition.bind(this))
+          ret = @loopThrough(condition.package, @packageCondition.bind(this)) or ret
+
+      return ret
+
+  functionCondition: (condition) ->
+    value = !!condition(atom.workspace.getActivePaneItem())
+
+    @functionConditions.push
+      func: condition
+      value: value
+
+    value
 
   grammarCondition: (condition) ->
     filePath = atom.workspace.getActivePaneItem()?.getPath?()

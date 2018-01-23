@@ -131,8 +131,8 @@ callback: target ->
 ### Hide(Show), Disable(Enable) button
 
 You can hide or disable buttons when a certain grammar is
-used in the active file, a specified file is matched, or
-a package is active.
+used in the active file, a specified file is matched, a
+package is active, or based on a function.
 
 > If you don't know what language to use, see this [issue](https://github.com/cakecatz/flex-toolbar/issues/105).
 
@@ -161,6 +161,17 @@ show: {
   package: "context-git"
 }
 ```
+
+or pass a function that is given the current editor using:
+
+```coffeescript
+show: {
+  function: (editor) -> editor.isModified()
+}
+```
+
+> 🚨 Functions are polled every 300ms by default (this can be changed in the settings) to check for changes.
+> This could affect performance in Atom if long running operations are handled in the function.
 
 Of course, you can set it as an array.
 

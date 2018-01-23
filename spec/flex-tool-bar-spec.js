@@ -111,8 +111,8 @@ describe('FlexToolBar', function () {
 		it('should check @currentGrammar', function () {
 			flexToolBar.currentGrammar = 'js';
 
-			const match = flexToolBar.condition('js');
-			const notMatch = flexToolBar.condition('!js');
+			const match = flexToolBar.checkConditions('js');
+			const notMatch = flexToolBar.checkConditions('!js');
 			expect(match).toBe(true);
 			expect(notMatch).toBe(false);
 		});
@@ -120,8 +120,8 @@ describe('FlexToolBar', function () {
 		it('should check .grammar', function () {
 			flexToolBar.currentGrammar = 'js';
 
-			const match = flexToolBar.condition({grammar: 'js'});
-			const notMatch = flexToolBar.condition({grammar: '!js'});
+			const match = flexToolBar.checkConditions({grammar: 'js'});
+			const notMatch = flexToolBar.checkConditions({grammar: '!js'});
 			expect(match).toBe(true);
 			expect(notMatch).toBe(false);
 		});
@@ -132,8 +132,8 @@ describe('FlexToolBar', function () {
 		it('should check .pattern', async function () {
 			await atom.workspace.open('./fixtures/sample.js');
 
-			const matchJs = flexToolBar.condition({pattern: '*.js'});
-			const matchCoffee = flexToolBar.condition({pattern: '*.coffee'});
+			const matchJs = flexToolBar.checkConditions({pattern: '*.js'});
+			const matchCoffee = flexToolBar.checkConditions({pattern: '*.coffee'});
 			expect(matchJs).toBe(true);
 			expect(matchCoffee).toBe(false);
 		});
@@ -151,14 +151,14 @@ describe('FlexToolBar', function () {
 			let matchPng, matchJpg;
 
 			await atom.workspace.open('./fixtures/pixel.png');
-			matchPng = flexToolBar.condition({pattern: '*.png'});
-			matchJpg = flexToolBar.condition({pattern: '*.jpg'});
+			matchPng = flexToolBar.checkConditions({pattern: '*.png'});
+			matchJpg = flexToolBar.checkConditions({pattern: '*.jpg'});
 			expect(matchPng).toBe(true);
 			expect(matchJpg).toBe(false);
 
 			await atom.workspace.open('./fixtures/pixel.jpg');
-			matchPng = flexToolBar.condition({pattern: '*.png'});
-			matchJpg = flexToolBar.condition({pattern: '*.jpg'});
+			matchPng = flexToolBar.checkConditions({pattern: '*.png'});
+			matchJpg = flexToolBar.checkConditions({pattern: '*.jpg'});
 			expect(matchPng).toBe(false);
 			expect(matchJpg).toBe(true);
 		});
@@ -168,17 +168,117 @@ describe('FlexToolBar', function () {
 		it('should check .package', async function () {
 			let notMatch, match;
 
-			notMatch = flexToolBar.condition({package: '!language-text'});
-			match = flexToolBar.condition({package: 'language-text'});
+			notMatch = flexToolBar.checkConditions({package: '!language-text'});
+			match = flexToolBar.checkConditions({package: 'language-text'});
 			expect(notMatch).toBe(true);
 			expect(match).toBe(false);
 
 			await atom.packages.activatePackage('language-text');
 
-			notMatch = flexToolBar.condition({package: '!language-text'});
-			match = flexToolBar.condition({package: 'language-text'});
+			notMatch = flexToolBar.checkConditions({package: '!language-text'});
+			match = flexToolBar.checkConditions({package: 'language-text'});
 			expect(notMatch).toBe(false);
 			expect(match).toBe(true);
+		});
+	});
+
+	describe('function condition', function () {
+		beforeEach(function () {
+			jasmine.clock().install();
+		});
+
+		afterEach(function () {
+			jasmine.clock().uninstall();
+		});
+
+		it('should check condition and return boolean', function () {
+			let match;
+
+			match = flexToolBar.checkConditions(() => true);
+			expect(match).toBe(true);
+
+			match = flexToolBar.checkConditions(() => 1);
+			expect(match).toBe(true);
+
+			match = flexToolBar.checkConditions(() => false);
+			expect(match).toBe(false);
+
+			match = flexToolBar.checkConditions(() => 0);
+			expect(match).toBe(false);
+		});
+
+		it('should poll function conditions', async function () {
+			await atom.workspace.open('./fixtures/sample.js');
+
+			spyOn(flexToolBar, 'pollFunctions').and.callThrough();
+			spyOn(flexToolBar, 'reloadToolbar').and.callThrough();
+			spyOn(flexToolBar, 'loadConfig').and.returnValues([{
+				text: 'test',
+				callback: 'application:about',
+				show: {
+					function: (editor) => editor.isModified()
+				}
+			}]);
+
+			flexToolBar.reloadToolbar();
+
+			expect(flexToolBar.functionConditions.length).toBe(1);
+
+			jasmine.clock().tick(900);
+
+			expect(flexToolBar.pollFunctions).toHaveBeenCalledTimes(4);
+			expect(flexToolBar.reloadToolbar).toHaveBeenCalledTimes(1);
+		});
+
+		it('should not poll if no function conditions', async function () {
+			await atom.workspace.open('./fixtures/sample.js');
+
+			spyOn(flexToolBar, 'pollFunctions').and.callThrough();
+			spyOn(flexToolBar, 'reloadToolbar').and.callThrough();
+			spyOn(flexToolBar, 'loadConfig').and.returnValues([{
+				text: 'test',
+				callback: 'application:about',
+				show: {
+					pattern: '*.js'
+				}
+			}]);
+
+			flexToolBar.reloadToolbar();
+
+			expect(flexToolBar.functionConditions.length).toBe(0);
+
+			jasmine.clock().tick(1000);
+
+			expect(flexToolBar.pollFunctions).toHaveBeenCalledTimes(1);
+			expect(flexToolBar.reloadToolbar).toHaveBeenCalledTimes(1);
+		});
+
+		it('should reload if a function condition changes', async function () {
+			const textEditor = await atom.workspace.open('./fixtures/sample.js');
+
+			spyOn(flexToolBar, 'pollFunctions').and.callThrough();
+			spyOn(flexToolBar, 'reloadToolbar').and.callThrough();
+			spyOn(flexToolBar, 'loadConfig').and.returnValues([{
+				text: 'test',
+				callback: 'application:about',
+				show: {
+					function: (editor) => editor.isModified()
+				}
+			}]);
+
+			flexToolBar.reloadToolbar();
+
+			expect(flexToolBar.pollFunctions).toHaveBeenCalledTimes(1);
+			expect(flexToolBar.reloadToolbar).toHaveBeenCalledTimes(1);
+
+			jasmine.clock().tick(300);
+
+			spyOn(textEditor, 'isModified').and.returnValues(true);
+
+			jasmine.clock().tick(600);
+
+			expect(flexToolBar.pollFunctions).toHaveBeenCalledTimes(3);
+			expect(flexToolBar.reloadToolbar).toHaveBeenCalledTimes(2);
 		});
 	});
 
