@@ -36,9 +36,9 @@ class UrlReplace
     [rootDir] = atom.project.relativizePath(@getActiveItemPath())
     rootDirIndex = atom.project.getPaths().indexOf(rootDir)
     if rootDirIndex >= 0
-      atom.project.getRepositories()[rootDirIndex]
+      @getRepositoryDetail()[rootDirIndex]
     else
-      for repo in atom.project.getRepositories() when repo
+      for repo in @getRepositoryDetail() when repo
         return repo
 
   getActiveItem: ->
