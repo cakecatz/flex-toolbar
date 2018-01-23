@@ -111,8 +111,8 @@ describe('FlexToolBar', function () {
 		it('should check @currentGrammar', function () {
 			flexToolBar.currentGrammar = 'js';
 
-			const match = flexToolBar.condition('js');
-			const notMatch = flexToolBar.condition('!js');
+			const match = flexToolBar.checkConditions('js');
+			const notMatch = flexToolBar.checkConditions('!js');
 			expect(match).toBe(true);
 			expect(notMatch).toBe(false);
 		});
@@ -120,8 +120,8 @@ describe('FlexToolBar', function () {
 		it('should check .grammar', function () {
 			flexToolBar.currentGrammar = 'js';
 
-			const match = flexToolBar.condition({grammar: 'js'});
-			const notMatch = flexToolBar.condition({grammar: '!js'});
+			const match = flexToolBar.checkConditions({grammar: 'js'});
+			const notMatch = flexToolBar.checkConditions({grammar: '!js'});
 			expect(match).toBe(true);
 			expect(notMatch).toBe(false);
 		});
@@ -132,8 +132,8 @@ describe('FlexToolBar', function () {
 		it('should check .pattern', async function () {
 			await atom.workspace.open('./fixtures/sample.js');
 
-			const matchJs = flexToolBar.condition({pattern: '*.js'});
-			const matchCoffee = flexToolBar.condition({pattern: '*.coffee'});
+			const matchJs = flexToolBar.checkConditions({pattern: '*.js'});
+			const matchCoffee = flexToolBar.checkConditions({pattern: '*.coffee'});
 			expect(matchJs).toBe(true);
 			expect(matchCoffee).toBe(false);
 		});
@@ -151,14 +151,14 @@ describe('FlexToolBar', function () {
 			let matchPng, matchJpg;
 
 			await atom.workspace.open('./fixtures/pixel.png');
-			matchPng = flexToolBar.condition({pattern: '*.png'});
-			matchJpg = flexToolBar.condition({pattern: '*.jpg'});
+			matchPng = flexToolBar.checkConditions({pattern: '*.png'});
+			matchJpg = flexToolBar.checkConditions({pattern: '*.jpg'});
 			expect(matchPng).toBe(true);
 			expect(matchJpg).toBe(false);
 
 			await atom.workspace.open('./fixtures/pixel.jpg');
-			matchPng = flexToolBar.condition({pattern: '*.png'});
-			matchJpg = flexToolBar.condition({pattern: '*.jpg'});
+			matchPng = flexToolBar.checkConditions({pattern: '*.png'});
+			matchJpg = flexToolBar.checkConditions({pattern: '*.jpg'});
 			expect(matchPng).toBe(false);
 			expect(matchJpg).toBe(true);
 		});
@@ -168,15 +168,15 @@ describe('FlexToolBar', function () {
 		it('should check .package', async function () {
 			let notMatch, match;
 
-			notMatch = flexToolBar.condition({package: '!language-text'});
-			match = flexToolBar.condition({package: 'language-text'});
+			notMatch = flexToolBar.checkConditions({package: '!language-text'});
+			match = flexToolBar.checkConditions({package: 'language-text'});
 			expect(notMatch).toBe(true);
 			expect(match).toBe(false);
 
 			await atom.packages.activatePackage('language-text');
 
-			notMatch = flexToolBar.condition({package: '!language-text'});
-			match = flexToolBar.condition({package: 'language-text'});
+			notMatch = flexToolBar.checkConditions({package: '!language-text'});
+			match = flexToolBar.checkConditions({package: 'language-text'});
 			expect(notMatch).toBe(false);
 			expect(match).toBe(true);
 		});
@@ -194,16 +194,16 @@ describe('FlexToolBar', function () {
 		it('should check condition and return boolean', function () {
 			let match;
 
-			match = flexToolBar.condition(() => true);
+			match = flexToolBar.checkConditions(() => true);
 			expect(match).toBe(true);
 
-			match = flexToolBar.condition(() => 1);
+			match = flexToolBar.checkConditions(() => 1);
 			expect(match).toBe(true);
 
-			match = flexToolBar.condition(() => false);
+			match = flexToolBar.checkConditions(() => false);
 			expect(match).toBe(false);
 
-			match = flexToolBar.condition(() => 0);
+			match = flexToolBar.checkConditions(() => 0);
 			expect(match).toBe(false);
 		});
 
