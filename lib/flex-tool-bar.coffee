@@ -156,7 +156,7 @@ module.exports =
 
   resolveProjectConfigPath: ->
     persistent = atom.config.get 'flex-tool-bar.persistentProjectToolBar'
-    @projectToolbarConfigPath = null unless persistent
+    @projectToolbarConfigPath = null unless persistent and fs.isFileSync(@projectToolbarConfigPath)
     relativeProjectConfigPath = atom.config.get 'flex-tool-bar.toolBarProjectConfigurationFilePath'
     editor = atom.workspace.getActivePaneItem()
     file = editor?.buffer?.file or editor?.file
