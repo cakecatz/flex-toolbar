@@ -13,6 +13,11 @@ os:
   - linux
   - osx
 
+matrix:
+  allow_failures:
+    - os: osx
+  fast_finish: true
+
 script:
   - curl -s -O https://raw.githubusercontent.com/atom/ci/master/build-package.sh
   - chmod u+x build-package.sh
