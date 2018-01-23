@@ -70,9 +70,26 @@ module.exports =
         editor = atom.workspace.getActivePaneItem()
 
         for condition in @functionConditions
-          if condition.value isnt !!condition.func(editor)
-            reload = true
-            break
+          try
+            if condition.value isnt !!condition.func(editor)
+              reload = true
+              break
+          catch err
+            buttons = [{
+              text: 'Edit Config'
+              onDidClick: => atom.workspace.open @configFilePath
+            }]
+            if @projectToolbarConfigPath?
+              buttons.push [{
+                text: 'Edit Project Config'
+                onDidClick: => atom.workspace.open @projectToolbarConfigPath
+              }]
+            atom.notifications.addError 'Invalid toolbar config', {
+              detail: err.stack or err.toString()
+              dismissable: true
+              buttons: buttons
+            }
+            return
 
         if reload
           @reloadToolbar()
@@ -246,7 +263,7 @@ module.exports =
           hide = ( btn.hide? && @condition(btn.hide) ) or ( btn.show? && !@condition(btn.show) )
           disable = ( btn.disable? && @condition(btn.disable) ) or ( btn.enable? && !@condition(btn.enable) )
         catch err
-          btnErrors.push "#{err.message}\n#{util.inspect(btn, depth: 4)}"
+          btnErrors.push "#{err.message or err.toString()}\n#{util.inspect(btn, depth: 4)}"
           continue
 
         continue if hide
@@ -268,13 +285,19 @@ module.exports =
         button.setEnabled(false) if disable
 
       if btnErrors.length > 0
-        atom.notifications.addError 'Invalid toolbar.json', {
+        buttons = [{
+          text: 'Edit Config'
+          onDidClick: => atom.workspace.open @configFilePath
+        }]
+        if @projectToolbarConfigPath?
+          buttons.push [{
+            text: 'Edit Project Config'
+            onDidClick: => atom.workspace.open @projectToolbarConfigPath
+          }]
+        atom.notifications.addError 'Invalid toolbar config', {
           detail: btnErrors.join '\n\n'
           dismissable: true
-          buttons: [{
-            text: 'Edit Config'
-            onDidClick: => atom.workspace.open @configFilePath
-          }]
+          buttons: buttons
         }
 
       @pollFunctions()
