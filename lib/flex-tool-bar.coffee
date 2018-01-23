@@ -260,8 +260,8 @@ module.exports =
       for btn in toolBarButtons
 
         try
-          hide = ( btn.hide? && @condition(btn.hide) ) or ( btn.show? && !@condition(btn.show) )
-          disable = ( btn.disable? && @condition(btn.disable) ) or ( btn.enable? && !@condition(btn.enable) )
+          hide = ( btn.hide? && @checkConditions(btn.hide) ) or ( btn.show? && !@checkConditions(btn.show) )
+          disable = ( btn.disable? && @checkConditions(btn.disable) ) or ( btn.enable? && !@checkConditions(btn.enable) )
         catch err
           btnErrors.push "#{err.message or err.toString()}\n#{util.inspect(btn, depth: 4)}"
           continue
@@ -366,9 +366,9 @@ module.exports =
     for item in items
       ret = func(item) or ret
 
-    return ret
+    return !!ret
 
-  condition: (conditions) ->
+  checkConditions: (conditions) ->
     return @loopThrough conditions, (condition) =>
       ret = false
 
