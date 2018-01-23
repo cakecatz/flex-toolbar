@@ -171,7 +171,7 @@ show: {
 ```
 
 > 🚨 Functions are polled every 300ms by default (this can be changed in the settings) to check for changes.
-> 🚨 This could affect performance in Atom if long running operations are handled in the function.
+> This could affect performance in Atom if long running operations are handled in the function.
 
 Of course, you can set it as an array.
 
