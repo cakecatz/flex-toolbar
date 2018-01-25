@@ -55,7 +55,7 @@ module.exports =
     @storeProject()
     @storeGrammar()
     @registerTypes()
-    @registerCommand()
+    @registerCommands()
     @registerEvents()
     @registerWatch()
     @registerProjectWatch()
@@ -79,10 +79,10 @@ module.exports =
               text: 'Edit Config'
               onDidClick: => atom.workspace.open @configFilePath
             }]
-            if @projectToolbarConfigPath?
+            if @projectConfigFilePath?
               buttons.push [{
                 text: 'Edit Project Config'
-                onDidClick: => atom.workspace.open @projectToolbarConfigPath
+                onDidClick: => atom.workspace.open @projectConfigFilePath
               }]
             atom.notifications.addError 'Invalid toolbar config', {
               detail: err.stack or err.toString()
@@ -156,7 +156,7 @@ module.exports =
 
   resolveProjectConfigPath: ->
     persistent = atom.config.get 'flex-tool-bar.persistentProjectToolBar'
-    @projectToolbarConfigPath = null unless persistent and fs.isFileSync(@projectToolbarConfigPath)
+    @projectConfigFilePath = null unless persistent and fs.isFileSync(@projectConfigFilePath)
     relativeProjectConfigPath = atom.config.get 'flex-tool-bar.toolBarProjectConfigurationFilePath'
     editor = atom.workspace.getActivePaneItem()
     file = editor?.buffer?.file or editor?.file
@@ -166,20 +166,24 @@ module.exports =
         if file.getParent().path.includes(pathToCheck)
           pathToCheck = path.join pathToCheck, relativeProjectConfigPath
           if fs.isFileSync(pathToCheck)
-            @projectToolbarConfigPath = pathToCheck
+            @projectConfigFilePath = pathToCheck
           else
             found = fs.resolve pathToCheck, 'toolbar', ['cson', 'json5', 'json', 'js', 'coffee']
-            @projectToolbarConfigPath = found if found
+            @projectConfigFilePath = found if found
 
-    if @projectToolbarConfigPath is @configFilePath
-      @projectToolbarConfigPath = null
+    if @projectConfigFilePath is @configFilePath
+      @projectConfigFilePath = null
 
-    return true if @projectToolbarConfigPath
+    return true if @projectConfigFilePath
 
-  registerCommand: ->
+  registerCommands: ->
     @subscriptions.add atom.commands.add 'atom-workspace',
       'flex-tool-bar:edit-config-file': =>
         atom.workspace.open @configFilePath if @configFilePath
+
+    @subscriptions.add atom.commands.add 'atom-workspace',
+      'flex-tool-bar:edit-project-config-file': =>
+        atom.workspace.open @projectConfigFilePath if @projectConfigFilePath
 
   registerEvents: ->
     @subscriptions.add atom.packages.onDidActivateInitialPackages  =>
@@ -210,9 +214,9 @@ module.exports =
       @watcherList.push watcher
 
   registerProjectWatch: ->
-    if @projectToolbarConfigPath and @watchList.indexOf(@projectToolbarConfigPath) < 0
-      @watchList.push @projectToolbarConfigPath
-      watcher = chokidar.watch @projectToolbarConfigPath
+    if @projectConfigFilePath and @watchList.indexOf(@projectConfigFilePath) < 0
+      @watchList.push @projectConfigFilePath
+      watcher = chokidar.watch @projectConfigFilePath
         .on 'change', (event, filename) =>
           @reloadToolbar(@reloadToolBarNotification)
       @watcherList.push watcher
@@ -289,10 +293,10 @@ module.exports =
           text: 'Edit Config'
           onDidClick: => atom.workspace.open @configFilePath
         }]
-        if @projectToolbarConfigPath?
+        if @projectConfigFilePath?
           buttons.push [{
             text: 'Edit Project Config'
-            onDidClick: => atom.workspace.open @projectToolbarConfigPath
+            onDidClick: => atom.workspace.open @projectConfigFilePath
           }]
         atom.notifications.addError 'Invalid toolbar config', {
           detail: btnErrors.join '\n\n'
@@ -333,27 +337,27 @@ module.exports =
         config = CSON.requireCSONFile @configFilePath
         @removeCache(@configFilePath)
 
-    if @projectToolbarConfigPath
-      ext = path.extname @projectToolbarConfigPath
+    if @projectConfigFilePath
+      ext = path.extname @projectConfigFilePath
 
       switch ext
         when '.js', '.coffee'
-          projConfig = require(@projectToolbarConfigPath)
-          @removeCache(@projectToolbarConfigPath)
+          projConfig = require(@projectConfigFilePath)
+          @removeCache(@projectConfigFilePath)
 
         when '.json'
-          projConfig = require @projectToolbarConfigPath
-          @removeCache(@projectToolbarConfigPath)
+          projConfig = require @projectConfigFilePath
+          @removeCache(@projectConfigFilePath)
 
         when '.json5'
           require 'json5/lib/require'
-          projConfig = require @projectToolbarConfigPath
-          @removeCache(@projectToolbarConfigPath)
+          projConfig = require @projectConfigFilePath
+          @removeCache(@projectConfigFilePath)
 
         when '.cson'
           CSON = require 'cson'
-          projConfig = CSON.requireCSONFile @projectToolbarConfigPath
-          @removeCache(@projectToolbarConfigPath)
+          projConfig = CSON.requireCSONFile @projectConfigFilePath
+          @removeCache(@projectConfigFilePath)
 
       for i of projConfig
         config.push projConfig[i]
