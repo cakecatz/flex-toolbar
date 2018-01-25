@@ -290,19 +290,19 @@ describe('FlexToolBar', function () {
 		it('should load toolbar.cson from specified path', async function () {
 			atom.config.set('flex-tool-bar.toolBarProjectConfigurationFilePath', '.');
 			await atom.workspace.open(path.join(__dirname, 'fixtures/sample.js'));
-			expect(flexToolBar.projectToolbarConfigPath).toBe(path.resolve(__dirname, './fixtures/toolbar.cson'));
+			expect(flexToolBar.projectConfigFilePath).toBe(path.resolve(__dirname, './fixtures/toolbar.cson'));
 		});
 
 		it('should load specified config file', async function () {
 			atom.config.set('flex-tool-bar.toolBarProjectConfigurationFilePath', './config/config.cson');
 			await atom.workspace.open(path.join(__dirname, 'fixtures/sample.js'));
-			expect(flexToolBar.projectToolbarConfigPath).toBe(path.resolve(__dirname, './fixtures/config/config.cson'));
+			expect(flexToolBar.projectConfigFilePath).toBe(path.resolve(__dirname, './fixtures/config/config.cson'));
 		});
 
 		it('should not load if path equals global config file', async function () {
 			atom.config.set('flex-tool-bar.toolBarProjectConfigurationFilePath', './config/config.json');
 			await atom.workspace.open(path.join(__dirname, 'fixtures/sample.js'));
-			expect(flexToolBar.projectToolbarConfigPath).toBe(null);
+			expect(flexToolBar.projectConfigFilePath).toBe(null);
 		});
 	});
 
@@ -316,7 +316,7 @@ describe('FlexToolBar', function () {
 			this.settingsView = 'atom://config/packages/flex-toolbar';
 
 			await atom.packages.activatePackage('settings-view');
-			flexToolBar.projectToolbarConfigPath = null;
+			flexToolBar.projectConfigFilePath = null;
 			atom.project.setPaths([
 				path.join(__dirname, 'fixtures/project1/'),
 				path.join(__dirname, 'fixtures/project2/'),
@@ -327,50 +327,50 @@ describe('FlexToolBar', function () {
 			atom.config.set('flex-tool-bar.persistentProjectToolBar', false);
 
 			await atom.workspace.open(this.project1Sample);
-			expect(flexToolBar.projectToolbarConfigPath).toBe(this.project1Config);
+			expect(flexToolBar.projectConfigFilePath).toBe(this.project1Config);
 
 			await atom.workspace.open(this.settingsView);
-			expect(flexToolBar.projectToolbarConfigPath).toBeNull();
+			expect(flexToolBar.projectConfigFilePath).toBeNull();
 
 			await atom.workspace.open(this.project3Sample);
-			expect(flexToolBar.projectToolbarConfigPath).toBeNull();
+			expect(flexToolBar.projectConfigFilePath).toBeNull();
 
 			await atom.workspace.open(this.project2Sample);
-			expect(flexToolBar.projectToolbarConfigPath).toBe(this.project2Config);
+			expect(flexToolBar.projectConfigFilePath).toBe(this.project2Config);
 
 			await atom.workspace.open(this.settingsView);
-			expect(flexToolBar.projectToolbarConfigPath).toBeNull();
+			expect(flexToolBar.projectConfigFilePath).toBeNull();
 
 			await atom.workspace.open(this.project3Sample);
-			expect(flexToolBar.projectToolbarConfigPath).toBeNull();
+			expect(flexToolBar.projectConfigFilePath).toBeNull();
 
 			await atom.workspace.open(this.project1Sample);
-			expect(flexToolBar.projectToolbarConfigPath).toBe(this.project1Config);
+			expect(flexToolBar.projectConfigFilePath).toBe(this.project1Config);
 		});
 
 		it('should persistent when an editor is open that does not have a project config', async function () {
 			atom.config.set('flex-tool-bar.persistentProjectToolBar', true);
 
 			await atom.workspace.open(this.project1Sample);
-			expect(flexToolBar.projectToolbarConfigPath).toBe(this.project1Config);
+			expect(flexToolBar.projectConfigFilePath).toBe(this.project1Config);
 
 			await atom.workspace.open(this.settingsView);
-			expect(flexToolBar.projectToolbarConfigPath).toBe(this.project1Config);
+			expect(flexToolBar.projectConfigFilePath).toBe(this.project1Config);
 
 			await atom.workspace.open(this.project3Sample);
-			expect(flexToolBar.projectToolbarConfigPath).toBe(this.project1Config);
+			expect(flexToolBar.projectConfigFilePath).toBe(this.project1Config);
 
 			await atom.workspace.open(this.project2Sample);
-			expect(flexToolBar.projectToolbarConfigPath).toBe(this.project2Config);
+			expect(flexToolBar.projectConfigFilePath).toBe(this.project2Config);
 
 			await atom.workspace.open(this.settingsView);
-			expect(flexToolBar.projectToolbarConfigPath).toBe(this.project2Config);
+			expect(flexToolBar.projectConfigFilePath).toBe(this.project2Config);
 
 			await atom.workspace.open(this.project3Sample);
-			expect(flexToolBar.projectToolbarConfigPath).toBe(this.project2Config);
+			expect(flexToolBar.projectConfigFilePath).toBe(this.project2Config);
 
 			await atom.workspace.open(this.project1Sample);
-			expect(flexToolBar.projectToolbarConfigPath).toBe(this.project1Config);
+			expect(flexToolBar.projectConfigFilePath).toBe(this.project1Config);
 		});
 	});
 
