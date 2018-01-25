@@ -16,7 +16,6 @@ module.exports =
   projectConfigwatcher: null
   functionConditions: []
   functionPoll: null
-  pollTimeout: 0
 
   config:
     persistentProjectToolBar:
@@ -63,7 +62,8 @@ module.exports =
     @reloadToolbar(false)
 
   pollFunctions: ->
-    if @functionConditions.length > 0 and @pollTimeout > 0
+    pollTimeout = atom.config.get 'flex-tool-bar.pollFunctionConditionsToReloadWhenChanged'
+    if @functionConditions.length > 0 and pollTimeout > 0
       @functionPoll = setTimeout =>
         reload = false
         editor = atom.workspace.getActivePaneItem()
@@ -94,13 +94,13 @@ module.exports =
           @reloadToolbar()
         else
           @pollFunctions()
-      , @pollTimeout
+      , pollTimeout
 
   observeConfig: ->
-    atom.config.observe 'flex-tool-bar.pollFunctionConditionsToReloadWhenChanged', (value) =>
+    @subscriptions.add atom.config.onDidChange 'flex-tool-bar.pollFunctionConditionsToReloadWhenChanged', ({oldValue, newValue}) =>
       clearTimeout @functionPoll
-      @pollTimeout = value
-      @pollFunctions()
+      if newValue isnt 0
+        @pollFunctions()
 
   resolveConfigPath: ->
     @configFilePath = atom.config.get 'flex-tool-bar.toolBarConfigurationFilePath'
@@ -233,6 +233,7 @@ module.exports =
     @toolBar.toolBarView || @toolBar.toolBar
 
   reloadToolbar: (withNotification=false) ->
+    clearTimeout @functionPoll
     return unless @toolBar?
     try
       @fixToolBarHeight()
@@ -255,7 +256,6 @@ module.exports =
   addButtons: (toolBarButtons) ->
     if toolBarButtons?
       devMode = atom.inDevMode()
-      clearTimeout @functionPoll
       @functionConditions = []
       btnErrors = []
       for btn in toolBarButtons

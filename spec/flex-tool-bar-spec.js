@@ -184,6 +184,7 @@ describe('FlexToolBar', function () {
 
 	describe('function condition', function () {
 		beforeEach(function () {
+			this.pollTimeout = atom.config.get('flex-tool-bar.pollFunctionConditionsToReloadWhenChanged');
 			jasmine.clock().install();
 		});
 
@@ -224,7 +225,7 @@ describe('FlexToolBar', function () {
 
 			expect(flexToolBar.functionConditions.length).toBe(1);
 
-			jasmine.clock().tick(900);
+			jasmine.clock().tick(this.pollTimeout * 3);
 
 			expect(flexToolBar.pollFunctions).toHaveBeenCalledTimes(4);
 			expect(flexToolBar.reloadToolbar).toHaveBeenCalledTimes(1);
@@ -247,7 +248,7 @@ describe('FlexToolBar', function () {
 
 			expect(flexToolBar.functionConditions.length).toBe(0);
 
-			jasmine.clock().tick(1000);
+			jasmine.clock().tick(this.pollTimeout * 2);
 
 			expect(flexToolBar.pollFunctions).toHaveBeenCalledTimes(1);
 			expect(flexToolBar.reloadToolbar).toHaveBeenCalledTimes(1);
@@ -271,11 +272,11 @@ describe('FlexToolBar', function () {
 			expect(flexToolBar.pollFunctions).toHaveBeenCalledTimes(1);
 			expect(flexToolBar.reloadToolbar).toHaveBeenCalledTimes(1);
 
-			jasmine.clock().tick(300);
+			jasmine.clock().tick(this.pollTimeout);
 
 			spyOn(textEditor, 'isModified').and.returnValues(true);
 
-			jasmine.clock().tick(600);
+			jasmine.clock().tick(this.pollTimeout * 2);
 
 			expect(flexToolBar.pollFunctions).toHaveBeenCalledTimes(3);
 			expect(flexToolBar.reloadToolbar).toHaveBeenCalledTimes(2);
