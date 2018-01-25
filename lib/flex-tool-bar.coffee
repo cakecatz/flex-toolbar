@@ -12,11 +12,11 @@ module.exports =
   currentGrammar: null
   currentProject: null
   buttonTypes: []
-  watchList: []
+  configWatcher: null
+  projectConfigwatcher: null
   functionConditions: []
   functionPoll: null
   pollTimeout: 0
-  reloadToolBarNotification: false
 
   config:
     persistentProjectToolBar:
@@ -44,12 +44,11 @@ module.exports =
       default: 300
 
   activate: ->
+    @subscriptions = new CompositeDisposable
+
     require('atom-package-deps').install('flex-tool-bar')
 
     return unless @resolveConfigPath()
-
-    @subscriptions = new CompositeDisposable
-    @watcherList = []
 
     @resolveProjectConfigPath()
     @storeProject()
@@ -102,9 +101,6 @@ module.exports =
       clearTimeout @functionPoll
       @pollTimeout = value
       @pollFunctions()
-
-    atom.config.observe 'flex-tool-bar.reloadToolBarNotification', (value) =>
-      @reloadToolBarNotification = value
 
   resolveConfigPath: ->
     @configFilePath = atom.config.get 'flex-tool-bar.toolBarConfigurationFilePath'
@@ -207,19 +203,20 @@ module.exports =
 
 
   registerWatch: ->
-    if atom.config.get('flex-tool-bar.reloadToolBarWhenEditConfigFile')
-      watcher = chokidar.watch @configFilePath
-        .on 'change', =>
-          @reloadToolbar(@reloadToolBarNotification)
-      @watcherList.push watcher
+    return unless atom.config.get('flex-tool-bar.reloadToolBarWhenEditConfigFile') and @configFilePath
+
+    @configWatcher?.close()
+    @configWatcher = chokidar.watch @configFilePath
+      .on 'change', =>
+        @reloadToolbar(atom.config.get 'flex-tool-bar.reloadToolBarNotification')
 
   registerProjectWatch: ->
-    if @projectConfigFilePath and @watchList.indexOf(@projectConfigFilePath) < 0
-      @watchList.push @projectConfigFilePath
-      watcher = chokidar.watch @projectConfigFilePath
-        .on 'change', (event, filename) =>
-          @reloadToolbar(@reloadToolBarNotification)
-      @watcherList.push watcher
+    return unless atom.config.get('flex-tool-bar.reloadToolBarWhenEditConfigFile') and @projectConfigFilePath
+
+    @projectConfigWatcher?.close()
+    @projectConfigWatcher = chokidar.watch @projectConfigFilePath
+      .on 'change', =>
+        @reloadToolbar(atom.config.get 'flex-tool-bar.reloadToolBarNotification')
 
   registerTypes: ->
     typeFiles = fs.listSync path.join __dirname, '../types'
@@ -317,47 +314,35 @@ module.exports =
 
   loadConfig: ->
     ext = path.extname @configFilePath
+    @removeCache(@configFilePath)
 
     switch ext
-      when '.js', '.coffee'
-        config = require(@configFilePath)
-        @removeCache(@configFilePath)
-
-      when '.json'
+      when '.js', '.json', '.coffee'
         config = require @configFilePath
-        @removeCache(@configFilePath)
 
       when '.json5'
         require 'json5/lib/require'
         config = require @configFilePath
-        @removeCache(@configFilePath)
 
       when '.cson'
         CSON = require 'cson'
         config = CSON.requireCSONFile @configFilePath
-        @removeCache(@configFilePath)
 
     if @projectConfigFilePath
       ext = path.extname @projectConfigFilePath
+      @removeCache(@projectConfigFilePath)
 
       switch ext
-        when '.js', '.coffee'
-          projConfig = require(@projectConfigFilePath)
-          @removeCache(@projectConfigFilePath)
-
-        when '.json'
+        when '.js', '.json', '.coffee'
           projConfig = require @projectConfigFilePath
-          @removeCache(@projectConfigFilePath)
 
         when '.json5'
           require 'json5/lib/require'
           projConfig = require @projectConfigFilePath
-          @removeCache(@projectConfigFilePath)
 
         when '.cson'
           CSON = require 'cson'
           projConfig = CSON.requireCSONFile @projectConfigFilePath
-          @removeCache(@projectConfigFilePath)
 
       for i of projConfig
         config.push projConfig[i]
@@ -470,9 +455,10 @@ module.exports =
     @toolBar?.removeItems()
 
   deactivate: ->
-    @watcherList.forEach (watcher) ->
-      watcher.close()
-    @watcherList = null
+    @configWatcher?.close()
+    @configWatcher = null
+    @projectConfigWatcher?.close()
+    @projectConfigWatcher = null
     @subscriptions.dispose()
     @subscriptions = null
     @removeButtons()
