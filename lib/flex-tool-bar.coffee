@@ -463,5 +463,7 @@ module.exports =
     @subscriptions = null
     @removeButtons()
     @toolBar = null
+    clearTimeout @functionPoll
+    @functionPoll = null
 
   serialize: ->
