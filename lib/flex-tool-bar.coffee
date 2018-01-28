@@ -7,11 +7,11 @@ globToRegexp = require 'glob-to-regexp'
 changeCase = require 'change-case'
 
 VALID_EXTENSIONS = [
-  'cson'
-  'coffee'
-  'json5'
-  'json'
-  'js'
+  '.cson'
+  '.coffee'
+  '.json5'
+  '.json'
+  '.js'
 ]
 
 module.exports =
