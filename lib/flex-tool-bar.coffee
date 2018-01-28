@@ -6,6 +6,14 @@ globToRegexp = require 'glob-to-regexp'
 { CompositeDisposable } = require 'atom'
 changeCase = require 'change-case'
 
+VALID_EXTENSIONS = [
+  'cson'
+  'coffee'
+  'json5'
+  'json'
+  'js'
+]
+
 module.exports =
   toolBar: null
   configFilePath: null
@@ -22,6 +30,10 @@ module.exports =
       description: 'Project tool bar will stay when focus is moved away from a project file'
       type: 'boolean'
       default: false
+    pollFunctionConditionsToReloadWhenChanged:
+      type: 'integer'
+      description: 'set to 0 to stop polling'
+      default: 300
     reloadToolBarNotification:
       type: 'boolean'
       default: true
@@ -37,29 +49,26 @@ module.exports =
     useBrowserPlusWhenItIsActive:
       type: 'boolean'
       default: false
-    pollFunctionConditionsToReloadWhenChanged:
-      type: 'integer'
-      description: 'set to 0 to stop polling'
-      default: 300
 
   activate: ->
     @subscriptions = new CompositeDisposable
 
     require('atom-package-deps').install('flex-tool-bar')
 
-    return unless @resolveConfigPath()
-
-    @resolveProjectConfigPath()
     @storeProject()
     @storeGrammar()
     @registerTypes()
     @registerCommands()
     @registerEvents()
-    @registerWatch()
-    @registerProjectWatch()
     @observeConfig()
 
-    @reloadToolbar(false)
+    @resolveConfigPath()
+    @registerWatch()
+
+    @resolveProjectConfigPath()
+    @registerProjectWatch()
+
+    @reloadToolbar()
 
   pollFunctions: ->
     pollTimeout = atom.config.get 'flex-tool-bar.pollFunctionConditionsToReloadWhenChanged'
@@ -84,7 +93,7 @@ module.exports =
                 onDidClick: => atom.workspace.open @projectConfigFilePath
               }]
             atom.notifications.addError 'Invalid toolbar config', {
-              detail: err.stack or err.toString()
+              detail: err.stack ? err.toString()
               dismissable: true
               buttons: buttons
             }
@@ -97,80 +106,105 @@ module.exports =
       , pollTimeout
 
   observeConfig: ->
+    @subscriptions.add atom.config.onDidChange 'flex-tool-bar.persistentProjectToolBar', ({newValue}) =>
+      @unregisterProjectWatch()
+      @resolveProjectConfigPath(undefined, newValue)
+      @registerProjectWatch()
+      @reloadToolbar()
+
     @subscriptions.add atom.config.onDidChange 'flex-tool-bar.pollFunctionConditionsToReloadWhenChanged', ({oldValue, newValue}) =>
       clearTimeout @functionPoll
       if newValue isnt 0
         @pollFunctions()
 
-  resolveConfigPath: ->
-    @configFilePath = atom.config.get 'flex-tool-bar.toolBarConfigurationFilePath'
+    @subscriptions.add atom.config.onDidChange 'flex-tool-bar.reloadToolBarWhenEditConfigFile', ({newValue}) =>
+      @unregisterWatch()
+      @unregisterProjectWatch()
+      if newValue
+        @registerWatch()
+        @registerProjectWatch()
 
-    # If configFilePath is a folder, check for `toolbar.(json|cson|json5|js|coffee)` file
-    unless fs.isFileSync(@configFilePath)
-      @configFilePath = fs.resolve @configFilePath, 'toolbar', ['cson', 'json5', 'json', 'js', 'coffee']
+    @subscriptions.add atom.config.onDidChange 'flex-tool-bar.toolBarConfigurationFilePath', ({newValue}) =>
+      @unregisterWatch()
+      @resolveConfigPath(newValue, false)
+      @registerWatch()
+      @reloadToolbar()
 
-    return true if @configFilePath
+    @subscriptions.add atom.config.onDidChange 'flex-tool-bar.toolBarProjectConfigurationFilePath', ({newValue}) =>
+      @unregisterProjectWatch()
+      @resolveProjectConfigPath(newValue)
+      @registerProjectWatch()
+      @reloadToolbar()
 
-    unless @configFilePath
-      @configFilePath = path.join atom.getConfigDirPath(), 'toolbar.cson'
-      defaultConfig = '''
-# This file is used by Flex Tool Bar to create buttons on your Tool Bar.
-# For more information how to use this package and create your own buttons,
-#   read the documentation on https://atom.io/packages/flex-tool-bar
+  resolveConfigPath: (configFilePath = atom.config.get('flex-tool-bar.toolBarConfigurationFilePath'), createIfNotFound = true) ->
+    unless fs.isFileSync(configFilePath)
+      configFilePath = fs.resolve configFilePath, 'toolbar', VALID_EXTENSIONS
 
-[
-  {
-    type: "button"
-    icon: "gear"
-    callback: "flex-tool-bar:edit-config-file"
-    tooltip: "Edit Tool Bar"
-  }
-  {
-    type: "spacer"
-  }
-]
-'''
-      try
-        fs.writeFileSync @configFilePath, defaultConfig
-        atom.notifications.addInfo 'We created a Tool Bar config file for you...', {
-          detail: @configFilePath
-          dismissable: true
-          buttons: [{
-            text: 'Edit Config'
-            onDidClick: => atom.workspace.open @configFilePath
-          }]
-        }
+    if configFilePath
+      @configFilePath = configFilePath
+      return true
+    else if createIfNotFound
+      exists = fs.existsSync(configFilePath)
+      if (exists and fs.isDirectorySync(configFilePath)) or (not exists and path.extname(configFilePath) not in VALID_EXTENSIONS)
+        configFilePath = path.resolve configFilePath, 'toolbar.cson'
+      if @createConfig configFilePath
+        @configFilePath = configFilePath
         return true
-      catch err
-        @configFilePath = null
-        atom.notifications.addError 'Something went wrong creating the Tool Bar config file! Please restart Atom to try again.', {
-          detail: err.stack
-          dismissable: true
-        }
-        console.error err
-        return false
 
-  resolveProjectConfigPath: ->
-    persistent = atom.config.get 'flex-tool-bar.persistentProjectToolBar'
-    @projectConfigFilePath = null unless persistent and fs.isFileSync(@projectConfigFilePath)
-    relativeProjectConfigPath = atom.config.get 'flex-tool-bar.toolBarProjectConfigurationFilePath'
-    editor = atom.workspace.getActivePaneItem()
-    file = editor?.buffer?.file or editor?.file
+    return false
 
-    if file?.getParent()?.path?
-      for pathToCheck in atom.project.getPaths()
-        if file.getParent().path.includes(pathToCheck)
-          pathToCheck = path.join pathToCheck, relativeProjectConfigPath
-          if fs.isFileSync(pathToCheck)
-            @projectConfigFilePath = pathToCheck
-          else
-            found = fs.resolve pathToCheck, 'toolbar', ['cson', 'json5', 'json', 'js', 'coffee']
-            @projectConfigFilePath = found if found
+  createConfig: (configPath) ->
+    try
+      ext = path.extname configPath
+      if ext not in VALID_EXTENSIONS
+        throw new Error "'#{ext}' is not a valid extension. Please us one of ['#{VALID_EXTENSIONS.join("','")}']"
+      fs.writeFileSync configPath, fs.readFileSync path.resolve(__dirname, "./default/toolbar#{ext}")
+      atom.notifications.addInfo 'We created a Tool Bar config file for you...', {
+        detail: configPath
+        dismissable: true
+        buttons: [{
+          text: 'Edit Config'
+          onDidClick: -> atom.workspace.open configPath
+        }]
+      }
+      return true
+    catch err
+      notification = atom.notifications.addError 'Something went wrong creating the Tool Bar config file!', {
+        detail: "#{configPath}\n\n#{err.stack ? err.toString()}"
+        dismissable: true
+        buttons: [{
+          text: 'Reload Toolbar'
+          onDidClick: =>
+            notification.dismiss()
+            @resolveConfigPath()
+            @registerWatch()
+            @reloadToolbar()
+        }]
+      }
+      console.error err
+      return false
 
-    if @projectConfigFilePath is @configFilePath
-      @projectConfigFilePath = null
+  resolveProjectConfigPath: (
+    configFilePath = atom.config.get('flex-tool-bar.toolBarProjectConfigurationFilePath'),
+    persistent = atom.config.get('flex-tool-bar.persistentProjectToolBar')) ->
+      @projectConfigFilePath = null unless persistent and fs.isFileSync(@projectConfigFilePath)
+      editor = atom.workspace.getActivePaneItem()
+      file = editor?.buffer?.file or editor?.file
 
-    return true if @projectConfigFilePath
+      if file?.getParent()?.path?
+        for pathToCheck in atom.project.getPaths()
+          if file.getParent().path.includes(pathToCheck)
+            pathToCheck = path.join pathToCheck, configFilePath
+            if fs.isFileSync(pathToCheck)
+              @projectConfigFilePath = pathToCheck
+            else
+              found = fs.resolve pathToCheck, 'toolbar', VALID_EXTENSIONS
+              @projectConfigFilePath = found if found
+
+      if @projectConfigFilePath is @configFilePath
+        @projectConfigFilePath = null
+
+      return !!@projectConfigFilePath
 
   registerCommands: ->
     @subscriptions.add atom.commands.add 'atom-workspace',
@@ -195,12 +229,16 @@ module.exports =
 
       if @storeProject()
         @storeGrammar()
+        @unregisterProjectWatch()
         @resolveProjectConfigPath()
         @registerProjectWatch()
         @reloadToolbar()
       else if @storeGrammar()
         @reloadToolbar()
 
+  unregisterWatch: ->
+    @configWatcher?.close()
+    @configWatcher = null
 
   registerWatch: ->
     return unless atom.config.get('flex-tool-bar.reloadToolBarWhenEditConfigFile') and @configFilePath
@@ -209,6 +247,10 @@ module.exports =
     @configWatcher = chokidar.watch @configFilePath
       .on 'change', =>
         @reloadToolbar(atom.config.get 'flex-tool-bar.reloadToolBarNotification')
+
+  unregisterProjectWatch: ->
+    @projectConfigWatcher?.close()
+    @projectConfigWatcher = null
 
   registerProjectWatch: ->
     return unless atom.config.get('flex-tool-bar.reloadToolBarWhenEditConfigFile') and @projectConfigFilePath
@@ -313,20 +355,33 @@ module.exports =
       delete snapshotResult.customRequire.cache[relativeFilePath]
 
   loadConfig: ->
-    ext = path.extname @configFilePath
-    @removeCache(@configFilePath)
+    config = [
+      {
+        type: "function"
+        icon: "tools"
+        callback: ->
+          @resolveConfigPath()
+          @registerWatch()
+          @reloadToolbar()
+        tooltip: "Create Global Tool Bar Config"
+      }
+    ]
 
-    switch ext
-      when '.js', '.json', '.coffee'
-        config = require @configFilePath
+    if @configFilePath
+      ext = path.extname @configFilePath
+      @removeCache(@configFilePath)
 
-      when '.json5'
-        require 'json5/lib/require'
-        config = require @configFilePath
+      switch ext
+        when '.js', '.json', '.coffee'
+          config = require @configFilePath
 
-      when '.cson'
-        CSON = require 'cson'
-        config = CSON.requireCSONFile @configFilePath
+        when '.json5'
+          require 'json5/lib/require'
+          config = require @configFilePath
+
+        when '.cson'
+          CSON = require 'cson'
+          config = CSON.requireCSONFile @configFilePath
 
     if @projectConfigFilePath
       ext = path.extname @projectConfigFilePath
@@ -344,8 +399,7 @@ module.exports =
           CSON = require 'cson'
           projConfig = CSON.requireCSONFile @projectConfigFilePath
 
-      for i of projConfig
-        config.push projConfig[i]
+      config = config.concat projConfig
 
     return config
 
@@ -455,10 +509,8 @@ module.exports =
     @toolBar?.removeItems()
 
   deactivate: ->
-    @configWatcher?.close()
-    @configWatcher = null
-    @projectConfigWatcher?.close()
-    @projectConfigWatcher = null
+    @unregisterWatch()
+    @unregisterProjectWatch()
     @subscriptions.dispose()
     @subscriptions = null
     @removeButtons()
