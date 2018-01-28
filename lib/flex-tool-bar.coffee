@@ -108,8 +108,8 @@ module.exports =
   observeConfig: ->
     @subscriptions.add atom.config.onDidChange 'flex-tool-bar.persistentProjectToolBar', ({newValue}) =>
       @unregisterProjectWatch()
-      @resolveProjectConfigPath(undefined, newValue)
-      @registerProjectWatch()
+      if @resolveProjectConfigPath(undefined, newValue)
+        @registerProjectWatch()
       @reloadToolbar()
 
     @subscriptions.add atom.config.onDidChange 'flex-tool-bar.pollFunctionConditionsToReloadWhenChanged', ({oldValue, newValue}) =>
@@ -121,19 +121,19 @@ module.exports =
       @unregisterWatch()
       @unregisterProjectWatch()
       if newValue
-        @registerWatch()
-        @registerProjectWatch()
+        @registerWatch(true)
+        @registerProjectWatch(true)
 
     @subscriptions.add atom.config.onDidChange 'flex-tool-bar.toolBarConfigurationFilePath', ({newValue}) =>
       @unregisterWatch()
-      @resolveConfigPath(newValue, false)
-      @registerWatch()
+      if @resolveConfigPath(newValue, false)
+        @registerWatch()
       @reloadToolbar()
 
     @subscriptions.add atom.config.onDidChange 'flex-tool-bar.toolBarProjectConfigurationFilePath', ({newValue}) =>
       @unregisterProjectWatch()
-      @resolveProjectConfigPath(newValue)
-      @registerProjectWatch()
+      if @resolveProjectConfigPath(newValue)
+        @registerProjectWatch()
       @reloadToolbar()
 
   resolveConfigPath: (configFilePath = atom.config.get('flex-tool-bar.toolBarConfigurationFilePath'), createIfNotFound = true) ->
@@ -226,7 +226,6 @@ module.exports =
         @reloadToolbar()
 
     @subscriptions.add atom.workspace.onDidChangeActivePaneItem (item) =>
-
       if @storeProject()
         @storeGrammar()
         @unregisterProjectWatch()
@@ -240,8 +239,8 @@ module.exports =
     @configWatcher?.close()
     @configWatcher = null
 
-  registerWatch: ->
-    return unless atom.config.get('flex-tool-bar.reloadToolBarWhenEditConfigFile') and @configFilePath
+  registerWatch: (shouldWatch = atom.config.get('flex-tool-bar.reloadToolBarWhenEditConfigFile')) ->
+    return unless shouldWatch and @configFilePath
 
     @configWatcher?.close()
     @configWatcher = chokidar.watch @configFilePath
@@ -252,8 +251,8 @@ module.exports =
     @projectConfigWatcher?.close()
     @projectConfigWatcher = null
 
-  registerProjectWatch: ->
-    return unless atom.config.get('flex-tool-bar.reloadToolBarWhenEditConfigFile') and @projectConfigFilePath
+  registerProjectWatch: (shouldWatch = atom.config.get('flex-tool-bar.reloadToolBarWhenEditConfigFile')) ->
+    return unless shouldWatch and @projectConfigFilePath
 
     @projectConfigWatcher?.close()
     @projectConfigWatcher = chokidar.watch @projectConfigFilePath
