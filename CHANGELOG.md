@@ -1,6 +1,7 @@
 ## [vNext](https://github.com/cakecatz/flex-toolbar/compare/v0.15.1...master)
 -   Fix when project toolbar config is deleted
 -   Add function conditions [#127](https://github.com/cakecatz/flex-toolbar/pull/127) (by [@UziTech](https://github.com/UziTech))
+-   Observe changes to settings and better error handling
 
 ## [v0.15.1](https://github.com/cakecatz/flex-toolbar/compare/v0.15.0...v0.15.1) - 2018-01-22
 -   Fix getGrammar() is undefined [#131](https://github.com/cakecatz/flex-toolbar/issues/131)
