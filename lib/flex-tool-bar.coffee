@@ -137,18 +137,20 @@ module.exports =
       @reloadToolbar()
 
   resolveConfigPath: (configFilePath = atom.config.get('flex-tool-bar.toolBarConfigurationFilePath'), createIfNotFound = true) ->
-    unless fs.isFileSync(configFilePath)
-      configFilePath = fs.resolve configFilePath, 'toolbar', VALID_EXTENSIONS
+    configPath = configFilePath
+    unless fs.isFileSync(configPath)
+      configPath = fs.resolve configPath, 'toolbar', VALID_EXTENSIONS
 
-    if configFilePath
-      @configFilePath = configFilePath
+    if configPath
+      @configFilePath = configPath
       return true
     else if createIfNotFound
-      exists = fs.existsSync(configFilePath)
-      if (exists and fs.isDirectorySync(configFilePath)) or (not exists and path.extname(configFilePath) not in VALID_EXTENSIONS)
-        configFilePath = path.resolve configFilePath, 'toolbar.cson'
-      if @createConfig configFilePath
-        @configFilePath = configFilePath
+      configPath = configFilePath
+      exists = fs.existsSync(configPath)
+      if (exists and fs.isDirectorySync(configPath)) or (not exists and path.extname(configPath) not in VALID_EXTENSIONS)
+        configPath = path.resolve configPath, 'toolbar.cson'
+      if @createConfig configPath
+        @configFilePath = configPath
         return true
 
     return false
