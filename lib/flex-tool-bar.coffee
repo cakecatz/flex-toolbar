@@ -72,7 +72,7 @@ module.exports =
     @reloadToolbar()
 
   pollFunctions: ->
-    return if not @conditionTypes.function
+    return unless @conditionTypes.function
     pollTimeout = atom.config.get 'flex-tool-bar.pollFunctionConditionsToReloadWhenChanged'
     if @functionConditions.length > 0 and pollTimeout > 0
       @functionPoll = setTimeout =>
@@ -221,20 +221,16 @@ module.exports =
 
   registerEvents: ->
     @subscriptions.add atom.packages.onDidActivateInitialPackages  =>
-      if @conditionTypes.package
-        @reloadToolbar()
+      @reloadToolbar() if @conditionTypes.package
 
       @subscriptions.add atom.packages.onDidActivatePackage =>
-        if @conditionTypes.package
-          @reloadToolbar()
+        @reloadToolbar() if @conditionTypes.package
 
       @subscriptions.add atom.packages.onDidDeactivatePackage =>
-        if @conditionTypes.package
-          @reloadToolbar()
+        @reloadToolbar() if @conditionTypes.package
 
     @subscriptions.add atom.config.onDidChange =>
-      if @conditionTypes.setting
-        @reloadToolbar()
+      @reloadToolbar() if @conditionTypes.setting
 
     @subscriptions.add atom.workspace.onDidChangeActivePaneItem (item) =>
       if @storeProject()
@@ -322,11 +318,6 @@ module.exports =
           btnErrors.push "#{err.message or err.toString()}\n#{util.inspect(btn, depth: 4)}"
           continue
 
-        selected = !!switch typeof btn.selected
-          when "function" then try @checkConditions(function: btn.selected)
-          when "string" then @checkConditions(setting: btn.selected)
-          else btn.selected
-
         continue if hide
         continue if btn.mode? and btn.mode is 'dev' and not devMode
 
@@ -344,7 +335,6 @@ module.exports =
             button.element.classList.add val.trim()
 
         button.setEnabled(false) if disable
-        button.setSelected(true) if selected
 
         button
 
