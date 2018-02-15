@@ -162,6 +162,14 @@ show: {
 }
 ```
 
+or a specific setting using:
+
+```coffeescript
+show: {
+  setting: "tree-view.autoReveal"
+}
+```
+
 or pass a function that is given the current editor using:
 
 ```coffeescript
