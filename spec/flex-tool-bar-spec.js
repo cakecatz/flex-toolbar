@@ -127,7 +127,6 @@ describe('FlexToolBar', function () {
 		});
 	});
 
-
 	describe('pattern condition', function () {
 		it('should check .pattern', async function () {
 			await atom.workspace.open('./fixtures/sample.js');
@@ -136,6 +135,20 @@ describe('FlexToolBar', function () {
 			const matchCoffee = flexToolBar.checkConditions({pattern: '*.coffee'});
 			expect(matchJs).toBe(true);
 			expect(matchCoffee).toBe(false);
+		});
+	});
+
+	describe('setting condition', function () {
+		it('should check .setting', async function () {
+			await atom.config.set('test.trueSetting', true);
+			await atom.config.set('test.falseSetting', false);
+
+			const matchNonExistant = flexToolBar.checkConditions({setting: 'test.nonExistantSetting'});
+			const matchTrue = flexToolBar.checkConditions({setting: 'test.trueSetting'});
+			const matchFalse = flexToolBar.checkConditions({setting: 'test.falseSetting'});
+			expect(matchNonExistant).toBe(false);
+			expect(matchTrue).toBe(true);
+			expect(matchFalse).toBe(false);
 		});
 	});
 
