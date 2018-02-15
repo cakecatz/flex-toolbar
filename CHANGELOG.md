@@ -1,6 +1,6 @@
 ## [vNext](https://github.com/cakecatz/flex-toolbar/compare/v0.16.0...master)
 
-## [v0.16.0](https://github.com/cakecatz/flex-toolbar/compare/v0.15.1...v0.16.0)
+## [v0.16.0](https://github.com/cakecatz/flex-toolbar/compare/v0.15.1...v0.16.0) - 2018-02-15
 -   Add setting conditions
 -   Fix when project toolbar config is deleted
 -   Add function conditions [#127](https://github.com/cakecatz/flex-toolbar/pull/127) (by [@UziTech](https://github.com/UziTech))
