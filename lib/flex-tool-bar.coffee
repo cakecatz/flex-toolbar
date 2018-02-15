@@ -24,6 +24,7 @@ module.exports =
   projectConfigwatcher: null
   functionConditions: []
   functionPoll: null
+  conditionTypes: {}
 
   config:
     persistentProjectToolBar:
@@ -71,6 +72,7 @@ module.exports =
     @reloadToolbar()
 
   pollFunctions: ->
+    return if not @conditionTypes.function
     pollTimeout = atom.config.get 'flex-tool-bar.pollFunctionConditionsToReloadWhenChanged'
     if @functionConditions.length > 0 and pollTimeout > 0
       @functionPoll = setTimeout =>
@@ -219,12 +221,19 @@ module.exports =
 
   registerEvents: ->
     @subscriptions.add atom.packages.onDidActivateInitialPackages  =>
-      @reloadToolbar()
-
-      @subscriptions.add atom.packages.onDidActivatePackage =>
+      if @conditionTypes.package
         @reloadToolbar()
 
+      @subscriptions.add atom.packages.onDidActivatePackage =>
+        if @conditionTypes.package
+          @reloadToolbar()
+
       @subscriptions.add atom.packages.onDidDeactivatePackage =>
+        if @conditionTypes.package
+          @reloadToolbar()
+
+    @subscriptions.add atom.config.onDidChange =>
+      if @conditionTypes.setting
         @reloadToolbar()
 
     @subscriptions.add atom.workspace.onDidChangeActivePaneItem (item) =>
@@ -236,6 +245,8 @@ module.exports =
         @reloadToolbar()
       else if @storeGrammar()
         @reloadToolbar()
+
+    # TODO: recheck pattern of name change?
 
   unregisterWatch: ->
     @configWatcher?.close()
@@ -276,6 +287,7 @@ module.exports =
     @toolBar.toolBarView || @toolBar.toolBar
 
   reloadToolbar: (withNotification=false) ->
+    @conditionTypes = {}
     clearTimeout @functionPoll
     return unless @toolBar?
     try
@@ -301,7 +313,7 @@ module.exports =
       devMode = atom.inDevMode()
       @functionConditions = []
       btnErrors = []
-      for btn in toolBarButtons
+      buttons = for btn in toolBarButtons
 
         try
           hide = ( btn.hide? && @checkConditions(btn.hide) ) or ( btn.show? && !@checkConditions(btn.show) )
@@ -309,6 +321,11 @@ module.exports =
         catch err
           btnErrors.push "#{err.message or err.toString()}\n#{util.inspect(btn, depth: 4)}"
           continue
+
+        selected = !!switch typeof btn.selected
+          when "function" then try @checkConditions(function: btn.selected)
+          when "string" then @checkConditions(setting: btn.selected)
+          else btn.selected
 
         continue if hide
         continue if btn.mode? and btn.mode is 'dev' and not devMode
@@ -327,6 +344,9 @@ module.exports =
             button.element.classList.add val.trim()
 
         button.setEnabled(false) if disable
+        button.setSelected(true) if selected
+
+        button
 
       if btnErrors.length > 0
         buttons = [{
@@ -345,6 +365,8 @@ module.exports =
         }
 
       @pollFunctions()
+
+      return buttons
 
   removeCache: (filePath) ->
     delete require.cache[filePath]
@@ -414,7 +436,7 @@ module.exports =
 
   checkConditions: (conditions) ->
     return @loopThrough conditions, (condition) =>
-      ret = false
+      ret = condition is true
 
       if typeof condition is 'string'
         ret = @grammarCondition(condition) or ret
@@ -436,9 +458,13 @@ module.exports =
         if condition.package?
           ret = @loopThrough(condition.package, @packageCondition.bind(this)) or ret
 
+        if condition.setting?
+          ret = @loopThrough(condition.setting, @settingCondition.bind(this)) or ret
+
       return ret
 
   functionCondition: (condition) ->
+    @conditionTypes.function = true
     value = !!condition(atom.workspace.getActivePaneItem())
 
     @functionConditions.push
@@ -448,6 +474,7 @@ module.exports =
     value
 
   grammarCondition: (condition) ->
+    @conditionTypes.grammar = true
     filePath = atom.workspace.getActivePaneItem()?.getPath?()
     result = false
     reverse = false
@@ -465,6 +492,7 @@ module.exports =
     result
 
   patternCondition: (condition) ->
+    @conditionTypes.pattern = true
     filePath = atom.workspace.getActivePaneItem()?.getPath?()
     result = false
 
@@ -474,6 +502,7 @@ module.exports =
     result
 
   packageCondition: (condition) ->
+    @conditionTypes.package = true
     result = false
     reverse = false
     if /^!/.test condition
@@ -481,6 +510,19 @@ module.exports =
       reverse = true
 
     result = true if atom.packages.isPackageActive(condition)
+    result = !result if reverse
+
+    result
+
+  settingCondition: (condition) ->
+    @conditionTypes.setting = true
+    result = false
+    reverse = false
+    if /^!/.test condition
+      condition = condition.replace '!', ''
+      reverse = true
+
+    result = true if atom.config.get(condition)
     result = !result if reverse
 
     result
