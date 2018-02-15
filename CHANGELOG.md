@@ -1,4 +1,5 @@
 ## [vNext](https://github.com/cakecatz/flex-toolbar/compare/v0.15.1...master)
+-   Add setting conditions
 -   Fix when project toolbar config is deleted
 -   Add function conditions [#127](https://github.com/cakecatz/flex-toolbar/pull/127) (by [@UziTech](https://github.com/UziTech))
 -   Observe changes to settings and better error handling
