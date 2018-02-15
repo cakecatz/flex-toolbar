@@ -2,8 +2,12 @@
 UrlReplace = require '../lib/url-replace'
 
 module.exports = (toolBar, button) ->
-  return toolBar.addButton
+  options =
     icon: button.icon
+    iconset: button.iconset
+    tooltip: button.tooltip
+    priority: button.priority or 45
+    data: button.url
     callback: (url) ->
       urlReplace = new UrlReplace()
       url = urlReplace.replace url
@@ -19,7 +23,5 @@ module.exports = (toolBar, button) ->
           shell.openExternal url
       else
         shell.openExternal url
-    tooltip: button.tooltip
-    iconset: button.iconset
-    data: button.url
-    priority: button.priority or 45
+
+  return toolBar.addButton options
