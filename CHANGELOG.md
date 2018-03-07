@@ -1,4 +1,6 @@
 ## [vNext](https://github.com/cakecatz/flex-toolbar/compare/v1.0.0...master)
+-  Text and HTML options [#125](https://github.com/cakecatz/flex-toolbar/pull/125) (by [@UziTech](https://github.com/UziTech))
+-  Use project repo for url if no active item repo is found
 
 ## [v1.0.0](https://github.com/cakecatz/flex-toolbar/compare/v0.16.0...v1.0.0) - 2018-03-07
 -   Change default config file to `.js`
