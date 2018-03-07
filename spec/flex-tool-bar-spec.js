@@ -170,6 +170,52 @@ describe('FlexToolBar', function () {
 		});
 	});
 
+	describe('text and html options', function () {
+		beforeEach(function () {
+			spyOn(flexToolBar.toolBar, 'addButton');
+			this.obj = {
+				text: 'text',
+				html: true
+			};
+		});
+		it('should allow text and html options on button', function () {
+			flexToolBar.addButtons([{
+				type: 'button',
+				text: this.obj.text,
+				html: this.obj.html
+			}]);
+
+			expect(flexToolBar.toolBar.addButton).toHaveBeenCalledWith(jasmine.objectContaining(this.obj));
+		});
+		it('should allow text and html options on file', function () {
+			flexToolBar.addButtons([{
+				type: 'file',
+				text: this.obj.text,
+				html: this.obj.html
+			}]);
+
+			expect(flexToolBar.toolBar.addButton).toHaveBeenCalledWith(jasmine.objectContaining(this.obj));
+		});
+		it('should allow text and html options on function', function () {
+			flexToolBar.addButtons([{
+				type: 'function',
+				text: this.obj.text,
+				html: this.obj.html
+			}]);
+
+			expect(flexToolBar.toolBar.addButton).toHaveBeenCalledWith(jasmine.objectContaining(this.obj));
+		});
+		it('should allow text and html options on url', function () {
+			flexToolBar.addButtons([{
+				type: 'url',
+				text: this.obj.text,
+				html: this.obj.html
+			}]);
+
+			expect(flexToolBar.toolBar.addButton).toHaveBeenCalledWith(jasmine.objectContaining(this.obj));
+		});
+	});
+
 	describe('observed events', function () {
 		it('should observe grammar change', async function () {
 			await atom.packages.activatePackage('language-javascript');
