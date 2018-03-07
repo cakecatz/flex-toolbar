@@ -19,7 +19,7 @@ type `Flex Tool Bar: Edit Config File` in the Atom command palette.
 ## Configuration
 
 **Flex Tool Bar** has four `type`s you can configure:
-`button`, `url`, `function` and `spacer`.
+`button`, `url`, `file`, `function` and `spacer`.
 
 -   `button` creates default buttons for your toolbar.
 
@@ -44,6 +44,10 @@ type `Flex Tool Bar: Edit Config File` in the Atom command palette.
     -   `{atom-version}` The current version of Atom
 
     e.g. `https://github.com/{repo-owner}/{repo-name}`
+
+-   `file` creates buttons pointing to specific files that will be opened in Atom.
+
+    You can use it to open files of nearly any kind that Atom supports, such as logs, configs or simply a project's `README.md`.
 
 -   `function` creates buttons that can call a function with the previous target as a parameter
 
@@ -259,6 +263,13 @@ This is same above.
     className: "fa-rotate-180"
     tooltip: "This is just an example it does nothing"
   }
+  {
+    type: "file"
+    iconset: "fa"
+    icon: "book"
+    url: "README.md"
+    tooltip: "View Documentation"  
+  }
 ]
 ```
 
@@ -319,6 +330,13 @@ module.exports = [
     className: "fa-rotate-180"
     tooltip: "This is just an example it does nothing"
   }
+  {
+    type: "file"
+    iconset: "fa"
+    icon: "book"
+    url: "README.md"
+    tooltip: "View Documentation"
+  }  
 ]
 ```
 
