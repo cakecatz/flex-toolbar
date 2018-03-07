@@ -157,6 +157,9 @@ describe('FlexToolBar', function () {
 			await atom.packages.activatePackage('image-view');
 		});
 		it('should set grammar to null', async function () {
+			await atom.packages.activatePackage('language-javascript');
+			await atom.workspace.open('./fixtures/sample.js');
+			expect(flexToolBar.currentGrammar).toBe('javascript');
 			await atom.workspace.open('./fixtures/pixel.png');
 			expect(flexToolBar.currentGrammar).toBeNull();
 		});
