@@ -7,3 +7,37 @@
     color: darken(@text-color-error, 5%);
   }
 }
+
+.tool-bar {
+  &.tool-bar-12px {
+    .text-tool-bar-size(12px);
+  }
+
+  &.tool-bar-16px {
+    .text-tool-bar-size(16px);
+  }
+
+  &.tool-bar-24px {
+    .text-tool-bar-size(24px);
+  }
+
+  &.tool-bar-32px {
+    .text-tool-bar-size(32px);
+  }
+
+  .text-tool-bar-size(@size) {
+    .tool-bar-btn {
+      width: auto !important;
+      min-width: (@size * 2) + 2px;
+
+      &:not(:empty) {
+        font-size: @size;
+        line-height: @size * 2;
+        padding: 0 @size / 2;
+        &:before {
+          padding-right: @size / 2;
+        }
+      }
+    }
+  }
+}
