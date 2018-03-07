@@ -107,6 +107,23 @@ describe('FlexToolBar', function () {
 		});
 	});
 
+	describe('observed events', function () {
+		it('should observe grammar change', async function () {
+			await atom.packages.activatePackage('language-javascript');
+			await atom.packages.activatePackage('language-text');
+			await atom.workspace.open('./fixtures/sample.js');
+
+			const editor = atom.workspace.getActiveTextEditor();
+			editor.setGrammar(atom.grammars.grammarForScopeName('source.js'));
+
+			expect(flexToolBar.currentGrammar).toBe('javascript');
+
+			editor.setGrammar(atom.grammars.grammarForScopeName('text.plain'));
+
+			expect(flexToolBar.currentGrammar).toBe('plain text');
+		});
+	});
+
 	describe('grammar condition', function () {
 		it('should check @currentGrammar', function () {
 			flexToolBar.currentGrammar = 'js';
