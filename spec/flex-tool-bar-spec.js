@@ -46,6 +46,58 @@ describe('FlexToolBar', function () {
 		});
 	});
 
+	describe('default config', function () {
+		it('should load .json', function () {
+			flexToolBar.configFilePath = path.resolve(__dirname, '../lib/defaults/toolbar.json');
+			expect(flexToolBar.loadConfig()[0]).toEqual(jasmine.objectContaining({
+		    type: 'button',
+		    icon: 'gear',
+		    callback: 'flex-tool-bar:edit-config-file',
+		    tooltip: 'Edit Tool Bar'
+		  }));
+		});
+
+		it('should load .js', function () {
+			flexToolBar.configFilePath = path.resolve(__dirname, '../lib/defaults/toolbar.js');
+			expect(flexToolBar.loadConfig()[0]).toEqual(jasmine.objectContaining({
+		    type: 'button',
+		    icon: 'gear',
+		    callback: 'flex-tool-bar:edit-config-file',
+		    tooltip: 'Edit Tool Bar'
+		  }));
+		});
+
+		it('should load .json5', function () {
+			flexToolBar.configFilePath = path.resolve(__dirname, '../lib/defaults/toolbar.json5');
+			expect(flexToolBar.loadConfig()[0]).toEqual(jasmine.objectContaining({
+		    type: 'button',
+		    icon: 'gear',
+		    callback: 'flex-tool-bar:edit-config-file',
+		    tooltip: 'Edit Tool Bar'
+		  }));
+		});
+
+		it('should load .coffee', function () {
+			flexToolBar.configFilePath = path.resolve(__dirname, '../lib/defaults/toolbar.coffee');
+			expect(flexToolBar.loadConfig()[0]).toEqual(jasmine.objectContaining({
+		    type: 'button',
+		    icon: 'gear',
+		    callback: 'flex-tool-bar:edit-config-file',
+		    tooltip: 'Edit Tool Bar'
+		  }));
+		});
+
+		it('should load .cson', function () {
+			flexToolBar.configFilePath = path.resolve(__dirname, '../lib/defaults/toolbar.cson');
+			expect(flexToolBar.loadConfig()[0]).toEqual(jasmine.objectContaining({
+		    type: 'button',
+		    icon: 'gear',
+		    callback: 'flex-tool-bar:edit-config-file',
+		    tooltip: 'Edit Tool Bar'
+		  }));
+		});
+	});
+
 	describe('button types', function () {
 		beforeEach(function () {
 			spyOn(flexToolBar.toolBar, 'addButton');
