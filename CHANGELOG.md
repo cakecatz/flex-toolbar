@@ -1,4 +1,10 @@
-## [vNext](https://github.com/cakecatz/flex-toolbar/compare/v0.16.0...master)
+## [vNext](https://github.com/cakecatz/flex-toolbar/compare/v1.0.0...master)
+
+## [v1.0.0](https://github.com/cakecatz/flex-toolbar/compare/v0.16.0...v1.0.0) - 2018-03-07
+-   Change default config file to `.js`
+-   Move to JavaScript [#135](https://github.com/cakecatz/flex-toolbar/pull/135) (by [@UziTech](https://github.com/UziTech))
+-   Detect grammar change [#136](https://github.com/cakecatz/flex-toolbar/issues/136)
+-   Add file type [#72](https://github.com/cakecatz/flex-toolbar/pull/72) (by [@ryanjbonnell](https://github.com/ryanjbonnell))
 
 ## [v0.16.0](https://github.com/cakecatz/flex-toolbar/compare/v0.15.1...v0.16.0) - 2018-02-15
 -   Add setting conditions
