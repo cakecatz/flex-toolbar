@@ -18,12 +18,21 @@ type `Flex Tool Bar: Edit Config File` in the Atom command palette.
 
 ## Configuration
 
-**Flex Tool Bar** has four `type`s you can configure:
-`button`, `url`, `function` and `spacer`.
+**Flex Tool Bar** has five `type`s you can configure:
+`button`, `file`, `function`, `url` and `spacer`.
 
 -   `button` creates default buttons for your toolbar.
 
     You can use it to set actions like `application:new-file`.
+
+-   `file` creates buttons pointing to specific files that will be opened in Atom.
+
+    You can use it to open files of nearly any kind that Atom supports, such as logs, configs or simply a project's `README.md`.
+
+-   `function` creates buttons that can call a function with the previous target as a parameter
+
+    This requires the config file to be a `.js` or `.coffee` file that exports the array of buttons
+
 
 -   `url` creates buttons pointing to specific web pages.
 
@@ -45,10 +54,6 @@ type `Flex Tool Bar: Edit Config File` in the Atom command palette.
 
     e.g. `https://github.com/{repo-owner}/{repo-name}`
 
--   `function` creates buttons that can call a function with the previous target as a parameter
-
-    This requires the config file to be a `.js` or `.coffee` file that exports the array of buttons
-
 -   `spacer` adds separators between toolbar buttons.
 
 ### Features
@@ -65,6 +70,7 @@ type `Flex Tool Bar: Edit Config File` in the Atom command palette.
 The default iconset is [Octicons](https://octicons.github.com/) (Atom's flavor).
 
 Example:
+
 ```coffeescript
 {
   type: "button"
@@ -75,6 +81,7 @@ Example:
 ```
 
 But you can specify the following iconsets:
+
 -   [Ionicons](http://ionicons.com) (`ion`)
 -   [FontAwesome](http://fortawesome.github.io/Font-Awesome) (`fa`)
 -   [Foundation](http://zurb.com/playground/foundation-icon-fonts-3) (`fi`)
@@ -83,6 +90,7 @@ But you can specify the following iconsets:
 -   [MaterialDesignIcons](https://materialdesignicons.com/) (`mdi`)
 
 Example:
+
 ```coffeescript
 {
   type: "button"
@@ -259,6 +267,13 @@ This is same above.
     className: "fa-rotate-180"
     tooltip: "This is just an example it does nothing"
   }
+  {
+    type: "file"
+    iconset: "fa"
+    icon: "book"
+    file: "README.md"
+    tooltip: "View Documentation"
+  }
 ]
 ```
 
@@ -319,6 +334,13 @@ module.exports = [
     className: "fa-rotate-180"
     tooltip: "This is just an example it does nothing"
   }
+  {
+    type: "file"
+    iconset: "fa"
+    icon: "book"
+    file: "README.md"
+    tooltip: "View Documentation"
+  }
 ]
 ```
 
@@ -332,11 +354,12 @@ See more examples on [Wiki](https://github.com/cakecatz/flex-toolbar/wiki) ✨
 
 | [![Ryo Narita][cakecatz avator]](https://github.com/cakecatz) | [![Jeroen van Warmerdam][jerone avator]](https://github.com/jerone) |
 | :-----------------------------------------------------------: | :-----------------------------------------------------------------: |
-| [Ryo Narita](https://github.com/cakecatz)                     | [Jeroen van Warmerdam](https://github.com/jerone)                   |
+|           [Ryo Narita](https://github.com/cakecatz)           |          [Jeroen van Warmerdam](https://github.com/jerone)          |
 
 ## License
 
 MIT © [Ryo Narita](https://github.com/cakecatz)
 
 [cakecatz avator]: https://avatars.githubusercontent.com/u/6136383?v=3&s=100
+
 [jerone avator]: https://avatars.githubusercontent.com/u/55841?v=3&s=100

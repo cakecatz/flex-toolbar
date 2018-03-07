@@ -64,6 +64,20 @@ describe('FlexToolBar', function () {
 				tooltip: 'Github Page'
 			}));
 		});
+		it('should load a file', function () {
+			flexToolBar.addButtons([{
+				type: 'file',
+				icon: 'octoface',
+				file: 'README.md',
+				tooltip: 'Github Page'
+			}]);
+
+			expect(flexToolBar.toolBar.addButton).toHaveBeenCalledWith(jasmine.objectContaining({
+				icon: 'octoface',
+				data: 'README.md',
+				tooltip: 'Github Page'
+			}));
+		});
 		it('should load a spacer', function () {
 			spyOn(flexToolBar.toolBar, 'addSpacer');
 			flexToolBar.addButtons([{
