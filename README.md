@@ -61,6 +61,7 @@ type `Flex Tool Bar: Edit Config File` in the Atom command palette.
 -   multiple callbacks
 -   function callback
 -   button icons
+-   button text
 -   inline button styles
 -   add class(s) to buttons
 -   hide/disable a button in certain cases
@@ -98,6 +99,34 @@ Example:
   callback: "core:save"
   icon: "floppy-o"
   iconset: "fa"
+}
+```
+
+### Button text
+
+You can add text or html to the button.
+
+Example:
+
+```coffeescript
+{
+  type: "button"
+  text: "M"
+  callback: "minimap:toggle"
+}
+```
+
+Set `html` to `true` to render the `text` as html. You may combine text with an icon.
+
+Example:
+
+```coffeescript
+{
+  type: "button"
+  icon: "list-unordered"
+  text: "Toggle <b>Minimap</b>"
+  html: true
+  callback: "minimap:toggle"
 }
 ```
 
@@ -274,6 +303,16 @@ This is same above.
     file: "README.md"
     tooltip: "View Documentation"
   }
+  {
+    type: "button"
+    icon: "list-unordered"
+    text: "Toggle <b>Minimap</b>"
+    html: true
+    callback: "minimap:toggle"
+    show: {
+      package: "minimap"
+    }
+  }
 ]
 ```
 
@@ -340,6 +379,16 @@ module.exports = [
     icon: "book"
     file: "README.md"
     tooltip: "View Documentation"
+  }
+  {
+    type: "button"
+    icon: "list-unordered"
+    text: "Toggle <b>Minimap</b>"
+    html: true
+    callback: "minimap:toggle"
+    show: {
+      package: "minimap"
+    }
   }
 ]
 ```
