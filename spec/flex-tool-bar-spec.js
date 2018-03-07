@@ -6,9 +6,6 @@ describe('FlexToolBar', function () {
 		await atom.packages.activatePackage('tool-bar');
 		await atom.packages.activatePackage('flex-tool-bar');
 	});
-	afterEach(async function () {
-		await atom.reset();
-	});
 
 	describe('activate', function () {
 		it('should store grammar', async function () {
@@ -243,6 +240,7 @@ describe('FlexToolBar', function () {
 			await atom.packages.activatePackage('language-javascript');
 			await atom.workspace.open('./fixtures/sample.js');
 			expect(flexToolBar.currentGrammar).toBe('javascript');
+
 			await atom.workspace.open('./fixtures/pixel.png');
 			expect(flexToolBar.currentGrammar).toBeNull();
 		});
