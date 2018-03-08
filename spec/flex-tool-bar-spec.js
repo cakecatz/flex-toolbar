@@ -518,6 +518,34 @@ describe('FlexToolBar', function () {
 		});
 	});
 
+	describe('removeCache', function () {
+		it('should reload the module from the file', function (done) {
+			const fs = require('fs');
+			const file = path.join(__dirname, 'fixtures', 'removeCache.js');
+
+			fs.writeFile(file, 'module.exports = 1;', (err) => {
+				if (err) {
+					throw err;
+				}
+				expect(require(file)).toBe(1);
+				fs.writeFile(file, 'module.exports = 2;', (err2) => {
+					if (err2) {
+						throw err2;
+					}
+					expect(require(file)).toBe(1);
+					flexToolBar.removeCache(file);
+					expect(require(file)).toBe(2);
+					fs.unlink(file, (err3) => {
+						if (err3) {
+							throw err3;
+						}
+						done();
+					});
+				});
+			});
+		});
+	});
+
 	if (!global.headless) {
 		// show linting errors in atom test window
 		describe('linting', function () {
