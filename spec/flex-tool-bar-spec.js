@@ -12,7 +12,7 @@ describe('FlexToolBar', function () {
 			await atom.packages.activatePackage('language-javascript');
 			const editor = await atom.workspace.open('./fixtures/sample.js');
 
-			expect(flexToolBar.currentGrammar).toBe(editor.getGrammar().name.toLowerCase());
+			expect(flexToolBar.activeItem.grammar).toBe(editor.getGrammar().name.toLowerCase());
 		});
 	});
 
@@ -225,17 +225,17 @@ describe('FlexToolBar', function () {
 			const editor = atom.workspace.getActiveTextEditor();
 			editor.setGrammar(atom.grammars.grammarForScopeName('source.js'));
 
-			expect(flexToolBar.currentGrammar).toBe('javascript');
+			expect(flexToolBar.activeItem.grammar).toBe('javascript');
 
 			editor.setGrammar(atom.grammars.grammarForScopeName('text.plain'));
 
-			expect(flexToolBar.currentGrammar).toBe('plain text');
+			expect(flexToolBar.activeItem.grammar).toBe('plain text');
 		});
 	});
 
 	describe('grammar condition', function () {
-		it('should check @currentGrammar', function () {
-			flexToolBar.currentGrammar = 'js';
+		it('should check @activeItem.grammar', function () {
+			flexToolBar.activeItem.grammar = 'js';
 
 			const match = flexToolBar.checkConditions('js');
 			const notMatch = flexToolBar.checkConditions('!js');
@@ -244,7 +244,7 @@ describe('FlexToolBar', function () {
 		});
 
 		it('should check .grammar', function () {
-			flexToolBar.currentGrammar = 'js';
+			flexToolBar.activeItem.grammar = 'js';
 
 			const match = flexToolBar.checkConditions({grammar: 'js'});
 			const notMatch = flexToolBar.checkConditions({grammar: '!js'});
@@ -256,7 +256,6 @@ describe('FlexToolBar', function () {
 	describe('pattern condition', function () {
 		it('should check .pattern', async function () {
 			await atom.workspace.open('./fixtures/sample.js');
-
 			const matchJs = flexToolBar.checkConditions({pattern: '*.js'});
 			const matchCoffee = flexToolBar.checkConditions({pattern: '*.coffee'});
 			expect(matchJs).toBe(true);
@@ -285,10 +284,10 @@ describe('FlexToolBar', function () {
 		it('should set grammar to null', async function () {
 			await atom.packages.activatePackage('language-javascript');
 			await atom.workspace.open('./fixtures/sample.js');
-			expect(flexToolBar.currentGrammar).toBe('javascript');
+			expect(flexToolBar.activeItem.grammar).toBe('javascript');
 
 			await atom.workspace.open('./fixtures/pixel.png');
-			expect(flexToolBar.currentGrammar).toBeNull();
+			expect(flexToolBar.activeItem.grammar).toBeNull();
 		});
 		it('should check .pattern', async function () {
 			let matchPng, matchJpg;
@@ -515,6 +514,34 @@ describe('FlexToolBar', function () {
 
 			await atom.workspace.open(this.project1Sample);
 			expect(flexToolBar.projectConfigFilePath).toBe(this.project1Config);
+		});
+	});
+
+	describe('removeCache', function () {
+		it('should reload the module from the file', function (done) {
+			const fs = require('fs');
+			const file = path.join(__dirname, 'fixtures', 'removeCache.js');
+
+			fs.writeFile(file, 'module.exports = 1;', (err) => {
+				if (err) {
+					throw err;
+				}
+				expect(require(file)).toBe(1);
+				fs.writeFile(file, 'module.exports = 2;', (err2) => {
+					if (err2) {
+						throw err2;
+					}
+					expect(require(file)).toBe(1);
+					flexToolBar.removeCache(file);
+					expect(require(file)).toBe(2);
+					fs.unlink(file, (err3) => {
+						if (err3) {
+							throw err3;
+						}
+						done();
+					});
+				});
+			});
 		});
 	});
 
