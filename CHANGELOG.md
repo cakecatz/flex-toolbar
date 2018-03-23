@@ -1,5 +1,5 @@
 ## [vNext](https://github.com/cakecatz/flex-toolbar/compare/v2.0.0...master)
-
+- Remove text/html hack since [tool-bar v1.1.7](https://github.com/suda/tool-bar/releases/tag/v1.1.7) allows text/html
 
 ## [v2.0.0](https://github.com/cakecatz/flex-toolbar/compare/v1.1.0...v2.0.0)
 - BREAKING: Get active item from workplace center [#139](https://github.com/cakecatz/flex-toolbar/pull/139) (by [@UziTech](https://github.com/UziTech))
