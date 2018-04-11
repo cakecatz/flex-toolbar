@@ -1,16 +1,16 @@
 ## [vNext](https://github.com/cakecatz/flex-toolbar/compare/v2.0.1...master)
 
 ## [v2.0.1](https://github.com/cakecatz/flex-toolbar/compare/v2.0.0...v2.0.1) - 2018-04-11
-- Change default config file back to `.cson` since examples are written using CSON
-- Remove text/html hack since [tool-bar v1.1.7](https://github.com/suda/tool-bar/releases/tag/v1.1.7) allows text/html
+-   Change default config file back to `.cson` since examples are written using CSON
+-   Remove text/html hack since [tool-bar v1.1.7](https://github.com/suda/tool-bar/releases/tag/v1.1.7) allows text/html
 
 ## [v2.0.0](https://github.com/cakecatz/flex-toolbar/compare/v1.1.0...v2.0.0) - 2018-03-16
-- BREAKING: Get active item from workplace center [#139](https://github.com/cakecatz/flex-toolbar/pull/139) (by [@UziTech](https://github.com/UziTech))
+-   BREAKING: Get active item from workplace center [#139](https://github.com/cakecatz/flex-toolbar/pull/139) (by [@UziTech](https://github.com/UziTech))
 
 ## [v1.1.0](https://github.com/cakecatz/flex-toolbar/compare/v1.0.0...v1.1.0) - 2018-03-08
--  Fix `snapshotResult is not defined` [#137](https://github.com/cakecatz/flex-toolbar/issues/137)
--  Text and HTML options [#125](https://github.com/cakecatz/flex-toolbar/pull/125) (by [@UziTech](https://github.com/UziTech))
--  Use project repo for url if no active item repo is found
+-   Fix `snapshotResult is not defined` [#137](https://github.com/cakecatz/flex-toolbar/issues/137)
+-   Text and HTML options [#125](https://github.com/cakecatz/flex-toolbar/pull/125) (by [@UziTech](https://github.com/UziTech))
+-   Use project repo for url if no active item repo is found
 
 ## [v1.0.0](https://github.com/cakecatz/flex-toolbar/compare/v0.16.0...v1.0.0) - 2018-03-07
 -   Change default config file to `.js`
