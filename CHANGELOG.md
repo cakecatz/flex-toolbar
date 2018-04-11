@@ -1,6 +1,6 @@
 ## [vNext](https://github.com/cakecatz/flex-toolbar/compare/v2.0.2...master)
 
-## [v2.0.2](https://github.com/cakecatz/flex-toolbar/compare/v2.0.1...v2.0.2)
+## [v2.0.2](https://github.com/cakecatz/flex-toolbar/compare/v2.0.1...v2.0.2) - 2018-04-11
 -   Fix deactivate flex-tool-bar [#146](https://github.com/cakecatz/flex-toolbar/issues/146)
 
 ## [v2.0.1](https://github.com/cakecatz/flex-toolbar/compare/v2.0.0...v2.0.1) - 2018-04-11
