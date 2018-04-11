@@ -1,7 +1,10 @@
-## [vNext](https://github.com/cakecatz/flex-toolbar/compare/v2.0.0...master)
+## [vNext](https://github.com/cakecatz/flex-toolbar/compare/v2.0.1...master)
+
+## [v2.0.1](https://github.com/cakecatz/flex-toolbar/compare/v2.0.0...v2.0.1) - 2018-04-11
+- Change default config file back to `.cson` since examples are written using CSON
 - Remove text/html hack since [tool-bar v1.1.7](https://github.com/suda/tool-bar/releases/tag/v1.1.7) allows text/html
 
-## [v2.0.0](https://github.com/cakecatz/flex-toolbar/compare/v1.1.0...v2.0.0)
+## [v2.0.0](https://github.com/cakecatz/flex-toolbar/compare/v1.1.0...v2.0.0) - 2018-03-16
 - BREAKING: Get active item from workplace center [#139](https://github.com/cakecatz/flex-toolbar/pull/139) (by [@UziTech](https://github.com/UziTech))
 
 ## [v1.1.0](https://github.com/cakecatz/flex-toolbar/compare/v1.0.0...v1.1.0) - 2018-03-08
