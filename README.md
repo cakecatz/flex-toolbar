@@ -142,6 +142,16 @@ style: {
 }
 ```
 
+### Button hover
+
+you can use CSS styles for button hover per button.
+```coffeescript
+hover: {
+  color: "green"
+  background: "red"
+}
+```
+
 ### Button class
 
 Using a comma separated list you can add your own class names to buttons.
@@ -282,6 +292,8 @@ This is same above.
     callback: "git-diff:toggle-diff-list"
     style:
       color: "#FA4F28"
+    hover:
+      color: "#FA8F28"
   }
   {
     type: "button"
@@ -359,6 +371,8 @@ module.exports = [
     callback: "git-diff:toggle-diff-list"
     style:
       color: "#FA4F28"
+    hover:
+      color: "#FA8F28"
   }
   {
     type: "button"
