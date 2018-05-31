@@ -545,6 +545,55 @@ describe('FlexToolBar', function () {
 		});
 	});
 
+	describe('button style', function () {
+		it('should style the button', function () {
+			const [button] = flexToolBar.addButtons([{
+				type: 'button',
+				icon: 'octoface',
+				style: {
+					color: 'rgb(12, 34, 56)'
+				}
+			}]);
+
+			expect(button.element.style.color).toBe('rgb(12, 34, 56)');
+		});
+
+		it('should change style on hover', function () {
+			const [button] = flexToolBar.addButtons([{
+				type: 'button',
+				icon: 'octoface',
+				style: {
+					color: 'rgb(12, 34, 56)'
+				},
+				hover: {
+					color: 'rgb(65, 43, 21)'
+				}
+			}]);
+
+			button.element.dispatchEvent(new global.MouseEvent('mouseenter'));
+			expect(button.element.style.color).toBe('rgb(65, 43, 21)');
+
+			button.element.dispatchEvent(new global.MouseEvent('mouseleave'));
+			expect(button.element.style.color).toBe('rgb(12, 34, 56)');
+		});
+
+		it('should remove style on mouseleave', function () {
+			const [button] = flexToolBar.addButtons([{
+				type: 'button',
+				icon: 'octoface',
+				hover: {
+					color: 'rgb(65, 43, 21)'
+				}
+			}]);
+
+			button.element.dispatchEvent(new global.MouseEvent('mouseenter'));
+			expect(button.element.style.color).toBe('rgb(65, 43, 21)');
+
+			button.element.dispatchEvent(new global.MouseEvent('mouseleave'));
+			expect(button.element.style.color).toBe('');
+		});
+	});
+
 	if (!global.headless) {
 		// show linting errors in atom test window
 		describe('linting', function () {
