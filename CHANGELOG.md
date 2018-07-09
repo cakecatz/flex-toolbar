@@ -1,4 +1,5 @@
 ## [vNext](https://github.com/cakecatz/flex-toolbar/compare/v2.1.0...master)
+-   Use Atom's PathWatcher to watch the config files [#151](https://github.com/cakecatz/flex-toolbar/pull/151) (by [@UziTech](https://github.com/UziTech))
 
 ## [v2.1.0](https://github.com/cakecatz/flex-toolbar/compare/v2.0.2...v2.1.0) - 2018-05-30
 -   Add hover style [#149](https://github.com/cakecatz/flex-toolbar/pull/149) (by [@paradoXp](https://github.com/paradoXp))
