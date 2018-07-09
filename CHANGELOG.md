@@ -1,4 +1,6 @@
-## [vNext](https://github.com/cakecatz/flex-toolbar/compare/v2.1.0...master)
+## [vNext](https://github.com/cakecatz/flex-toolbar/compare/v2.1.1...master)
+
+## [v2.1.1](https://github.com/cakecatz/flex-toolbar/compare/v2.1.0...v2.1.1) - 2018-07-09
 -   Use Atom's PathWatcher to watch the config files [#151](https://github.com/cakecatz/flex-toolbar/pull/151) (by [@UziTech](https://github.com/UziTech))
 
 ## [v2.1.0](https://github.com/cakecatz/flex-toolbar/compare/v2.0.2...v2.1.0) - 2018-05-30
