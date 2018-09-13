@@ -17,7 +17,7 @@
     "change-case": "^3.0.2",
     "cson": "^5.1.0",
     "fs-plus": "^3.0.2",
-    "json5": "^1.0.1",
+    "json5": "^2.0.1",
     "glob-to-regexp": "0.4.0"
   },
   "package-deps": [
@@ -36,8 +36,8 @@
     "lint": "remark . & eslint ."
   },
   "devDependencies": {
-    "atom-jasmine3-test-runner": "^3.1.0",
-    "eslint": "^5.0.1",
+    "atom-jasmine3-test-runner": "^4.0.0",
+    "eslint": "^5.5.0",
     "remark-cli": "^5.0.0",
     "remark-preset-lint-recommended": "^3.0.2"
   }
