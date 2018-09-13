@@ -1,4 +1,5 @@
 ## [vNext](https://github.com/cakecatz/flex-toolbar/compare/v2.1.2...master)
+-   Fix reloading config on change
 
 ## [v2.1.2](https://github.com/cakecatz/flex-toolbar/compare/v2.1.1...v2.1.2) - 2018-08-01
 -   Add an error when config is not an array [#153](https://github.com/cakecatz/flex-toolbar/issues/153)
