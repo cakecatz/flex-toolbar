@@ -1,3 +1,10 @@
+## [2.1.3](https://github.com/cakecatz/flex-toolbar/compare/v2.1.2...v2.1.3) (2019-04-23)
+
+
+### Bug Fixes
+
+* **deps:** Add semantic-release ([6719a92](https://github.com/cakecatz/flex-toolbar/commit/6719a92))
+
 ## [vNext](https://github.com/cakecatz/flex-toolbar/compare/v2.1.2...master)
 -   Fix reloading config on change
 
