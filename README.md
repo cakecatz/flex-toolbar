@@ -415,14 +415,14 @@ See more examples on [Wiki](https://github.com/cakecatz/flex-toolbar/wiki) ✨
 
 ## Authors
 
-| [![Ryo Narita][cakecatz avator]](https://github.com/cakecatz) | [![Jeroen van Warmerdam][jerone avator]](https://github.com/jerone) |
-| :-----------------------------------------------------------: | :-----------------------------------------------------------------: |
-|           [Ryo Narita](https://github.com/cakecatz)           |          [Jeroen van Warmerdam](https://github.com/jerone)          |
+| [![Ryo Narita][cakecatz avator]](https://github.com/cakecatz) | [![Jeroen van Warmerdam][jerone avator]](https://github.com/jerone) | [![Tony Brix][UziTech avator]](https://github.com/uzitech) |
+| :-----------------------------------------------------------: | :-----------------------------------------------------------------: | :-----------------------------------------------------------------: |
+|           [Ryo Narita](https://github.com/cakecatz)           |          [Jeroen van Warmerdam](https://github.com/jerone)          |          [Tony Brix](https://github.com/uzitech)          |
 
 ## License
 
 MIT © [Ryo Narita](https://github.com/cakecatz)
 
 [cakecatz avator]: https://avatars.githubusercontent.com/u/6136383?v=3&s=100
-
 [jerone avator]: https://avatars.githubusercontent.com/u/55841?v=3&s=100
+[UziTech avator]: https://avatars2.githubusercontent.com/u/97994?v=3&s=100
