@@ -1,3 +1,10 @@
+## [2.1.4](https://github.com/cakecatz/flex-toolbar/compare/v2.1.3...v2.1.4) (2019-08-05)
+
+
+### Bug Fixes
+
+* **package condition:** Check if package is loaded not just active ([b248b1a](https://github.com/cakecatz/flex-toolbar/commit/b248b1a)), closes [#158](https://github.com/cakecatz/flex-toolbar/issues/158)
+
 ## [2.1.3](https://github.com/cakecatz/flex-toolbar/compare/v2.1.2...v2.1.3) (2019-04-23)
 
 
