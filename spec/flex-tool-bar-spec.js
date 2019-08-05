@@ -322,6 +322,25 @@ describe('FlexToolBar', function () {
 			expect(notMatch).toBe(false);
 			expect(match).toBe(true);
 		});
+
+		it('should check .package loaded', async function () {
+			await atom.packages.loadPackage('language-text');
+
+			const notMatch = flexToolBar.checkConditions({package: '!language-text'});
+			const match = flexToolBar.checkConditions({package: 'language-text'});
+			expect(notMatch).toBe(false);
+			expect(match).toBe(true);
+		});
+
+		it('should check .package disabled', async function () {
+			await atom.packages.loadPackage('language-text');
+			await atom.packages.disablePackage('language-text');
+
+			const notMatch = flexToolBar.checkConditions({package: 'language-text'});
+			const match = flexToolBar.checkConditions({package: '!language-text'});
+			expect(notMatch).toBe(false);
+			expect(match).toBe(true);
+		});
 	});
 
 	describe('function condition', function () {
