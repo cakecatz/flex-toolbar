@@ -38,10 +38,10 @@
   },
   "devDependencies": {
     "@semantic-release/apm-config": "^6.0.1",
-    "atom-jasmine3-test-runner": "^4.3.1",
-    "eslint": "^5.16.0",
-    "remark-cli": "^6.0.1",
-    "remark-preset-lint-recommended": "^3.0.2",
-    "semantic-release": "^15.13.12"
+    "atom-jasmine3-test-runner": "^4.3.8",
+    "eslint": "^6.1.0",
+    "remark-cli": "^7.0.0",
+    "remark-preset-lint-recommended": "^3.0.3",
+    "semantic-release": "^15.13.19"
   }
 }
