@@ -10,7 +10,7 @@
     "tool-bar"
   ],
   "engines": {
-    "atom": ">=1.21.0 <2.0.0"
+    "atom": ">=1.27.0 <2.0.0"
   },
   "dependencies": {
     "atom-package-deps": "^5.1.0",
