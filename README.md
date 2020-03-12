@@ -142,6 +142,13 @@ style: {
 }
 ```
 
+You can specify `color` and `background` directly as well.
+
+```coffeescript
+color: "red"
+background: "green"
+```
+
 ### Button hover
 
 you can use CSS styles for button hover per button.
@@ -154,12 +161,12 @@ hover: {
 
 ### Button class
 
-Using a comma separated list you can add your own class names to buttons.
+Using an array you can add your own class names to buttons.
 This is great if you want to take advantage of native styles like Font Awesome
 or if you have your own styles you prefer to keep in a stylesheet.
 
 ```coffeescript
-className: "fa-rotate-90, custom-class"
+class: ["fa-rotate-90", "custom-class"]
 ```
 
 ### Multiple callback
@@ -305,7 +312,9 @@ This is same above.
     type: "button"
     icon: "sitemap"
     iconset: "fa"
-    className: "fa-rotate-180"
+    class: "fa-rotate-180"
+    color: "red"
+    background: "green"
     tooltip: "This is just an example it does nothing"
   }
   {
@@ -384,7 +393,9 @@ module.exports = [
     type: "button"
     icon: "sitemap"
     iconset: "fa"
-    className: "fa-rotate-180"
+    class: "fa-rotate-180"
+    color: "red"
+    background: "green"
     tooltip: "This is just an example it does nothing"
   }
   {
