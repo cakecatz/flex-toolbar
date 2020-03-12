@@ -218,6 +218,57 @@ describe('FlexToolBar', function () {
 		});
 	});
 
+	describe('styling options', function () {
+		beforeEach(function () {
+			spyOn(flexToolBar.toolBar, 'addButton');
+			this.obj = {
+				background: 'red',
+				color: 'purple',
+				class: 'my-awesome-class'
+			};
+		});
+		it('should allow background, color, and class options on button', function () {
+			flexToolBar.addButtons([{
+				type: 'button',
+				background: this.obj.background,
+				color: this.obj.color,
+				class: this.obj.class,
+			}]);
+
+			expect(flexToolBar.toolBar.addButton).toHaveBeenCalledWith(jasmine.objectContaining(this.obj));
+		});
+		it('should allow background, color, and class options on file', function () {
+			flexToolBar.addButtons([{
+				type: 'file',
+				background: this.obj.background,
+				color: this.obj.color,
+				class: this.obj.class,
+			}]);
+
+			expect(flexToolBar.toolBar.addButton).toHaveBeenCalledWith(jasmine.objectContaining(this.obj));
+		});
+		it('should allow background, color, and class options on function', function () {
+			flexToolBar.addButtons([{
+				type: 'function',
+				background: this.obj.background,
+				color: this.obj.color,
+				class: this.obj.class,
+			}]);
+
+			expect(flexToolBar.toolBar.addButton).toHaveBeenCalledWith(jasmine.objectContaining(this.obj));
+		});
+		it('should allow background, color, and class options on url', function () {
+			flexToolBar.addButtons([{
+				type: 'url',
+				background: this.obj.background,
+				color: this.obj.color,
+				class: this.obj.class,
+			}]);
+
+			expect(flexToolBar.toolBar.addButton).toHaveBeenCalledWith(jasmine.objectContaining(this.obj));
+		});
+	});
+
 	describe('observed events', function () {
 		it('should observe grammar change', async function () {
 			await atom.packages.activatePackage('language-javascript');
