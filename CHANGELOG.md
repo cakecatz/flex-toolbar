@@ -1,3 +1,10 @@
+# [2.2.0](https://github.com/cakecatz/flex-toolbar/compare/v2.1.4...v2.2.0) (2020-03-12)
+
+
+### Features
+
+* add `background`, `color`, and `class` options ([8c0740f](https://github.com/cakecatz/flex-toolbar/commit/8c0740fa12b2ca37cf5409915044d3f2612fbe8c))
+
 ## [2.1.4](https://github.com/cakecatz/flex-toolbar/compare/v2.1.3...v2.1.4) (2019-08-05)
 
 
