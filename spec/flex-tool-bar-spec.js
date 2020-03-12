@@ -3,6 +3,8 @@ const path = require('path');
 
 describe('FlexToolBar', function () {
 	beforeEach(async function () {
+		atom.packages.triggerDeferredActivationHooks();
+		atom.packages.triggerActivationHook('core:loaded-shell-environment');
 		await atom.packages.activatePackage('tool-bar');
 		await atom.packages.activatePackage('flex-tool-bar');
 	});

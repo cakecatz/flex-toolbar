@@ -14,10 +14,10 @@
   },
   "dependencies": {
     "atom-package-deps": "^5.1.0",
-    "change-case": "^3.1.0",
-    "cson": "^5.1.0",
+    "change-case": "^4.1.1",
+    "cson": "^6.9.0",
     "fs-plus": "^3.1.1",
-    "json5": "^2.1.0",
+    "json5": "^2.1.1",
     "glob-to-regexp": "0.4.1"
   },
   "package-deps": [
@@ -37,11 +37,11 @@
     "semantic-release": "semantic-release"
   },
   "devDependencies": {
-    "@semantic-release/apm-config": "^6.0.1",
-    "atom-jasmine3-test-runner": "^4.3.8",
-    "eslint": "^6.1.0",
-    "remark-cli": "^7.0.0",
+    "@semantic-release/apm-config": "^8.0.0",
+    "atom-jasmine3-test-runner": "^4.4.3",
+    "eslint": "^6.8.0",
+    "remark-cli": "^7.0.1",
     "remark-preset-lint-recommended": "^3.0.3",
-    "semantic-release": "^15.13.19"
+    "semantic-release": "^17.0.4"
   }
 }
