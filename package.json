@@ -1,7 +1,7 @@
 {
   "name": "flex-tool-bar",
   "main": "./lib/flex-tool-bar",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Easily Customizable ToolBar for Atom",
   "repository": "https://github.com/cakecatz/flex-toolbar",
   "license": "MIT",
@@ -21,7 +21,9 @@
     "glob-to-regexp": "0.4.1"
   },
   "package-deps": [
-    { "name": "tool-bar" }
+    {
+      "name": "tool-bar"
+    }
   ],
   "consumedServices": {
     "tool-bar": {

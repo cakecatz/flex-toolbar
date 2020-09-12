@@ -1,3 +1,10 @@
+## [2.2.1](https://github.com/cakecatz/flex-toolbar/compare/v2.2.0...v2.2.1) (2020-09-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependencies ([45f22da](https://github.com/cakecatz/flex-toolbar/commit/45f22da09b16196a382fadbf07c581e76b5ae790))
+
 # [2.2.0](https://github.com/cakecatz/flex-toolbar/compare/v2.1.4...v2.2.0) (2020-03-12)
 
 
