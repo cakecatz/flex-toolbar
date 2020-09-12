@@ -13,15 +13,15 @@
     "atom": ">=1.27.0 <2.0.0"
   },
   "dependencies": {
-    "atom-package-deps": "^5.1.0",
+    "atom-package-deps": "^7.0.1",
     "change-case": "^4.1.1",
-    "cson": "^6.9.0",
+    "cson": "^7.20.0",
     "fs-plus": "^3.1.1",
-    "json5": "^2.1.1",
+    "json5": "^2.1.3",
     "glob-to-regexp": "0.4.1"
   },
   "package-deps": [
-    "tool-bar"
+    { "name": "tool-bar" }
   ],
   "consumedServices": {
     "tool-bar": {
@@ -33,15 +33,14 @@
   "atomTestRunner": "./spec/runner",
   "scripts": {
     "test": "atom --test ./spec && npm run lint",
-    "lint": "remark . & eslint .",
-    "semantic-release": "semantic-release"
+    "lint": "remark . & eslint ."
   },
   "devDependencies": {
     "@semantic-release/apm-config": "^8.0.0",
-    "atom-jasmine3-test-runner": "^4.4.3",
-    "eslint": "^6.8.0",
-    "remark-cli": "^7.0.1",
-    "remark-preset-lint-recommended": "^3.0.3",
-    "semantic-release": "^17.0.4"
+    "atom-jasmine3-test-runner": "^5.0.7",
+    "eslint": "^7.8.1",
+    "remark-cli": "^8.0.1",
+    "remark-preset-lint-recommended": "^4.0.1",
+    "semantic-release": "^17.1.1"
   }
 }
