@@ -43,6 +43,6 @@
     "eslint": "^7.11.0",
     "remark-cli": "^8.0.1",
     "remark-preset-lint-recommended": "^4.0.1",
-    "semantic-release": "^17.2.0"
+    "semantic-release": "^17.2.1"
   }
 }
