@@ -1,3 +1,10 @@
+## [2.2.2](https://github.com/cakecatz/flex-toolbar/compare/v2.2.1...v2.2.2) (2020-12-02)
+
+
+### Bug Fixes
+
+* **deps:** Bump change-case from 4.1.1 to 4.1.2 ([#201](https://github.com/cakecatz/flex-toolbar/issues/201)) ([5f957cf](https://github.com/cakecatz/flex-toolbar/commit/5f957cf9087f1e7cc26b09d787c3e9d28480fb20))
+
 ## [2.2.1](https://github.com/cakecatz/flex-toolbar/compare/v2.2.0...v2.2.1) (2020-09-12)
 
 
