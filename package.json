@@ -13,7 +13,7 @@
     "atom": ">=1.27.0 <2.0.0"
   },
   "dependencies": {
-    "atom-package-deps": "^7.0.3",
+    "atom-package-deps": "^7.1.0",
     "change-case": "^4.1.2",
     "cson": "^7.20.0",
     "fs-plus": "^3.1.1",
