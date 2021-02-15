@@ -1,3 +1,10 @@
+## [2.2.5](https://github.com/cakecatz/flex-toolbar/compare/v2.2.4...v2.2.5) (2021-02-15)
+
+
+### Bug Fixes
+
+* **deps:** bump atom-package-deps from 7.2.0 to 7.2.1 ([#219](https://github.com/cakecatz/flex-toolbar/issues/219)) ([79eb5dc](https://github.com/cakecatz/flex-toolbar/commit/79eb5dc88cebccf46890f64769b925595695f465))
+
 ## [2.2.4](https://github.com/cakecatz/flex-toolbar/compare/v2.2.3...v2.2.4) (2021-01-18)
 
 
