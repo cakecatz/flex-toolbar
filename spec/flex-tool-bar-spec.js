@@ -304,6 +304,24 @@ describe('FlexToolBar', function () {
 			expect(match).toBe(true);
 			expect(notMatch).toBe(false);
 		});
+
+		it('should not match substring', function () {
+			flexToolBar.activeItem.grammar = 'cpp';
+
+			const match = flexToolBar.checkConditions({grammar: 'c'});
+			const notMatch = flexToolBar.checkConditions({grammar: '!c'});
+			expect(match).toBe(false);
+			expect(notMatch).toBe(true);
+		});
+
+		it('should not match grammar substring', function () {
+			flexToolBar.activeItem.grammar = 'c';
+
+			const match = flexToolBar.checkConditions({grammar: 'cpp'});
+			const notMatch = flexToolBar.checkConditions({grammar: '!cpp'});
+			expect(match).toBe(false);
+			expect(notMatch).toBe(true);
+		});
 	});
 
 	describe('pattern condition', function () {
