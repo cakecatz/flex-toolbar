@@ -1,3 +1,10 @@
+## [2.2.7](https://github.com/cakecatz/flex-toolbar/compare/v2.2.6...v2.2.7) (2021-03-25)
+
+
+### Bug Fixes
+
+* fix grammar condition when substring of editor grammar ([3618f34](https://github.com/cakecatz/flex-toolbar/commit/3618f342ce6df2e6b531a7582c67608a26084522))
+
 ## [2.2.6](https://github.com/cakecatz/flex-toolbar/compare/v2.2.5...v2.2.6) (2021-03-24)
 
 
