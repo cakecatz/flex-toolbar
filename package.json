@@ -17,8 +17,8 @@
     "change-case": "^4.1.2",
     "cson": "^7.20.0",
     "fs-plus": "^3.1.1",
-    "json5": "^2.2.0",
-    "glob-to-regexp": "0.4.1"
+    "glob-to-regexp": "0.4.1",
+    "json5": "^2.2.0"
   },
   "package-deps": [
     {
